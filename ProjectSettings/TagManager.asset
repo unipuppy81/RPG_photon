@@ -4,7 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Bullet
+  - SafeZone
+  - IdlePoint
   layers:
   - Default
   - TransparentFX
@@ -13,8 +14,8 @@ TagManager:
   - Water
   - UI
   - TerrainLayer
-  - 
-  - 
+  - 'Enemy '
+  - Player
   - 
   - 
   - 

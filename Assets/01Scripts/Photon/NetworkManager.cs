@@ -71,6 +71,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("04. 방 입장 완료");
 
+        if (PhotonNetwork.IsMasterClient)
+        {
+            SpawnManager.instance.pv.RPC("CreateComputerPlayer", RpcTarget.All);
+        }
+
         PhotonNetwork.Instantiate("Warrior", playerSpawnPosObj.transform.position, Quaternion.identity);
     }
 
