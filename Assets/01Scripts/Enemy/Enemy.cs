@@ -30,17 +30,17 @@ public class Enemy : Monster
     public int photonviewID;
 
     [Header("Enemy Stats")]
-    public float curhealth = 1000; // 현재 체력
-    public float maxHealth = 1000; // 최대 체력
+    public float curhealth; // 현재 체력
+    public float maxHealth; // 최대 체력
 
     private float healthRegenInterval = 1f; // 체력 회복 간격 (1초)
     private float lastHealthRegenTime = 1000; // 마지막 체력 회복 시간
 
-    public float Atk = 1f;
-    public float Def = 1f;
+    public float Atk;
+    public float Def;
 
-    public float moveSpeed = 5f;
-    public float healMount = 250f;
+    public float moveSpeed;
+    public float healMount;
 
     public float detectionRange = 5f;
     public float chaseRange = 7f;
@@ -56,6 +56,8 @@ public class Enemy : Monster
         _animator = GetComponent<Animator>();
         _curState = EnemyState.Idle;
         _fsmEnemy = new FSMEnemy(new IdleState(this));
+
+
 
         isReturn = false;
 
@@ -118,6 +120,11 @@ public class Enemy : Monster
         _fsmEnemy.UpdateState();
     }
 
+    private void OnEnable()
+    {
+        SetStatsEnemy();
+        //photonView.RPC("SetStatsEnemy", RpcTarget.All);
+    }
     void OnEnabled()
     {
         enemyPhotonview = GetComponent<PhotonView>();
@@ -150,6 +157,24 @@ public class Enemy : Monster
             case EnemyState.Die:
                 _fsmEnemy.ChangeState(new DieState(this));
                 break;
+        }
+    }
+
+    [PunRPC]
+    public void SetStatsEnemy() // 체력, 공격력, 방어, 이동속도 + 
+    {
+        for (int i = 0; i < StatsDBManager.instance.statsDB.Enemy.Count; ++i)
+        {
+            if (StatsDBManager.instance.statsDB.Enemy[i].Name == "Ghost")
+            {
+                maxHealth = StatsDBManager.instance.statsDB.Enemy[i].Maxhp;
+                Atk = StatsDBManager.instance.statsDB.Enemy[i].Atk;
+                Def = StatsDBManager.instance.statsDB.Enemy[i].Def;
+                moveSpeed = StatsDBManager.instance.statsDB.Enemy[i].Speed;
+                healMount = StatsDBManager.instance.statsDB.Enemy[i].Healamount;
+                detectionRange = StatsDBManager.instance.statsDB.Enemy[i].Radius;
+                return;
+            }
         }
     }
 
@@ -259,6 +284,14 @@ public class Enemy : Monster
     {
         // 객체 파괴
         Destroy(gameObject);
+
+        // 적이 사망하는걸 마스터 클라이언트에서만 처리
+        SpawnManager.instance.RemoveGhost();
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            SpawnManager.instance.CreateComputerPlayer();
+        }
     }
 
     public bool isDie()

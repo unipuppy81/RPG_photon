@@ -41,11 +41,12 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     /// </summary>
     [Header("Character_Status")]
 
-    private float maxHp = 100.0f;           //체력
-    private float atk = 100.0f;          // 공격력
-    private float def = 100.0f;           // 방어력
-    private float walkSpeed = 4.0f;    // 걸을 때 속도
-    private float runSpeed = 6.0f;     // 뛸 때 속도
+    private float maxHp;           //체력
+    private float atk;          // 공격력
+    private float def;           // 방어력
+    private float walkSpeed;    // 걸을 때 속도
+    private float runSpeed;     // 뛸 때 속도
+
     float currentSpeed;
     public float MaxHp
     {
@@ -119,13 +120,19 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         if (_StateMachine != null)
             _StateMachine.Execute();
 
- 
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            Debug.Log($"HP : {MaxHp}, Atk : {Atk}, Def : {Def}, WalkSpeed : {WalkSpeed}, RunSpeed : {RunSpeed}");
+        }
+
     }
 
     private void OnEnable()
     {
         StartCoroutine(DelayedSetup());
 
+        _photonView.RPC("SetStats", RpcTarget.All);
         _photonView.RPC("Setup", RpcTarget.All);
     }
 
@@ -208,13 +215,60 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         }
     }
 
-
-
     public void Skill()
     {
         // 주변의 적 탐지
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position, attackRadius, enemyLayer);
+
+        // 탐지된 적들에게 데미지 주기
+        foreach (Collider enemy in hitEnemies)
+        {
+            Enemy enemyScript = enemy.GetComponent<Enemy>();
+            PhotonView photonView = enemy.GetComponent<PhotonView>();
+
+            if (enemyScript != null)
+            {
+                photonView.RPC("TakeDamage", RpcTarget.All, Atk);
+            }
+        }
     }
+
+    public void FinishSkill()
+    {
+        isUsingSkill = false;
+
+        _animator.SetBool("UseSkill", isUsingSkill);
+
+        _rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+
+        // 스킬 사용 후 상태를 Idle로 변경
+        ChangeState(State.Idle);
+    }
+
+    /// <summary>
+    /// 캐릭터 스탯 설정
+    /// </summary>
+    [PunRPC]
+    public void SetStats() // 체력, 공격력, 방어, 이동속도 + 
+    {
+        for (int i = 0; i < StatsDBManager.instance.statsDB.Character.Count; ++i)
+        {
+            if (StatsDBManager.instance.statsDB.Character[i].Type == characterType.ToString())
+            {
+                MaxHp = StatsDBManager.instance.statsDB.Character[i].Maxhp;
+                Atk = StatsDBManager.instance.statsDB.Character[i].Atk;
+                Def = StatsDBManager.instance.statsDB.Character[i].Def;
+                WalkSpeed = StatsDBManager.instance.statsDB.Character[i].Wspeed;
+                RunSpeed = StatsDBManager.instance.statsDB.Character[i].Rspeed;
+
+                return;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 상태 구현
+    /// </summary>
 
     public void Idle()
     {
@@ -246,24 +300,18 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         // 예를 들어, 스킬이 1초 동안 지속된다고 가정
         Invoke("FinishSkill", 2.5f);
     }
-    public void FinishSkill()
-    {
-        isUsingSkill = false;
 
-        _animator.SetBool("UseSkill", isUsingSkill);
-
-        _rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-
-        // 스킬 사용 후 상태를 Idle로 변경
-        ChangeState(State.Idle);
-    }
 
     public void Die()
     {
         ChangeState(State.Die);
-        Debug.Log("Player is Dying");
+        Debug.Log("Player Die");
     }
 
+    public bool isDie()
+    {
+        return curHealth <= 0;
+    }
 
     /// <summary>
     /// Gizmos를 사용해 공격 범위를 시각적으로 표시
@@ -272,6 +320,21 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRadius);
+    }
+
+    /// <summary>
+    /// 데미지 함수
+    /// </summary>
+    /// <param name="attack"></param>
+    [PunRPC]
+    public void TakeDamage(float attack)
+    {
+        float damage = CombatCalculator.CalculateDamage(attack, Def);
+        curHealth -= damage;
+        if (isDie())
+        {
+            Die();
+        }
     }
 
 

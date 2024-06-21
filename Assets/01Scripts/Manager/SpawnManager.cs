@@ -6,7 +6,6 @@ using System.Linq;
 public class SpawnManager : MonoBehaviourPunCallbacks
 {
     private List<Transform> positionsList = new List<Transform>();
-    private int index;
 
     public static SpawnManager instance;
     public PhotonView pv;
