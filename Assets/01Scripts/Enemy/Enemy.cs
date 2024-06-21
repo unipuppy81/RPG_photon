@@ -273,9 +273,9 @@ public class Enemy : Monster
         _animator.SetTrigger("isDie");
 
         Vector3 hitPoint = transform.position;
-        hitPoint.y += 1.5f;
+        hitPoint.y += 0.5f;
 
-        // »ç¸Á½Ã ÀÌÆåÆ® »ý¼º ÇØ¾ßµÊ
+        Destroy(Instantiate(deathEffect.gameObject, hitPoint, Quaternion.FromToRotation(Vector3.up, hitPoint)), deathEffect.main.startLifetimeMultiplier);
 
     }
 
