@@ -94,6 +94,15 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     public CharacterState<Character_Warrior>[] states;
     public StateMachine<Character_Warrior> _StateMachine;
 
+
+    /// <summary>
+    /// 최적화 변수
+    /// </summary>
+    [Header("optimization")]
+    private byte currentGroup;
+    private float updateInterval = 1.0f; // 그룹 업데이트 간격 (초)
+    private float nextUpdateTime;
+
     void Start()
     {
         _photonView = GetComponent<PhotonView>();
@@ -102,6 +111,13 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         _transform = GetComponent<Transform>();
 
         _rigidbody.centerOfMass = new Vector3(0, -1.5f, 0); // 무게 중심점을 변경
+
+        if (photonView.IsMine)
+        {
+            // 초기 그룹 설정
+            UpdateInterestGroup();
+            nextUpdateTime = Time.time + updateInterval;
+        }
     }
 
 
@@ -110,6 +126,12 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         if (!_photonView.IsMine && PhotonNetwork.IsConnected)
             return;
 
+        if (photonView.IsMine && Time.time >= nextUpdateTime)
+        {
+            // 특정 간격마다 그룹 업데이트
+            UpdateInterestGroup();
+            nextUpdateTime = Time.time + updateInterval;
+        }
 
         Move();
 
@@ -353,6 +375,28 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
             isSafe = false;
         }
     }
+    /// <summary>
+    /// 멀리 떨어진 객체는 패킷을 받지 않습니다. -> 네트워크 트래픽 최적화
+    /// </summary>
+    void UpdateInterestGroup()
+    {
+        // 예시: x 위치에 따라 그룹 설정 (1-255 범위의 byte 사용)
+        byte newGroup = (byte)Mathf.Clamp(Mathf.FloorToInt(transform.position.x / 10.0f) + 1, 1, 255);
+
+        if (newGroup != currentGroup)
+        {
+            Debug.Log($"Changing group from {currentGroup} to {newGroup}");
+            // 현재 그룹만 구독하도록 설정
+            if (currentGroup > 0)
+            {
+                PhotonNetwork.SetInterestGroups(currentGroup, false);
+            }
+            PhotonNetwork.SetInterestGroups(newGroup, true);
+            currentGroup = newGroup;
+            photonView.Group = currentGroup;
+        }
+    }
+
 
     /// <summary>
     /// 캐릭터가 서버에 할당된 후에 카메라 위치 잡아줌
