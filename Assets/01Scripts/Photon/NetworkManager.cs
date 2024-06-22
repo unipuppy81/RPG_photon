@@ -4,11 +4,23 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using TMPro;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
-    public Text statusText;
-    public InputField nickNameInput;
+    [Header("NickName")]
+    public TextMeshProUGUI StatusText;
+    public TMP_InputField NickNameInput;
+    public Button startButton;
+    public GameObject startPanel;
+
+
+    [Header("Chat")]
+    public TMP_InputField ChatInput;
+    public GameObject chatPanel, chatView;
+
+    private TextMeshProUGUI[] chatList;
+
 
     // 플레이어 생성 위치
     public GameObject playerSpawnPosObj;
@@ -33,16 +45,44 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("00. 포톤 매니저 시작");
 
+        chatList = chatView.GetComponentsInChildren<TextMeshProUGUI>();
+
+        startButton.onClick.AddListener(JoinRoom);
+        OnLogin();
+
         PhotonNetwork.GameVersion = this.gameVersion;
         PhotonNetwork.ConnectUsingSettings();
+    }
+    void OnLogin()
+    {
+        PhotonNetwork.ConnectUsingSettings();
+        startButton.interactable = false;
+        StatusText.text = "마스터 서버에 접속중...";
+    }
+
+    void JoinRoom()
+    {
+        if (NickNameInput.text.Equals(""))
+            PhotonNetwork.LocalPlayer.NickName = "unknown";
+        else
+            PhotonNetwork.LocalPlayer.NickName = NickNameInput.text;
+
+        PhotonNetwork.JoinRandomRoom();
+        Debug.Log("01. 포톤 서버에 접속");
+
     }
 
     void Connect() => PhotonNetwork.ConnectUsingSettings();
 
+
+
     public override void OnConnectedToMaster()
     {
-        PhotonNetwork.JoinRandomRoom();
-        Debug.Log("01. 포톤 서버에 접속");
+        //PhotonNetwork.JoinRandomRoom();
+        //Debug.Log("01. 포톤 서버에 접속");
+
+        StatusText.text = "Online: 마스터 서버와 연결 됨";
+        startButton.interactable = true;
 
         //PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 4 }, null);
     }
@@ -62,6 +102,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     }
 
+
     public override void OnCreatedRoom()
     {
         Debug.Log("03. 방 생성 완료");
@@ -71,9 +112,22 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("04. 방 입장 완료");
 
+
+        // 닉네임 패널 off
+        startPanel.SetActive(false);
+
+
+        // 채팅 패널 on
+        chatPanel.SetActive(true);
+
+        ChatInput.text = "";
+        foreach (TextMeshProUGUI chat in chatList)
+            chat.text = "";
+
         if (PhotonNetwork.IsMasterClient)
         {
             SpawnManager.instance.pv.RPC("CreateComputerPlayer", RpcTarget.All);
+            PV.RPC("ChatRPC", RpcTarget.All, "<color=yellow>[방장] " + PhotonNetwork.NickName + "님이 참가하셨습니다</color>");
         }
 
         PhotonNetwork.Instantiate("Warrior", playerSpawnPosObj.transform.position, Quaternion.identity);
@@ -104,5 +158,41 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         Debug.Log(otherPlayer.NickName + " has left the room.");
+        PV.RPC("ChatRPC", RpcTarget.All, "<color=yellow>" + otherPlayer.NickName + "님이 나갔습니다</color>");
+
+    }
+
+    // 플레이어 접속 시 채팅 창 출력
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        PV.RPC("ChatRPC", RpcTarget.All, "<color=yellow>" + newPlayer.NickName + "님이 참가하셨습니다</color>");
+    }
+
+    // 채팅 전송 함수
+    public void Send()
+    {
+        if (ChatInput.text.Equals(""))
+            return;
+        string msg = "[" + PhotonNetwork.NickName + "] " + ChatInput.text;
+        PV.RPC("ChatRPC", RpcTarget.All, msg);
+        ChatInput.text = "";
+    }
+
+    [PunRPC]
+    void ChatRPC(string msg)
+    {
+        bool isInput = false;
+        for (int i = 0; i < chatList.Length; i++)
+            if (chatList[i].text == "")
+            {
+                isInput = true;
+                chatList[i].text = msg;
+                break;
+            }
+        if (!isInput)
+        {
+            for (int i = 1; i < chatList.Length; i++) chatList[i - 1].text = chatList[i].text;
+            chatList[chatList.Length - 1].text = msg;
+        }
     }
 }

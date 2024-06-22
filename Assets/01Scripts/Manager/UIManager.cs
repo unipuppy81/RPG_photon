@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UIElements;
 
 public class UIManager : MonoBehaviourPunCallbacks
 {
@@ -9,6 +10,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     public GameObject _EqipmentPanel;
     public GameObject _ShopPanel;
     public GameObject _RealShopPanel;
+    public GameObject characterListUI;
 
     bool activeInventory = false;
     bool activeShop = false;
@@ -40,5 +42,10 @@ public class UIManager : MonoBehaviourPunCallbacks
             activeRealShop = !activeRealShop;
             _RealShopPanel.SetActive(activeRealShop);
         }
+    }
+
+    public void CloseUIPanel()
+    {
+        characterListUI.SetActive(false);
     }
 }
