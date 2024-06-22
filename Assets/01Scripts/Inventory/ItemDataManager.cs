@@ -53,6 +53,30 @@ public class ItemDataManager : MonoBehaviour
         Load();
     }
 
+    public void GetItem(string itemName)
+    {
+        Item curItem = MyItemList.Find(x => x.Name == itemName);
+
+        if (curItem != null)
+        {
+            // 구매하면 수량 증가
+            curItem.Number = (int.Parse(curItem.Number) + 1).ToString();
+
+            // 구매하면 골드 감소
+        }
+        else
+        {
+            // 전체에서 얻을 아이템을 찾아 내 아이템에 추가
+            Item curAllItem = AllItemList.Find(x => x.Name == itemName);
+            if (curAllItem != null)
+            {
+                curAllItem.Number = int.Parse("1").ToString();
+                MyItemList.Add(curAllItem);
+            }
+        }
+    }
+
+
     public void GetItemClick()
     {
         Item curItem = MyItemList.Find(x => x.Name == ItemNameInput.text);
@@ -142,11 +166,6 @@ public class ItemDataManager : MonoBehaviour
             if (UsingItem != null) UsingItem.isUsing = false;
         }
         Save();
-    }
-
-    public void Click()
-    {
-        Debug.Log("Click");
     }
 
     public void TabClick(string tabName)

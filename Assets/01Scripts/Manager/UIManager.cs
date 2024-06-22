@@ -8,9 +8,11 @@ public class UIManager : MonoBehaviourPunCallbacks
     public GameObject _InventoryPanel;
     public GameObject _EqipmentPanel;
     public GameObject _ShopPanel;
+    public GameObject _RealShopPanel;
 
     bool activeInventory = false;
     bool activeShop = false;
+    bool activeRealShop = false;
 
 
     private void Start()
@@ -32,6 +34,11 @@ public class UIManager : MonoBehaviourPunCallbacks
         {
             activeShop = !activeShop;
             _ShopPanel.SetActive(activeShop);
+        }
+        else if (Input.GetKeyDown(KeyCode.U))
+        {
+            activeRealShop = !activeRealShop;
+            _RealShopPanel.SetActive(activeRealShop);
         }
     }
 }

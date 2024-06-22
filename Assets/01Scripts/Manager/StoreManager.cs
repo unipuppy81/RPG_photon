@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class StoreManager : MonoBehaviour
 {
-    public List<GameObject> ConsumeExplainPanel;
-    public List<GameObject> EquipExplainPanel;
+    public List<GameObject> ExplainPanel;
 
     public List<GameObject> check;
 
@@ -31,7 +30,7 @@ public class StoreManager : MonoBehaviour
 
     public void Potion()
     {
-        foreach (GameObject t in ConsumeExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "PotionPanel")
             {
@@ -58,7 +57,7 @@ public class StoreManager : MonoBehaviour
 
     public void Meat()
     {
-        foreach (GameObject t in ConsumeExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "MeatPanel")
             {
@@ -94,7 +93,7 @@ public class StoreManager : MonoBehaviour
     // Normal
     public void NormalSword()
     {
-        foreach(GameObject t in EquipExplainPanel)
+        foreach(GameObject t in ExplainPanel)
         {
             if(t.name == "NormalSwordPanel")
             {
@@ -121,7 +120,7 @@ public class StoreManager : MonoBehaviour
 
     public void NormalPant()
     {
-        foreach (GameObject t in EquipExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "NormalPantsPanel")
             {
@@ -148,7 +147,7 @@ public class StoreManager : MonoBehaviour
 
     public void NormalHelmet()
     {
-        foreach (GameObject t in EquipExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "NormalHelmetPanel")
             {
@@ -174,7 +173,7 @@ public class StoreManager : MonoBehaviour
     }
     public void NormalGloves()
     {
-        foreach (GameObject t in EquipExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "NormalGlovesPanel")
             {
@@ -200,7 +199,7 @@ public class StoreManager : MonoBehaviour
     }
     public void NormalChest()
     {
-        foreach (GameObject t in EquipExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "NormalChestPanel")
             {
@@ -226,7 +225,7 @@ public class StoreManager : MonoBehaviour
     }
     public void NormalShoes()
     {
-        foreach (GameObject t in EquipExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "NormalBootsPanel")
             {
@@ -255,7 +254,7 @@ public class StoreManager : MonoBehaviour
     //  Knight
     public void KnightSword()
     {
-        foreach (GameObject t in EquipExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "KnightSowrdPanel")
             {
@@ -281,7 +280,7 @@ public class StoreManager : MonoBehaviour
     }
     public void KnightPant()
     {
-        foreach (GameObject t in EquipExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "KnightPantsPanel")
             {
@@ -307,7 +306,7 @@ public class StoreManager : MonoBehaviour
     }
     public void KnightHelmet()
     {
-        foreach (GameObject t in EquipExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "KnightHelmetPanel")
             {
@@ -334,7 +333,7 @@ public class StoreManager : MonoBehaviour
 
     public void KnightGloves()
     {
-        foreach (GameObject t in EquipExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "KnightGlovesPanel")
             {
@@ -361,7 +360,7 @@ public class StoreManager : MonoBehaviour
 
     public void KnightChest()
     {
-        foreach (GameObject t in EquipExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "KnightChestPanel")
             {
@@ -388,7 +387,7 @@ public class StoreManager : MonoBehaviour
 
     public void KnightShoes()
     {
-        foreach (GameObject t in EquipExplainPanel)
+        foreach (GameObject t in ExplainPanel)
         {
             if (t.name == "KnightBootsPanel")
             {
