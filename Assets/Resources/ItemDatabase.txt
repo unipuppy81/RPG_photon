@@ -1,0 +1,13 @@
+Consume	meat	노릇하게 구운 돼지고기	1	FALSE	0
+Equipment	sword_A	평범한 검	1	FALSE	1
+Equipment	sword_B	중세 기사의 대검	1	FALSE	2
+Equipment	pants_A	평범한 바지	1	FALSE	3
+Equipment	pants_B	중세 기사의 바지	1	FALSE	4
+Equipment	helm_A	평범한 투구	1	FALSE	5
+Equipment	helm_B	중세 기사의 투구	1	FALSE	6
+Equipment	gloves_A	평범한 장갑	1	FALSE	7
+Equipment	gloves_B	중세 기사의 장갑	1	FALSE	8
+Equipment	chest_A	평범한 갑옷	1	FALSE	9
+Equipment	chest_B	중세 기사의 갑옷	1	FALSE	10
+Equipment	boots_A	평범한 군화	1	FALSE	11
+Equipment	boots_B	중세 기사의 군화	1	FALSE	12
