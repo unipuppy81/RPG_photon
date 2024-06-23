@@ -26,21 +26,24 @@ public class UIManager : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        if(GameManager.isPlayGame && !GameManager.isChatting)
         {
-            activeInventory = !activeInventory;
-            _InventoryPanel.SetActive(activeInventory);
-            _EqipmentPanel.SetActive(activeInventory);
-        }
-        else if (Input.GetKeyDown(KeyCode.O))
-        {
-            activeShop = !activeShop;
-            _ShopPanel.SetActive(activeShop);
-        }
-        else if (Input.GetKeyDown(KeyCode.U))
-        {
-            activeRealShop = !activeRealShop;
-            _RealShopPanel.SetActive(activeRealShop);
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                activeInventory = !activeInventory;
+                _InventoryPanel.SetActive(activeInventory);
+                _EqipmentPanel.SetActive(activeInventory);
+            }
+            else if (Input.GetKeyDown(KeyCode.O))
+            {
+                activeShop = !activeShop;
+                _ShopPanel.SetActive(activeShop);
+            }
+            else if (Input.GetKeyDown(KeyCode.U))
+            {
+                activeRealShop = !activeRealShop;
+                _RealShopPanel.SetActive(activeRealShop);
+            }
         }
     }
 

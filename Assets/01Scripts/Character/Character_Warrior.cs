@@ -1,9 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using Photon.Pun;
-using static UnityEditor.VersionControl.Asset;
-using Unity.VisualScripting;
-using static UnityEngine.GraphicsBuffer;
 
 public enum Character_Type { Warrior = 0, Mage, Boxer }
 public enum State { Idle = 0, Walk, Run, Warrior_Skill, Die }
@@ -133,21 +130,21 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
             nextUpdateTime = Time.time + updateInterval;
         }
 
-        Move();
+        // 움직임, 스킬
+        if(GameManager.isPlayGame && !GameManager.isChatting)
+        {
+            Move();
+            InputAttackBtn();
 
-        // 스킬 사용 처리
-        InputAttackBtn();
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                Debug.Log($"HP : {MaxHp}, Atk : {Atk}, Def : {Def}, WalkSpeed : {WalkSpeed}, RunSpeed : {RunSpeed}");
+            }
+        }
 
         // 현재 상태의 Execute 메서드를 호출
         if (_StateMachine != null)
             _StateMachine.Execute();
-
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            Debug.Log($"HP : {MaxHp}, Atk : {Atk}, Def : {Def}, WalkSpeed : {WalkSpeed}, RunSpeed : {RunSpeed}");
-        }
-
     }
 
     private void OnEnable()
@@ -156,6 +153,8 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
         _photonView.RPC("SetStats", RpcTarget.All);
         _photonView.RPC("Setup", RpcTarget.All);
+
+        GameManager.isPlayGame = true;
     }
 
     ///// FSM 패턴 관련 구현 /////

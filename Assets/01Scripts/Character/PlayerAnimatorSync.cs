@@ -12,6 +12,7 @@ public class PlayerAnimatorSync : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+        /*
         if (stream.IsWriting)
         {
             // 데이터를 보내기
@@ -23,5 +24,6 @@ public class PlayerAnimatorSync : MonoBehaviourPun, IPunObservable
             bool isAttacking = (bool)stream.ReceiveNext();
             animator.SetBool("UseSkill", isAttacking);
         }
+        */
     }
 }
