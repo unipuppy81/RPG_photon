@@ -2081,7 +2081,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdc2d342700c4a14a9633e028bca4329, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  networkManager: {fileID: 0}
   ChatInput: {fileID: 0}
+  tradeChatManager: {fileID: 0}
+  tradeChatInput: {fileID: 0}
 --- !u!114 &662686618343201652
 MonoBehaviour:
   m_ObjectHideFlags: 0

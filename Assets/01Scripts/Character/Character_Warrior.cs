@@ -131,7 +131,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         }
 
         // 움직임, 스킬
-        if(GameManager.isPlayGame && !GameManager.isChatting)
+        if(GameManager.isPlayGame && !GameManager.isChatting && !GameManager.isTradeChatting)
         {
             Move();
             InputAttackBtn();

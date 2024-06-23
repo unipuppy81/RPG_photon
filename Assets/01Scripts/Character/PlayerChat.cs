@@ -6,16 +6,33 @@ using TMPro;
 
 public class PlayerChat : MonoBehaviourPunCallbacks
 {
+    [Header("NormalChat")]
+    public GameObject networkManager;
+
     public GameObject ChatInput;
-    private GameObject manager;
-    private TMP_InputField t;
+    private TMP_InputField inputField;
+
+
+    [Header("TradeChat")]
+    public GameObject tradeChatManager;
+
+    public GameObject tradeChatInput;
+    private TMP_InputField tradeInputField;
+
     private PhotonView view;
     void Start()
     {
-        manager = GameObject.Find("NetworkManager");
-        view = GetComponent<PhotonView>();
+        networkManager = GameObject.Find("NetworkManager");
+        tradeChatManager = GameObject.Find("Canvas").transform.Find("TradePanel").transform.Find("TradeChatPanel").gameObject;
+        
         ChatInput = GameObject.Find("Canvas").transform.Find("ChatPanel").transform.Find("ChatInputView").gameObject;
-        t = ChatInput.GetComponent<TMP_InputField>();
+        tradeChatInput = GameObject.Find("Canvas").transform.Find("TradePanel").transform.Find("TradeChatPanel").transform.Find("TradeChatInput").gameObject;
+
+        view = this.GetComponent<PhotonView>();
+ 
+        inputField = ChatInput.GetComponent<TMP_InputField>();
+        tradeInputField = tradeChatInput.GetComponent<TMP_InputField>();
+
         ChatInput.SetActive(false);
     }
 
@@ -23,22 +40,38 @@ public class PlayerChat : MonoBehaviourPunCallbacks
     {
         if (view.IsMine)
         {
-            if (Input.GetKeyDown(KeyCode.Return))
+            if (Input.GetKeyDown(KeyCode.Return) && !GameManager.isTradeChatting)
             {
                 if (ChatInput.activeSelf == false)
                 {
                     ChatInput.SetActive(true);
-                    t.Select();
-                    t.ActivateInputField();
+                    inputField.Select();
+                    inputField.ActivateInputField();
                     GameManager.isChatting = true;
                 }
                 else
                 {
-                    manager.GetComponent<NetworkManager>().Send();
-                    t.DeactivateInputField();
+                    networkManager.GetComponent<NetworkManager>().Send();
+                    inputField.DeactivateInputField();
                     ChatInput.SetActive(false);
                     GameManager.isChatting = false;
                 }
+            }
+            else if(Input.GetKeyDown(KeyCode.Return) && GameManager.isTradeChatting)
+            {
+                if (!GameManager.isTradeChatInput)
+                {
+                    tradeInputField.Select();
+                    tradeInputField.ActivateInputField();
+                    GameManager.isTradeChatInput = true;
+                }
+                else if (GameManager.isTradeChatInput)
+                {
+                    tradeChatManager.GetComponent<TradeChatManager>().Send();
+                    tradeInputField.DeactivateInputField();
+                    GameManager.isTradeChatInput = false;
+                }
+
             }
         }
       

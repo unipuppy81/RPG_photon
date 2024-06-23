@@ -6,15 +6,7 @@ public class PlayerTrade : MonoBehaviourPun
 {
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            // T 키를 누르면 거래 요청을 보냄
-            Player targetPlayer = FindTargetPlayer();
-            if (targetPlayer != null)
-            {
-                //TradeManager.Instance.SendTradeRequest(targetPlayer);
-            }
-        }
+        
     }
 
     // 타겟 플레이어를 찾는 임시 메서드

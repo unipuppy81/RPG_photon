@@ -3,8 +3,6 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine.UI;
-using System.Drawing.Imaging;
-using Unity.VisualScripting.Antlr3.Runtime;
 
 public class TradeManager : MonoBehaviourPunCallbacks
 {
@@ -46,8 +44,18 @@ public class TradeManager : MonoBehaviourPunCallbacks
         tradeInitiator = initPlayer; // 거래를 시작한 플레이어 설정
         clickedPlayer = _clickedPlayer; // 거래를 당하는 플레이어 설정
 
+        if (PhotonNetwork.LocalPlayer == null)
+        {
+            Debug.LogError("PhotonNetwork.LocalPlayer is null");
+        }
+
+        if (clickedPlayer == null)
+        {
+            Debug.LogError("clickedPlayer is null");
+        }
+
         // 상대방의 화면에 거래 요청 UI 표시
-        if (PhotonNetwork.LocalPlayer == clickedPlayer)
+        if (PhotonNetwork.LocalPlayer != null && PhotonNetwork.LocalPlayer == clickedPlayer)
         {
             ShowTradeRequest();
         }
@@ -67,7 +75,8 @@ public class TradeManager : MonoBehaviourPunCallbacks
 
         if(PhotonNetwork.LocalPlayer == clickedPlayer)
         {
-            TradePanelActive(tradeInitiator, clickedPlayer);             // 거래 패널 열기
+            // 거래 패널 열기
+            TradePanelActive(tradeInitiator, clickedPlayer); 
         }
 
         // 네트워크를 통해 상대방에게도 UI를 표시하도록 RPC 호출
