@@ -49,6 +49,13 @@ MonoBehaviour:
   - SetStats1
   - SetStatsEnemy
   - ChatRPC
+  - CompleteTrade
+  - ReceiveTradeRequest
+  - ReceiveTradeProposal
+  - ReceiveTradeOffer
+  - CancelTradeOffer
+  - TradePanelActive
+  - ShowTradePanel
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
