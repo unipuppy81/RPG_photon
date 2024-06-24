@@ -26,6 +26,8 @@ public class Item
 
 public class ItemDataManager : MonoBehaviour
 {
+    private static ItemDataManager instance;
+
     public TextAsset ItemDatabase;
     public List<Item> AllItemList, MyItemList, curItemList;
     public string curType = "Equipment";
@@ -37,7 +39,23 @@ public class ItemDataManager : MonoBehaviour
     public RectTransform CanvasRect;
     public TMP_InputField ItemNameInput, ItemNumberInput;
 
+
+    // Trade System 
+    public TMP_InputField TradeItemCount;
+
     IEnumerator PointerCoroutine;
+
+    private void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(instance);
+        }
+    }
 
     void Start()
     {
@@ -77,6 +95,7 @@ public class ItemDataManager : MonoBehaviour
     }
 
 
+    // 아이템 획득
     public void GetItemClick()
     {
         Item curItem = MyItemList.Find(x => x.Name == ItemNameInput.text);
@@ -114,6 +133,8 @@ public class ItemDataManager : MonoBehaviour
         Save();
     }
 
+
+    // 아이템 제거
     public void RemoveItemClick()
     {
         Item curItem = MyItemList.Find(x => x.Name == ItemNameInput.text);
@@ -150,6 +171,7 @@ public class ItemDataManager : MonoBehaviour
         Save();
     }
 
+    
     public void SlotClick(int slotNum)
     {
         Item curItem = curItemList[slotNum];
@@ -228,6 +250,48 @@ public class ItemDataManager : MonoBehaviour
         ExplainPanel.SetActive(false);
     }
 
+
+    /// <summary>
+    /// 거래시 아이템 제거
+    /// </summary>
+    public void TradeItemRemove()
+    {
+        Item curItem = MyItemList.Find(x => x.Name == ItemNameInput.text);
+
+        if (curItem != null)
+        {
+            int curNumber = int.Parse(curItem.Number) - int.Parse(ItemNumberInput.text);
+
+            if (curNumber <= 0) MyItemList.Remove(curItem);
+            else curItem.Number = curNumber.ToString();
+        }
+
+        MyItemList.Sort((p1, p2) =>
+        {
+            try
+            {
+                int index1 = int.Parse(p1.Index);
+                int index2 = int.Parse(p2.Index);
+                return index1.CompareTo(index2);
+            }
+            catch (FormatException)
+            {
+                // 변환할 수 없는 경우 문자열 자체를 비교합니다.
+                return p1.Index.CompareTo(p2.Index);
+            }
+        });
+        Save();
+    }
+
+
+
+
+
+
+
+    /// <summary>
+    ///  데이터 불러오기 & 저장하기
+    /// </summary>
     void Save()
     {
         string jdata = JsonConvert.SerializeObject(MyItemList);

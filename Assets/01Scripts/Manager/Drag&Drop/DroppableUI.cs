@@ -59,12 +59,18 @@ public class DroppableUI : MonoBehaviour, IPointerEnterHandler, IDropHandler, IP
             // 원래 부모로 복사한 드래그 대상을 다시 설정
             eventData.pointerDrag.transform.SetParent(originalParent);
 
+            // 새로운 위치에 맞게 드롭된 오브젝트의 사이즈 조절
+            RectTransform draggedRectTransform = draggedObject.GetComponent<RectTransform>();
+            RectTransform targetRectTransform = GetComponent<RectTransform>();
+            if (draggedRectTransform != null && targetRectTransform != null)
+            {
+                draggedRectTransform.sizeDelta = targetRectTransform.sizeDelta;
+            }
+
             CanvasGroup canvasGroup = draggedObject.GetComponent<CanvasGroup>();
             TextMeshProUGUI tmp = draggedObject.GetComponentInChildren<TextMeshProUGUI>();
             Slot slot = draggedObject.GetComponent<Slot>();
-            //Image _image = draggedObject.GetComponentInChildren<Image>();
 
-            //image = _image;
             slot.enabled = false;
             tmp.text = "";
             canvasGroup.alpha = 1.0f;
