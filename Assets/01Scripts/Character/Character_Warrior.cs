@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using Photon.Pun;
+using TMPro;
 
 public enum Character_Type { Warrior = 0, Mage, Boxer }
 public enum State { Idle = 0, Walk, Run, Warrior_Skill, Die }
@@ -15,7 +16,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     public Rigidbody _rigidbody;
     public Transform _transform;
     public Animator _animator;
-
+    public GameObject _textMeshProUGUI;
 
 
 
@@ -117,6 +118,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         }
     }
 
+    
 
     void Update()
     {
@@ -150,6 +152,18 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     private void OnEnable()
     {
         StartCoroutine(DelayedSetup());
+
+        TextMeshPro tmp = _textMeshProUGUI.GetComponent<TextMeshPro>();
+
+        if (_photonView.IsMine)
+        {
+            tmp.text = PhotonNetwork.NickName;
+        }
+        else
+        {
+            // 다른 클라이언트의 화면에서는 소유자의 닉네임을 설정
+            tmp.text = _photonView.Owner.NickName;
+        }
 
         _photonView.RPC("SetStats", RpcTarget.All);
         _photonView.RPC("Setup", RpcTarget.All);
