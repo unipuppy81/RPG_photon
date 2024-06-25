@@ -24,12 +24,10 @@ public class Item
     public bool isUsing;
 }
 
-public class ItemDataManager : MonoBehaviour
+public class ItemDataManager : Singleton<ItemDataManager>
 {
-    private static ItemDataManager instance;
-
     public TextAsset ItemDatabase;
-    public List<Item> AllItemList, MyItemList, curItemList;
+    public List<Item> AllItemList, MyItemList, curItemList, tradeItemList;
     public string curType = "Equipment";
     public GameObject[] slots, UsingImage;
     public Image[] TabImage, ItemImage;
@@ -44,18 +42,6 @@ public class ItemDataManager : MonoBehaviour
     public TMP_InputField TradeItemCount;
 
     IEnumerator PointerCoroutine;
-
-    private void Awake()
-    {
-        if(instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(instance);
-        }
-    }
 
     void Start()
     {
@@ -198,7 +184,10 @@ public class ItemDataManager : MonoBehaviour
 
 
         for (int i = 0; i < slots.Length; i++)
-        {        // 슬롯과 텍스트 보이기
+        {
+            Slot s  = slots[i].GetComponent<Slot>();
+
+            // 슬롯과 텍스트 보이기
             bool isExist = i < curItemList.Count;
             slots[i].SetActive(isExist);
             slots[i].GetComponentInChildren<TextMeshProUGUI>().text = isExist ? curItemList[i].Name + "/" + curItemList[i].isUsing : "";
@@ -206,6 +195,8 @@ public class ItemDataManager : MonoBehaviour
             if (isExist)
             {
                 ItemImage[i].sprite = ItemSprite[AllItemList.FindIndex(x => x.Name == curItemList[i].Name)];
+                s.itemName = curItemList[i].Name;
+                s.itemCount = int.Parse(curItemList[i].Number);
             }
         }
 
@@ -254,18 +245,96 @@ public class ItemDataManager : MonoBehaviour
     /// <summary>
     /// 거래시 아이템 제거
     /// </summary>
-    public void TradeItemRemove()
+
+
+    // 아이템 획득
+    public void TradeAddItem(List<string> _name, List<int> _count)
     {
-        Item curItem = MyItemList.Find(x => x.Name == ItemNameInput.text);
-
-        if (curItem != null)
+        // 두 리스트의 길이가 다를 경우 예외를 던집니다.
+        if (_name.Count != _count.Count)
         {
-            int curNumber = int.Parse(curItem.Number) - int.Parse(ItemNumberInput.text);
-
-            if (curNumber <= 0) MyItemList.Remove(curItem);
-            else curItem.Number = curNumber.ToString();
+            Debug.LogError("The length of _name and _count lists must be the same.");
+            return;
         }
 
+
+        for (int i = 0; i < _name.Count; i++)
+        {
+            string itemName = _name[i];
+            int itemCount = _count[i];
+
+            Item curItem = MyItemList.Find(x => x.Name == ItemNameInput.text);
+
+            if (curItem != null)
+            {
+                curItem.Number = (int.Parse(curItem.Number) + int.Parse(ItemNumberInput.text)).ToString();
+            }
+            else
+            {
+                // 전체에서 얻을 아이템을 찾아 내 아이템에 추가
+                Item curAllItem = AllItemList.Find(x => x.Name == ItemNameInput.text);
+                if (curAllItem != null)
+                {
+                    curAllItem.Number = ItemNumberInput.text;
+                    MyItemList.Add(curAllItem);
+                }
+            }
+        }
+
+        // 아이템 리스트를 인덱스 기준으로 정렬합니다.
+        MyItemList.Sort((p1, p2) =>
+        {
+            try
+            {
+                int index1 = int.Parse(p1.Index);
+                int index2 = int.Parse(p2.Index);
+                return index1.CompareTo(index2);
+            }
+            catch (FormatException)
+            {
+                // 변환할 수 없는 경우 문자열 자체를 비교합니다.
+                return p1.Index.CompareTo(p2.Index);
+            }
+        });
+
+        Save();
+    }
+
+
+    // 아이템 제거
+    public void TradeRemoveItem(List<string> _name, List<int> _count)
+    {
+        // 두 리스트의 길이가 다를 경우 예외를 던집니다.
+        if (_name.Count != _count.Count)
+        {
+            Debug.LogError("The length of _name and _count lists must be the same.");
+            return;
+        }
+
+
+        for (int i = 0; i < _name.Count; i++)
+        {
+            string itemName = _name[i];
+            int itemCount = _count[i];
+
+            Item curItem = MyItemList.Find(x => x.Name == itemName);
+
+            if (curItem != null)
+            {
+                int curNumber = int.Parse(curItem.Number) - itemCount;
+
+                if (curNumber <= 0)
+                {
+                    MyItemList.Remove(curItem);
+                }
+                else
+                {
+                    curItem.Number = curNumber.ToString();
+                }
+            }
+        }
+
+        // 아이템 리스트를 인덱스 기준으로 정렬합니다.
         MyItemList.Sort((p1, p2) =>
         {
             try

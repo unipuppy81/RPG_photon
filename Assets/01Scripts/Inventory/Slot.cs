@@ -6,11 +6,4 @@ public class Slot : MonoBehaviour
 {
     public string itemName;
     public int itemCount;
-
-    private void Start()
-    {
-        
-    }
-
-    
 }

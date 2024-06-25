@@ -46,6 +46,10 @@ public class DroppableUI : MonoBehaviour, IPointerEnterHandler, IDropHandler, IP
         // pointerDrag는 현재 드래그하고있는 대상(=아이템)
         if (eventData.pointerDrag != null)
         {
+            // 드래그 대상의 슬롯 데이터를 가져옴
+            Slot originalSlot = eventData.pointerDrag.GetComponent<Slot>();
+            if (originalSlot == null) return;
+
             // 드래그 대상의 원래 부모 저장
             Transform originalParent = eventData.pointerDrag.transform.parent;
 

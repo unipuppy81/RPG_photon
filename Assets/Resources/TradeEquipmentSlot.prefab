@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 75, y: 50}
+  m_SizeDelta: {x: 18.1665, y: 15.2684}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4918165630407343605
 CanvasRenderer:
@@ -74,8 +74,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4278190335
+  m_fontColor: {r: 1, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -92,15 +92,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
+  m_fontSize: 8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 8
-  m_fontSizeMax: 20
+  m_fontSizeMin: 6
+  m_fontSizeMax: 8
   m_fontStyle: 1
-  m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_HorizontalAlignment: 4
+  m_VerticalAlignment: 1024
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -145,7 +145,7 @@ GameObject:
   - component: {fileID: 6171505563033063931}
   - component: {fileID: 7545460242783372330}
   - component: {fileID: 328751212878204191}
-  - component: {fileID: 2422348211031303696}
+  - component: {fileID: 1571639078034020854}
   m_Layer: 5
   m_Name: TradeEquipmentSlot
   m_TagString: Untagged
@@ -211,7 +211,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2422348211031303696
+--- !u!114 &1571639078034020854
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -220,6 +220,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8535018365436121529}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd47593e0355c064d990802dcb722d80, type: 3}
+  m_Script: {fileID: 11500000, guid: 7829f973d4c6b274381a2cf8f5c95166, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CountPanel: {fileID: 0}
