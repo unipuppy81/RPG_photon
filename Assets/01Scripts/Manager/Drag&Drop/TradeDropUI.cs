@@ -90,29 +90,44 @@ public class TradeDropUI : MonoBehaviour, IPointerEnterHandler, IDropHandler, IP
             ticm.itemName = originalSlot.itemName;
 
 
+
             slot.enabled = false;
             tmp.text = "";
             canvasGroup.alpha = 1.0f;
 
-            // ItemImage 오브젝트에서 Image 컴포넌트 가져오기
-            Image slotImage = draggedObject.GetComponent<Image>();
-
-            if (slotImage != null)
+            // CountPanel 비활성화 후 실행될 작업
+            void OnCountPanelDeactivated()
             {
-                // 이미지를 byte[]로 변환하여 전송
-                Texture2D texture = ToTexture2D(slotImage.sprite);
-                if (texture != null)
-                {
-                    byte[] textureBytes = texture.EncodeToPNG();
+                // 이벤트 등록 해제
+                TradeItemCountManager.OnCountPanelDeactivated -= OnCountPanelDeactivated;
 
-                    // 상대방 클라이언트에게 슬롯 업데이트를 요청
-                    TradePanelController.Instance.UpdateSlot(originalSlot.itemName, originalSlot.itemCount, draggedObject.transform.localPosition, draggedRectTransform.sizeDelta, textureBytes);
+                // Transform 데이터를 개별 필드로 전송
+                Vector3 thisPosition = transform.position;
+                Quaternion thisRotation = transform.rotation;
+                Vector3 thisLocalScale = transform.localScale;
+
+                // ItemImage 오브젝트에서 Image 컴포넌트 가져오기
+                Image slotImage = draggedObject.GetComponent<Image>();
+
+                if (slotImage != null)
+                {
+                    // 이미지를 byte[]로 변환하여 전송
+                    Texture2D texture = ToTexture2D(slotImage.sprite);
+                    if (texture != null)
+                    {
+                        byte[] textureBytes = texture.EncodeToPNG();
+
+                        // 상대방 클라이언트에게 슬롯 업데이트를 요청
+                        TradePanelController.Instance.UpdateSlot(originalSlot.itemName, ticm.itemCount, thisPosition, thisRotation, thisLocalScale, transform.localPosition, draggedRectTransform.sizeDelta, textureBytes);
+                    }
+                }
+                else
+                {
+                    Debug.LogError("ItemImage does not have an Image component.");
                 }
             }
-            else
-            {
-                Debug.LogError("ItemImage does not have an Image component.");
-            }
+            // CountPanel이 비활성화될 때 OnCountPanelDeactivated 호출하도록 이벤트 등록
+            TradeItemCountManager.OnCountPanelDeactivated += OnCountPanelDeactivated;
         }
     }
 

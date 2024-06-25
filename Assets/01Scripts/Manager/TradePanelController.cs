@@ -95,64 +95,74 @@ public class TradePanelController : MonoBehaviourPunCallbacks
         GameManager.isTradeChatting = false;
     }
 
-    public void UpdateSlot(string _itemName, int _itemCount, Vector3 _position, Vector2 _sizeDelta, byte[] _itemSpriteBytes)
+    public void UpdateSlot(string _itemName, int _itemCount, Vector3 _thisPosition, Quaternion _thisRotation, Vector3 _thisLocalScale , Vector3 _position, Vector2 _sizeDelta, byte[] _itemSpriteBytes)
     {
-        Debug.Log("TT");
         if(PhotonNetwork.LocalPlayer == initPlayer)
         {
-            Debug.Log("E");
-            tradePanelPhotonView.RPC("UpdateTradeSlot", clickedPlayer, _itemName, _itemCount, _position, _sizeDelta, _itemSpriteBytes);
+            tradePanelPhotonView.RPC("UpdateTradeSlot", clickedPlayer, _itemName, _itemCount, _thisPosition, _thisRotation, _thisLocalScale, _position, _sizeDelta, _itemSpriteBytes);
         }
         else if (PhotonNetwork.LocalPlayer == clickedPlayer)
         {
-            Debug.Log("A");
-            tradePanelPhotonView.RPC("UpdateTradeSlot", initPlayer, _itemName, _itemCount, _position, _sizeDelta, _itemSpriteBytes);
+            tradePanelPhotonView.RPC("UpdateTradeSlot", initPlayer, _itemName, _itemCount, _thisPosition, _thisRotation, _thisLocalScale, _position, _sizeDelta, _itemSpriteBytes);
         }
     }
 
     // 아이템 옮길때 동기화
     [PunRPC]
-    public void UpdateTradeSlot(string itemName, int itemCount, Vector3 position, Vector2 sizeDelta, byte[] itemSpriteBytes)
+    public void UpdateTradeSlot(string _itemName, int _itemCount, Vector3 _thisPosition, Quaternion _thisRotation, Vector3 _thisLocalScale, Vector3 _position, Vector2 _sizeDelta, byte[] _itemSpriteBytes)
     {
-        // 거래 슬롯 업데이트 로직
+        //  RPC를 통해 받은 정보로 슬롯 업데이트 수행
         // 거래 패널의 슬롯을 찾아서 업데이트합니다.
         GameObject newSlot = Instantiate(slotPrefab, transform);
-        newSlot.transform.localPosition = position;
+        newSlot.transform.localPosition = _position;
+
+        // DraggableUI 컴포넌트 제거
+        DraggableUI draggableUI = newSlot.GetComponent<DraggableUI>();
+        if (draggableUI != null)
+        {
+            Destroy(draggableUI);
+        }
+
+        TextMeshProUGUI tmpCount = newSlot.GetComponentInChildren<TextMeshProUGUI>();
 
         RectTransform rectTransform = newSlot.GetComponent<RectTransform>();
-        rectTransform.sizeDelta = sizeDelta;
+        rectTransform.position = _thisPosition;
+        rectTransform.rotation = _thisRotation;
+        rectTransform.localScale = _thisLocalScale;
+
+        rectTransform.sizeDelta = _sizeDelta;
+
+
 
         Slot slot = newSlot.GetComponent<Slot>();
-        slot.itemName = itemName;
-        slot.itemCount = itemCount;
+        slot.itemName = _itemName;
+        slot.itemCount = _itemCount;
 
-
-
-        //Image slotImage = newSlot.GetComponentInChildren<Image>();
+        // ItemImage 오브젝트에서 Image 컴포넌트 가져오기
         Image slotImage = newSlot.GetComponent<Image>();
 
 
         // Texture2D로 변환
         Texture2D texture = new Texture2D(1, 1);
-        texture.LoadImage(itemSpriteBytes); // byte 배열에서 이미지 로드
+        texture.LoadImage(_itemSpriteBytes); // byte 배열에서 이미지 로드
+
 
         // Texture2D를 Sprite로 변환
         Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
 
         slotImage.sprite = sprite;
 
-        Debug.Log("T");
-
-
         TextMeshProUGUI tmp = newSlot.GetComponentInChildren<TextMeshProUGUI>();
-        tmp.text = $"{itemName}: {itemCount}";
+        //tmp.text = $"{_itemName}: {_itemCount}";
+        tmp.text = _itemCount.ToString();
+
 
         CanvasGroup canvasGroup = newSlot.GetComponent<CanvasGroup>();
         canvasGroup.alpha = 1.0f;
     }
 
 
-    // 등록 버튼 클릭 시, 서로의 bool 은 서버에서 처리
+    // 등록 버튼 클릭 시, 서로의 bool => 서버에서 처리
     public void OnTradeButtonClicked()
     {
         if (tradeButtonObj.activeSelf)

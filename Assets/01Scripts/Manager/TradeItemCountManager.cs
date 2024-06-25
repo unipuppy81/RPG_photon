@@ -5,9 +5,12 @@ using Photon.Pun;
 using UnityEngine.UI;
 using TMPro;
 using Unity.VisualScripting;
+using System;
 
 public class TradeItemCountManager : MonoBehaviourPunCallbacks
 {
+    public static event Action OnCountPanelDeactivated;
+
     public GameObject TradePanel;
     private TradePanelController _controller;
     public Button countPlusBtn;
@@ -31,7 +34,11 @@ public class TradeItemCountManager : MonoBehaviourPunCallbacks
         countPlusBtn.onClick.AddListener(itemCountPlus);
         countMinusBtn.onClick.AddListener(itemCountMinus);
         setBtn.onClick.AddListener(registryButton);
+    }
 
+    private void OnEnable()
+    {
+        itemCount = 0;
         countText.text = "0";
     }
 
@@ -64,8 +71,7 @@ public class TradeItemCountManager : MonoBehaviourPunCallbacks
         _controller.itemNameList.Add(itemName);
         _controller.itemCountList.Add(itemCount);
 
-        itemCount = 0;
-        countText.text = "0";
+        OnCountPanelDeactivated?.Invoke();
 
         gameObject.SetActive(false);
     }
