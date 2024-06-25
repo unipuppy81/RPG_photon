@@ -89,3 +89,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CountPanel: {fileID: 0}
+  TradeSlot: {fileID: 2628572768605117580, guid: 315e1597f5c07d64d8c019238da69fde, type: 3}

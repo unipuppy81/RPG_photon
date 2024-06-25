@@ -10,6 +10,7 @@ public class TradeDropUI : MonoBehaviour, IPointerEnterHandler, IDropHandler, IP
     private RectTransform rect;
 
     public GameObject CountPanel;
+    public GameObject TradeSlot;
 
     private void Awake()
     {
@@ -80,8 +81,25 @@ public class TradeDropUI : MonoBehaviour, IPointerEnterHandler, IDropHandler, IP
             }
 
             CanvasGroup canvasGroup = draggedObject.GetComponent<CanvasGroup>();
-            TextMeshProUGUI tmp = draggedObject.GetComponentInChildren<TextMeshProUGUI>();
             Slot slot = draggedObject.GetComponent<Slot>();
+
+            // draggedObject의 모든 TextMeshProUGUI 컴포넌트를 가져옴
+            TextMeshProUGUI[] tmpComponents = draggedObject.GetComponentsInChildren<TextMeshProUGUI>();
+
+            TextMeshProUGUI tradeCountTMP = null;
+            TextMeshProUGUI nameTMP = null;
+
+            foreach (var tmp in tmpComponents)
+            {
+                if (tmp.name == "TradeCount")
+                {
+                    tradeCountTMP = tmp;
+                }
+                else if (tmp.name == "Name")
+                {
+                    nameTMP = tmp;
+                }
+            }
 
             // 아이템 수량 선택 패널 활성화 및 초기화
             CountPanel.SetActive(true);
@@ -92,7 +110,7 @@ public class TradeDropUI : MonoBehaviour, IPointerEnterHandler, IDropHandler, IP
 
 
             slot.enabled = false;
-            tmp.text = "";
+            nameTMP.text = "";
             canvasGroup.alpha = 1.0f;
 
             // CountPanel 비활성화 후 실행될 작업
@@ -116,6 +134,8 @@ public class TradeDropUI : MonoBehaviour, IPointerEnterHandler, IDropHandler, IP
                     if (texture != null)
                     {
                         byte[] textureBytes = texture.EncodeToPNG();
+
+                        tradeCountTMP.text = ticm.itemCount.ToString();
 
                         // 상대방 클라이언트에게 슬롯 업데이트를 요청
                         TradePanelController.Instance.UpdateSlot(originalSlot.itemName, ticm.itemCount, thisPosition, thisRotation, thisLocalScale, transform.localPosition, draggedRectTransform.sizeDelta, textureBytes);
