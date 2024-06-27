@@ -2052,6 +2052,10 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
+  dirVec: {x: 0, y: 0, z: 0}
+  range: 2
+  scanObject: {fileID: 0}
+  isCommunicate: 0
 --- !u!114 &4596304145561669835
 MonoBehaviour:
   m_ObjectHideFlags: 0

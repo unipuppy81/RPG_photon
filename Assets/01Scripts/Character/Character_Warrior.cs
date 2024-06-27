@@ -21,7 +21,6 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
 
 
-
     /// <summary>
     /// 내부 기능 구현에 필요한 변수
     /// </summary>
@@ -101,6 +100,16 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     private float updateInterval = 1.0f; // 그룹 업데이트 간격 (초)
     private float nextUpdateTime;
 
+    /// <summary>
+    /// 대화 시스템
+    /// </summary>
+    [Header("Dialogue")]
+    [SerializeField] Vector3 dirVec;
+    [SerializeField] private float range = 2.0f;
+    public GameObject scanObject;
+
+    public bool isCommunicate = false;
+
     void Start()
     {
         _photonView = GetComponent<PhotonView>();
@@ -115,6 +124,8 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
             // 초기 그룹 설정
             UpdateInterestGroup();
             nextUpdateTime = Time.time + updateInterval;
+
+
         }
     }
 
@@ -133,7 +144,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         }
 
         // 움직임, 스킬
-        if(GameManager.isPlayGame && !GameManager.isChatting && !GameManager.isTradeChatting)
+        if(GameManager.isPlayGame && !GameManager.isChatting && !GameManager.isTradeChatting && !DialogueManager.Instance.isAction)
         {
             Move();
             InputAttackBtn();
@@ -142,6 +153,13 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
             {
                 Debug.Log($"HP : {MaxHp}, Atk : {Atk}, Def : {Def}, WalkSpeed : {WalkSpeed}, RunSpeed : {RunSpeed}");
             }
+        }
+
+        dirVec = this.gameObject.transform.forward; // Quest
+        // scanObj
+        if (Input.GetKeyDown(KeyCode.E) && scanObject != null)
+        {
+            DialogueManager.Instance.Action(scanObject);
         }
 
         // 현재 상태의 Execute 메서드를 호출
@@ -168,8 +186,41 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         _photonView.RPC("SetStats", RpcTarget.All);
         _photonView.RPC("Setup", RpcTarget.All);
 
+
         GameManager.isPlayGame = true;
     }
+
+    private void FixedUpdate()
+    {
+        Vector3 rayStart = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
+        Debug.DrawRay(rayStart, dirVec * range, new Color(0, 1, 0));  // 시각화를 위해 레이 길이를 연장
+
+        RaycastHit rayHit;
+        if (Physics.Raycast(rayStart, dirVec, out rayHit, 10.0f))
+        {
+            if (rayHit.collider != null)
+            {
+                if (rayHit.collider.gameObject.layer == LayerMask.NameToLayer("Object"))
+                {
+                    scanObject = rayHit.collider.gameObject;
+                }
+                else
+                {
+                    scanObject = null;
+                }
+            }
+            else
+            {
+                scanObject = null;
+            }
+        }
+        else
+        {
+            scanObject = null;
+        }
+    }
+
+
 
     ///// FSM 패턴 관련 구현 /////
     [PunRPC]

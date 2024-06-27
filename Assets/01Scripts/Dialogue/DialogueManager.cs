@@ -1,0 +1,68 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+
+public class DialogueManager : Singleton<DialogueManager>
+{
+    public TalkManager talkManager;
+    public QuestManager questManager;
+
+    public TextMeshProUGUI objectName;
+    public TextMeshProUGUI talkText;
+    public Image portraitImg;
+    public GameObject talkPanel;
+    public GameObject scanObject;
+    public bool isAction;
+    public int talkIndex;
+
+    void Start()
+    {
+        //Debug.Log(questManager.CheckQuest());
+    }
+
+
+    public void Action(GameObject scanObj)
+    {
+        scanObject = scanObj;
+        ObjData objData = scanObject.GetComponent<ObjData>();
+        Talk(objData.id, objData.isNpc, objData.objName);
+
+        // Visible Talk for Action
+        talkPanel.SetActive(isAction);
+    }
+
+
+    void Talk(int id, bool isNpc, string name)
+    {
+        // Set Talk Data
+        int questTalkIndex = questManager.GetQuestTalkIndex(id);
+        string talkData = talkManager.GetTalk(id + questTalkIndex, talkIndex);
+
+        // End Talk
+        if (talkData == null)
+        {
+            isAction = false;
+            talkIndex = 0;
+
+            Debug.Log(questManager.CheckQuest(id));  // 현재 퀘스트명 반환
+            return;
+        }
+
+
+        // Continue Talk
+        if (isNpc)
+        {
+            talkText.text = talkData;
+            objectName.text = name;
+        }
+        else
+        {
+            talkText.text = talkData;
+        }
+
+        isAction = true;
+        talkIndex++;
+    }
+}
