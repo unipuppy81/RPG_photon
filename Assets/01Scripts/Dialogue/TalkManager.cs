@@ -5,12 +5,10 @@ using UnityEngine;
 public class TalkManager : MonoBehaviour
 {
     Dictionary<int, string[]> talkData;
-    //Dictionary<int, string> nameData;
 
     private void Awake()
     {
         talkData = new Dictionary<int, string[]>();
-        //nameData = new Dictionary<int, string>();
 
         GenerateData();
     }
@@ -18,13 +16,14 @@ public class TalkManager : MonoBehaviour
     void GenerateData()
     {
         // Talk Data
-        // MainNPC : 1000, ShopNPC : 2000, PortalNpc : 3000
-        // ShopPotal : 100, DungeonPotal : 200, 
+        // 이장 : 1000, 상점 : 2000, 부두 관리자 : 3000
+        // 학생(마르코) : 10000, 스님(홉스) : 4000
+        // ShopPotal : 100, OtherPotal : 200, 
 
 
         talkData.Add(1000, new string[]
         { 
-            "안녕",
+            " ",
             "...",
             "인사 했잖아.."
         });
