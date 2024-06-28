@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -78,7 +79,19 @@ public class Quest : ScriptableObject
     // 그 taskgroup을 배열로 추가
 
 
-    public TaskGroup CurrentTaskGroup => taskGroups[currentTaskGroupIndex];
+    public TaskGroup CurrentTaskGroup
+    {
+        get
+        {
+            if (currentTaskGroupIndex < 0 || currentTaskGroupIndex >= taskGroups.Length)
+            {
+                throw new IndexOutOfRangeException("currentTaskGroupIndex is out of bounds");
+            }
+            return taskGroups[currentTaskGroupIndex];
+        }
+    }
+
+    //public TaskGroup CurrentTaskGroup => taskGroups[currentTaskGroupIndex];
     public IReadOnlyList<TaskGroup> TaskGroups => taskGroups;
     public IReadOnlyList<Reward> Rewards => rewards;
     public bool IsRegistered => State != QuestState.Inactive;
@@ -135,7 +148,8 @@ public class Quest : ScriptableObject
     /// <param name="category"></param>
     /// <param name="target"></param>
     /// <param name="successCount"></param>
-    public void ReceiveReport(string category, object target, int successCount)
+
+    /*public void ReceiveReport(string category, object target, int successCount)
     {
         Debug.Assert(IsRegistered, "This quest has already been registerd.");
         Debug.Assert(!IsCancel, "This quest has been canceled.");
@@ -166,6 +180,41 @@ public class Quest : ScriptableObject
         }
         else //Task option중에 완료 되어도 계속해서 보고 받는 옵션
             State = QuestState.Running;
+    }
+    */
+    public void ReceiveReport(string category, object target, int successCount)
+    {
+        Debug.Assert(IsRegistered, "This quest has not been registered.");
+        Debug.Assert(!IsCancel, "This quest has been canceled.");
+
+        if (IsComplete)
+            return;
+
+        CurrentTaskGroup.ReceiveReport(category, target, successCount);
+
+        if (CurrentTaskGroup.IsAllTaskComplete)
+        {
+            var prevTaskGroup = taskGroups[currentTaskGroupIndex];
+
+            if (currentTaskGroupIndex + 1 < taskGroups.Length)
+            {
+                currentTaskGroupIndex++;
+                CurrentTaskGroup.Start();
+                onNewTaskGroup?.Invoke(this, CurrentTaskGroup, prevTaskGroup);
+            }
+            else
+            {
+                State = QuestState.WaitingForcompletion;
+                if (useAutoComplete)
+                {
+                    Complete();
+                }
+            }
+        }
+        else // Task option 중에 완료되어도 계속해서 보고받는 옵션
+        {
+            State = QuestState.Running;
+        }
     }
 
     /// <summary>
@@ -207,6 +256,9 @@ public class Quest : ScriptableObject
         onCanceled?.Invoke(this);
     }
 
+    public bool ContainsTarget(object target) => taskGroups.Any(x => x.ContainsTarget(target));
+    public bool ContainsTarget(TaskTarget target) => ContainsTarget(target.Value);
+
     /// <summary>
     /// 지금은 복사본을 만들떄 task만 복사해서 넣어주지만
     /// 만약 quest의 다른 module 중에서 task 처럼
@@ -232,7 +284,32 @@ public class Quest : ScriptableObject
             taskSuccessCounts = CurrentTaskGroup.Tasks.Select(x => x.CurrentSuccess).ToArray()
         };
     }
+    public void LoadFrom(QuestSaveData saveData)
+    {
+        State = saveData.state;
+        currentTaskGroupIndex = saveData.taskGroupIndex;
 
+        for (int i = 0; i < currentTaskGroupIndex; i++)
+        {
+            var taskGroup = taskGroups[i];
+            taskGroup.Start();
+            taskGroup.Complete();
+        }
+
+        if (currentTaskGroupIndex < taskGroups.Length)
+        {
+            CurrentTaskGroup.Start();
+            for (int i = 0; i < saveData.taskSuccessCounts.Length; i++)
+            {
+                CurrentTaskGroup.Tasks[i].CurrentSuccess = saveData.taskSuccessCounts[i];
+            }
+        }
+        else
+        {
+            throw new IndexOutOfRangeException("currentTaskGroupIndex is out of bounds during LoadFrom");
+        }
+    }
+    /*
     public void LoadFrom(QuestSaveData saveData)
     {
         State = saveData.state;
@@ -251,7 +328,7 @@ public class Quest : ScriptableObject
             CurrentTaskGroup.Tasks[i].CurrentSuccess = saveData.taskSuccessCounts[i];
         }
     }
-
+    */
     private void OnSuccessChanged(Task task, int currentSuccess, int prevSuccess)
         => onTaskSuccessChanged?.Invoke(this, task, currentSuccess, prevSuccess);
 

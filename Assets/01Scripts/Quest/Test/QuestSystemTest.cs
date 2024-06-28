@@ -14,7 +14,7 @@ public class QuestSystemTest : MonoBehaviour
 
     void Start()
     {
-        var questSystem = QuestSystem.Instacne;
+        var questSystem = QuestSystem.Instance;
 
         if (questSystem == null)
         {
@@ -47,7 +47,7 @@ public class QuestSystemTest : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            QuestSystem.Instacne.ReceiveReport(category, target, 1); 
+            QuestSystem.Instance.ReceiveReport(category, target, 1); 
         }
     }
 }

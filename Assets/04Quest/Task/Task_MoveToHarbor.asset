@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cd1b085f20e7ca45bc72bec07fbeede, type: 3}
+  m_Name: Task_MoveToHarbor
+  m_EditorClassIdentifier: 
+  category: {fileID: 11400000, guid: 1008d7e3b5b6ddd4caf489be59cc8f5d, type: 2}
+  codeName: MOVE_TO_HARBOR
+  description: "\uD56D\uAD6C \uAD00\uB9AC\uC790\uC640 \uB9CC\uB098\uC790"
+  action: {fileID: 11400000, guid: 5ce8cca9200a4354bb2cf9bd49dcb744, type: 2}
+  targets:
+  - {fileID: 11400000, guid: 68ea92bd2c76f444da21e7f869d81ba5, type: 2}
+  initialSuccessValue: {fileID: 0}
+  needSuccessToComplete: 1
+  canReceiveReportDuringCompletion: 0

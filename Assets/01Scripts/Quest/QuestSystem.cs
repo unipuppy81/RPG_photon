@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class QuestSystem : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class QuestSystem : MonoBehaviour
     private static QuestSystem instance;
     private static bool isApplicationQuitting;
 
-    public static QuestSystem Instacne
+    public static QuestSystem Instance
     {
         get
         {
@@ -67,21 +68,30 @@ public class QuestSystem : MonoBehaviour
 
     private void Awake()
     {
+        StartCoroutine(DelayedSetup());
+
         questDatabase = Resources.Load<QuestDatabase>("QuestDatabase");
         achievementDatabase = Resources.Load<QuestDatabase>("AchievementDatabase");
 
+
         if (achievementDatabase == null)
             return;
+    }
+
+    private IEnumerator DelayedSetup()
+    {
+        yield return new WaitUntil(() => GameManager.isPlayGame);
+
 
         if (!Load())
         {
-            foreach(var achievement in achievementDatabase.Quests)
+            foreach (var achievement in achievementDatabase.Quests)
             {
                 Register(achievement);
             }
         }
     }
-    
+
     // 임시로 게임 종료시 저장
     private void OnApplicationQuit()
     {
@@ -139,6 +149,22 @@ public class QuestSystem : MonoBehaviour
             quest.ReceiveReport(category, target, successCount);
     }
 
+    public void CompleteWaitingQuests()
+    {
+        foreach (var quest in activeQuests.ToList())
+        {
+            if (quest.IsCompletable)
+            {
+                quest.Complete();
+            }
+        }
+        /*
+         * 다른곳에서 퀘스트 종료 하는법
+         * QuestSystem.Instance.CompleteWaitingQuests();
+         * QuestSystem.Instance.Save();
+         */
+    }
+
     // Quest가 목록에 있는지 확인하는 함수
     public bool ContainsInActiveQuests(Quest quest) => activeQuests.Any(x => x.CodeName == quest.CodeName);
     public bool ContainsInCompleteQuests(Quest quest) => completedQuests.Any(x => x.CodeName == quest.CodeName);
@@ -151,7 +177,7 @@ public class QuestSystem : MonoBehaviour
      * 똑같이 event에 등록해서 quest가 완료되면 저장하게 만들어도 되고 
      * 아니면 따로 어디서 save 함수 직접 사용해도 됨
      */
-    private void Save()
+    public void Save()
     {
         var root = new JObject();
         root.Add(kActiveQuestsSavePath, CreateSaveDatas(activeQuests));
@@ -163,7 +189,7 @@ public class QuestSystem : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    private bool Load()
+    public bool Load()
     {
         if (PlayerPrefs.HasKey(kSaveRootPath))
         {

@@ -17,5 +17,5 @@ public abstract class TaskTarget : ScriptableObject
     /// </summary>
     /// <param name="target"></param>
     /// <returns></returns>
-    public abstract bool isEqual(object target);
+    public abstract bool IsEqual(object target);
 }

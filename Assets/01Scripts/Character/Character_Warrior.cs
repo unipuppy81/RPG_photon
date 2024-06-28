@@ -109,6 +109,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     public GameObject scanObject;
 
     public bool isCommunicate = false;
+    public bool isPressBtnE = false;
 
     void Start()
     {
@@ -159,7 +160,13 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         // scanObj
         if (Input.GetKeyDown(KeyCode.E) && scanObject != null)
         {
-            DialogueManager.Instance.Action(scanObject);
+            isPressBtnE = true;
+            //DialogueManager.Instance.Action(scanObject);
+        }
+
+        if (Input.GetKeyUp(KeyCode.E))
+        {
+            isPressBtnE = false;
         }
 
         // 현재 상태의 Execute 메서드를 호출

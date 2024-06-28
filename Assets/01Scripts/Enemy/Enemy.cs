@@ -51,6 +51,9 @@ public class Enemy : Monster
     private bool isReturn;
 
 
+    [Header("Quest")]
+    public UnityEngine.Events.UnityEvent onDead;
+
     private void Start()
     {
         _animator = GetComponent<Animator>();
@@ -284,6 +287,8 @@ public class Enemy : Monster
     {
         // 객체 파괴
         Destroy(gameObject);
+
+        onDead.Invoke();
 
         // 적이 사망하는걸 마스터 클라이언트에서만 처리
         SpawnManager.instance.RemoveGhost();
