@@ -6,22 +6,29 @@ using UnityEngine.UIElements;
 
 public class UIManager : MonoBehaviourPunCallbacks
 {
-    public GameObject _InventoryPanel;
-    public GameObject _EqipmentPanel;
-    public GameObject _ShopPanel;
-    public GameObject _RealShopPanel;
-    public GameObject characterListUI;
+    [SerializeField] private GameObject _InventoryPanel;
+    [SerializeField] private GameObject _EqipmentPanel;
+    [SerializeField] private GameObject _ShopPanel;
+    [SerializeField] private GameObject _RealShopPanel;
+    [SerializeField] private GameObject characterListUI;
+    [SerializeField] private GameObject _QuestPanel;
+    [SerializeField] private GameObject _AchievementPanel;
+
 
     bool activeInventory = false;
+    bool activeEquipment = false;
     bool activeShop = false;
     bool activeRealShop = false;
-
+    bool activeQuest = false;
+    bool activeAchievement = false;
 
     private void Start()
     {
         _InventoryPanel.SetActive(activeInventory);
-        _EqipmentPanel.SetActive(activeInventory);
+        _EqipmentPanel.SetActive(activeEquipment);
         _ShopPanel.SetActive(activeShop);
+        _QuestPanel.SetActive(activeQuest);
+        _AchievementPanel.SetActive(activeAchievement);
     }
 
     void Update()
@@ -32,17 +39,32 @@ public class UIManager : MonoBehaviourPunCallbacks
             {
                 activeInventory = !activeInventory;
                 _InventoryPanel.SetActive(activeInventory);
-                _EqipmentPanel.SetActive(activeInventory);
+  
             }
             else if (Input.GetKeyDown(KeyCode.O))
+            {
+                activeEquipment = !activeEquipment;
+                _EqipmentPanel.SetActive(activeEquipment);
+            }
+            else if (Input.GetKeyDown(KeyCode.M))
             {
                 activeShop = !activeShop;
                 _ShopPanel.SetActive(activeShop);
             }
-            else if (Input.GetKeyDown(KeyCode.U))
+            else if (Input.GetKeyDown(KeyCode.N))
             {
                 activeRealShop = !activeRealShop;
                 _RealShopPanel.SetActive(activeRealShop);
+            }
+            else if(Input.GetKeyDown(KeyCode.L)) 
+            {
+                activeQuest = !activeQuest;
+                _QuestPanel.SetActive(activeQuest);
+            }
+            else if (Input.GetKeyDown(KeyCode.K))
+            {
+                activeAchievement = !activeAchievement;
+                _AchievementPanel.SetActive(activeAchievement);
             }
         }
     }

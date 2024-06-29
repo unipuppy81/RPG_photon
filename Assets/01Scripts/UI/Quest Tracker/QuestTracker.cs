@@ -46,6 +46,7 @@ public class QuestTracker : MonoBehaviour
             $"[{targetQuest.Category.DisplayName}] {targetQuest.DisplayName}";
 
         questTitleText.color = titleColor;
+        questTitleText.alpha = 1.0f;
 
         targetQuest.onNewTaskGroup += UpdateTaskDescriptos;
         targetQuest.onCompleted += DestroySelf;
