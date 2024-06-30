@@ -5,14 +5,70 @@ using UnityEngine;
 public class TalkManager : MonoBehaviour
 {
     Dictionary<int, string[]> talkData;
+    Dictionary<int, System.Action> questActions; // 호출할 메서드를 매핑하기 위한 사전
+    Dictionary<int, QuestReporter> questReporters; // QuestReporter 매핑을 위한 사전 추가
 
     private void Awake()
     {
         talkData = new Dictionary<int, string[]>();
+        questActions = new Dictionary<int, System.Action>(); // 사전 초기화
+        questReporters = new Dictionary<int, QuestReporter>(); // 사전 초기화
 
         GenerateData();
+        GenerateQuestReporters();
+        GenerateQuestActions();
+    }
+    void GenerateQuestReporters()
+    {
+        // 각 대화 ID에 대응하는 QuestReporter를 설정합니다.
+        // 예시: Npc_Chief에 해당하는 QuestReporter를 찾습니다.
+        GameObject npcChief = GameObject.Find("Npc_Chief");
+        if (npcChief != null)
+        {
+            QuestReporter chiefReporter = npcChief.GetComponent<QuestReporter>();
+            if (chiefReporter != null)
+            {
+                questReporters.Add(10 + 1000, chiefReporter);
+                // 필요한 다른 대화 ID와도 매핑
+                // 예: questReporters.Add(20 + 1000, chiefReporter);
+            }
+        }
+        // 다른 NPC나 오브젝트에 대한 QuestReporter도 동일하게 추가
+        // 예시:
+        // GameObject shopKeeper = GameObject.Find("ShopKeeper");
+        // if (shopKeeper != null)
+        // {
+        //     QuestReporter shopReporter = shopKeeper.GetComponent<QuestReporter>();
+        //     if (shopReporter != null)
+        //     {
+        //         questReporters.Add(11 + 2000, shopReporter);
+        //     }
+        // }
     }
 
+    void GenerateQuestActions()
+    {
+        // Npc_Chief 오브젝트에 있는 NpcQuest의 QuestSender() 메서드를 설정합니다.
+        GameObject npcChief = GameObject.Find("Npc_Chief");
+        if (npcChief != null)
+        {
+            NpcQuest npcQuest = npcChief.GetComponent<NpcQuest>();
+            if (npcQuest != null)
+            {
+                // 특정 대화 ID와 NpcQuest의 QuestSender() 메서드를 매핑합니다.
+                questActions.Add(10 + 1000, npcQuest.QuestSender);
+                // 필요에 따라 다른 대화 ID와 메서드도 매핑할 수 있습니다.
+            }
+            else
+            {
+                Debug.LogWarning("Npc_Chief 오브젝트에 NpcQuest 컴포넌트가 없습니다.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Npc_Chief 오브젝트를 찾을 수 없습니다.");
+        }
+    }
     void GenerateData()
     {
         // Talk Data
@@ -140,11 +196,28 @@ public class TalkManager : MonoBehaviour
             }
         }
 
-
         if (talkIndex == talkData[id].Length)
+        {
+            // 대사가 끝난 경우 Report() 함수 호출
+            if (questReporters.ContainsKey(id))
+            {
+                Debug.Log("Report");
+                questReporters[id].Report();
+            }
+
+            // 대사가 끝난 경우 매핑된 QuestSender() 메서드 호출
+            if (questActions.ContainsKey(id))
+            {
+                Debug.Log("QuestSender");
+                questActions[id].Invoke();
+            }
+
             return null;
+        }
         else
+        {
             return talkData[id][talkIndex];
+        }
     }
 
     public string GetObjName(int id, string name)

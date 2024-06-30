@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ab3852cc295a50429b37037563850e9, type: 3}
+  m_Name: Quest_MoveToChief
+  m_EditorClassIdentifier: 
+  category: {fileID: 11400000, guid: 88b6d2e3881dcaa4890c659c1e6ed844, type: 2}
+  icon: {fileID: 0}
+  codeName: MOVE_TO_CHIEF
+  displayName: "\uC815\uBCF4\uB97C \uC5BB\uC790"
+  description: "\uB9C8\uC744\uC5D0 \uC654\uB2E4.\n\uC815\uBCF4\uB97C \uC5BB\uC5B4\uC57C\uD558\uB294\uB370..
+    \uC774\uC7A5\uB2D8\uAED8 \uAC00\uBCF4\uC790"
+  taskGroups:
+  - tasks:
+    - {fileID: 11400000, guid: 4ad742505ecc7c643887dd34877dbc1e, type: 2}
+  rewards: []
+  useAutoComplete: 1
+  isCancelable: 0
+  isSavable: 0
+  acceptionConditions: []
+  cancelConditons: []

@@ -14,13 +14,13 @@ public class UIManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject _QuestPanel;
     [SerializeField] private GameObject _AchievementPanel;
 
-
     bool activeInventory = false;
     bool activeEquipment = false;
     bool activeShop = false;
-    bool activeRealShop = false;
+    bool activeRealShop = false; 
     bool activeQuest = false;
     bool activeAchievement = false;
+
 
     private void Start()
     {
@@ -39,24 +39,23 @@ public class UIManager : MonoBehaviourPunCallbacks
             {
                 activeInventory = !activeInventory;
                 _InventoryPanel.SetActive(activeInventory);
-  
             }
             else if (Input.GetKeyDown(KeyCode.O))
             {
                 activeEquipment = !activeEquipment;
                 _EqipmentPanel.SetActive(activeEquipment);
             }
-            else if (Input.GetKeyDown(KeyCode.M))
+            else if (Input.GetKeyDown(KeyCode.N))
             {
                 activeShop = !activeShop;
                 _ShopPanel.SetActive(activeShop);
             }
-            else if (Input.GetKeyDown(KeyCode.N))
+            else if (Input.GetKeyDown(KeyCode.M))
             {
                 activeRealShop = !activeRealShop;
                 _RealShopPanel.SetActive(activeRealShop);
             }
-            else if(Input.GetKeyDown(KeyCode.L)) 
+            else if (Input.GetKeyDown(KeyCode.L))
             {
                 activeQuest = !activeQuest;
                 _QuestPanel.SetActive(activeQuest);
