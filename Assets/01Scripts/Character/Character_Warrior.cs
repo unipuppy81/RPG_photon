@@ -105,9 +105,8 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     /// </summary>
     [Header("Dialogue")]
     [SerializeField] Vector3 dirVec;
-    [SerializeField] private float scanRadius = 3.0f;
+    [SerializeField] private float range = 2.0f;
     public GameObject scanObject;
-    public LayerMask objectLayerMask;
 
     public bool isCommunicate = false;
     public bool isPressBtnE = false;
@@ -161,8 +160,13 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         // scanObj
         if (Input.GetKeyDown(KeyCode.E) && scanObject != null)
         {
-            isPressBtnE = !isPressBtnE;
-            DialogueManager.Instance.Action(scanObject);
+            isPressBtnE = true;
+            //DialogueManager.Instance.Action(scanObject);
+        }
+
+        if (Input.GetKeyUp(KeyCode.E))
+        {
+            isPressBtnE = false;
         }
 
         // 현재 상태의 Execute 메서드를 호출
@@ -195,31 +199,32 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
     private void FixedUpdate()
     {
-        // 스캔 위치 설정 (현재 오브젝트의 위치)
-        Vector3 scanPosition = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
+        Vector3 rayStart = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
+        Debug.DrawRay(rayStart, dirVec * range, new Color(0, 1, 0));  // 시각화를 위해 레이 길이를 연장
 
-        // 주변에 있는 "Object" 레이어의 콜라이더 탐지
-        Collider[] hitColliders = Physics.OverlapSphere(scanPosition, scanRadius, objectLayerMask);
-
-        // 탐지된 콜라이더가 있을 경우
-        if (hitColliders.Length > 0)
+        RaycastHit rayHit;
+        if (Physics.Raycast(rayStart, dirVec, out rayHit, 10.0f))
         {
-            foreach (Collider hitCollider in hitColliders)
+            if (rayHit.collider != null)
             {
-                if (hitCollider.gameObject.layer == LayerMask.NameToLayer("Object"))
+                if (rayHit.collider.gameObject.layer == LayerMask.NameToLayer("Object"))
                 {
-                    scanObject = hitCollider.gameObject;
-                    break;
+                    scanObject = rayHit.collider.gameObject;
                 }
+                else
+                {
+                    scanObject = null;
+                }
+            }
+            else
+            {
+                scanObject = null;
             }
         }
         else
         {
             scanObject = null;
         }
-
-        // 디버그 용도로 스캔 영역을 그립니다.
-        Debug.DrawRay(scanPosition, Vector3.up * scanRadius, Color.green);
     }
 
 

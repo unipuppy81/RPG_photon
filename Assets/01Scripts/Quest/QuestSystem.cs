@@ -41,9 +41,7 @@ public class QuestSystem : MonoBehaviour
         }
     }
 
-    [SerializeField]
     private List<Quest> activeQuests = new List<Quest>();
-    [SerializeField]
     private List<Quest> completedQuests = new List<Quest>();
 
     private List<Quest> activeAchievements = new List<Quest>();

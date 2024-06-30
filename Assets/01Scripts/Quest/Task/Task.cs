@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Design;
 using System.Linq;
 using UnityEngine;
 
@@ -15,20 +16,12 @@ public class Task : ScriptableObject
 {
     /*
      * 대표적으로 UI 같은 곳에서 UI Update Code 를 Event에 연결해놓으면
-     * Task의 상태를 Update에서 계속 추적할 필요없이 
+     * Task의 상태를 Update에서 계속 추적할 필용벗이 
      * 상태가 바뀌면 알아서 UI가 Update 된다.
      */
 
-    /// <summary>
-    /// 값이 변할때마다 알려주는 이벤트
-    /// </summary>
-    /// <param name="task"></param>
-    /// <param name="currentState"></param>
-    /// <param name="prevState"></param>
     #region Events
-    // TaskState 추적하는 delegate
     public delegate void StateChangedHandler(Task task, TaskState currentState, TaskState prevState);
-    // Success count 추적하는 delegate
     public delegate void SuccessChangedHandler(Task task, int currentSuccess, int prevSuccess);
     #endregion
 
@@ -57,13 +50,10 @@ public class Task : ScriptableObject
     [SerializeField]
     private int needSuccessToComplete;
     [SerializeField]
-    private bool canReceiveReportDuringCompletion; 
-    // Item 100개 모아서 완료하는 Quest인데 유저가 아이템100개를 모았지만 퀘스트를 완료하기 전에 50개 버릴수도 있음
+    private bool canReceiveReportDuringCompletion; // Item 100개 모아서 완료하는 Quest인데 유저가 아이템100개를 모았지만 퀘스트를 완료하기 전에 50개 버릴수도 있음
     // 이 떄 아이템 100개를 모았다고 더이상 100개를 모았다고 더이상 보고를 안받아버리면 아이템 버려도 Quest 완료 가능해짐
     // 이 기능(Option)은 Action중 Set과 조합해서 사용
 
-
-    [SerializeField]
     private TaskState state;
     private int currentSuccess;
 
@@ -95,8 +85,6 @@ public class Task : ScriptableObject
         {
             var prevState = state;
             state = value;
-            
-            // 연결된 이벤트가 있다면 Invoke 함수 실행되어 그 event가 실행
             onStateChanged?.Invoke(this, state, prevState);
         }
     }
@@ -104,10 +92,6 @@ public class Task : ScriptableObject
     public bool IsComplete => State == TaskState.Complete;
     public Quest Owner { get; private set; }
 
-    /// <summary>
-    /// Awake 함수 역할
-    /// </summary>
-    /// <param name="owner"></param>
     public void Setup(Quest owner)
     {
         Owner = owner;
