@@ -21,9 +21,16 @@ public enum QuestState
 public class Quest : ScriptableObject
 {
     #region Event
+    // 보고받았을떄 실행할 event
     public delegate void TaskSuccessChangedHandler(Quest quest, Task task, int currentSuccess, int prevSuccess);
+    
+    // Quest 완료했을때 실행할 event
     public delegate void CompletedHandler(Quest quest);
+    
+    // Quest 취소했을때 실행할 event
     public delegate void CancelHandler(Quest quest);
+    
+    // 새로운 TaskGroup이 시작될때 실행할 event
     public delegate void NewTaskGroupHandler(Quest quest, TaskGroup currentTaskGroup, TaskGroup prevTaskGroup); 
     #endregion
 
@@ -51,13 +58,13 @@ public class Quest : ScriptableObject
 
     [Header("Option")]
     [SerializeField]
-    private bool useAutoComplete;
+    private bool useAutoComplete; // 설정하면 
     [SerializeField]
-    private bool isCancelable;
+    private bool isCancelable; // 취소 가능한가
     [SerializeField]
     private bool isSavable;
 
-    private int currentTaskGroupIndex;
+    private int currentTaskGroupIndex;  // 현재 TaskGruop이 몇번깨인지 확인하는 index
     
     [Header("Condition")]
     [SerializeField]
@@ -79,6 +86,9 @@ public class Quest : ScriptableObject
     // 그 taskgroup을 배열로 추가
 
 
+    /// <summary>
+    /// 현재 taskgruop을 바로 가져올수있게하는 Property
+    /// </summary>
     public TaskGroup CurrentTaskGroup
     {
         get
@@ -102,13 +112,6 @@ public class Quest : ScriptableObject
     public bool IsAcceptable => acceptionConditions.All(x => x.IsPass(this));
     public virtual bool IsSavable => isSavable;
 
-    /*
-     * 이제 이벤트 만들건데 필요한 이벤트는 
-     * 보고받았을때 실행할 이벤트
-     * Quest 완료했을때 실행할 이벤트
-     * Quest 취소시 실행할 이벤트
-     * 새로운 TaskGroup이 시작될때 실행할 이벤트
-     */
     public event TaskSuccessChangedHandler onTaskSuccessChanged;
     public event CompletedHandler onCompleted;
     public event CancelHandler onCanceled;
@@ -119,8 +122,6 @@ public class Quest : ScriptableObject
     /// </summary>
     public void OnRegister()
     {
-        // 함수의 첫 부분에 Assert로 Quest가 등록되어있는데 또 등록하려하면 에러띄우기
-        // 인자로 들어온 값이 false면 뒷 문장을 error로 띄움
         Debug.Assert(!IsRegistered, "This quest has already been registerd.");
 
 
@@ -149,7 +150,7 @@ public class Quest : ScriptableObject
     /// <param name="target"></param>
     /// <param name="successCount"></param>
 
-    /*public void ReceiveReport(string category, object target, int successCount)
+    public void ReceiveReport(string category, object target, int successCount)
     {
         Debug.Assert(IsRegistered, "This quest has already been registerd.");
         Debug.Assert(!IsCancel, "This quest has been canceled.");
@@ -178,10 +179,14 @@ public class Quest : ScriptableObject
                 }
             }
         }
-        else //Task option중에 완료 되어도 계속해서 보고 받는 옵션
+        else
+        {        //Task option중에 완료 되어도 계속해서 보고 받는 옵션
             State = QuestState.Running;
+        }
+
     }
-    */
+    
+    /*
     public void ReceiveReport(string category, object target, int successCount)
     {
         Debug.Assert(IsRegistered, "This quest has not been registered.");
@@ -216,7 +221,7 @@ public class Quest : ScriptableObject
             State = QuestState.Running;
         }
     }
-
+    */
     /// <summary>
     /// Quest를 완료하는 함수
     /// </summary>
@@ -231,6 +236,7 @@ public class Quest : ScriptableObject
 
         State = QuestState.Complete;
 
+        // 퀘스트의 보상
         foreach(var reward in rewards)
         {
             reward.Give(this);

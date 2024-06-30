@@ -17,7 +17,11 @@ public class TaskGroup
     private Task[] tasks;
 
     public IReadOnlyList<Task> Tasks => tasks;
+
+    // TaskGroup의 소유주
     public Quest Owner {  get; private set; }
+    
+    // Task가 모두 완료되었는가?
     public bool IsAllTaskComplete => tasks.All(x => x.IsComplete);
     public bool IsComplete => State == TaskGroupState.Complete;
     public TaskGroupState State { get; private set; }
@@ -31,6 +35,12 @@ public class TaskGroup
         tasks = copyTarget.Tasks.Select(x => Object.Instantiate(x)).ToArray();
     }
 
+
+    /// <summary>
+    /// task에서 Setup을 통해 시작할때 실행한것처럼
+    /// 여기서도 모든 task들의 Setup을 켜준다
+    /// </summary>
+    /// <param name="owner"></param>
     public void Setup(Quest owner)
     {
         Owner = owner;
@@ -45,7 +55,7 @@ public class TaskGroup
         State = TaskGroupState.Running;
         foreach(var task in tasks)
         {
-            //Quest가 가진 여러개의 TaskGroup중에 
+            // Quest가 가진 여러개의 TaskGroup중에 
             // 현재 작동해야하는 TaskGroup이 시작될때 실행됨
             task.Start();
         }
@@ -60,6 +70,12 @@ public class TaskGroup
         }
     }
 
+    /// <summary>
+    /// task에 성공 횟수 전달하는 함수
+    /// </summary>
+    /// <param name="category"></param>
+    /// <param name="target"></param>
+    /// <param name="successCount"></param>
     public void ReceiveReport(string category, object target, int successCount)
     {
         foreach(var task in tasks)

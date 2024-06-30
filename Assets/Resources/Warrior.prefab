@@ -2053,8 +2053,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   dirVec: {x: 0, y: 0, z: 0}
-  range: 2
+  scanRadius: 3
   scanObject: {fileID: 0}
+  objectLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
   isCommunicate: 0
   isPressBtnE: 0
 --- !u!114 &4596304145561669835

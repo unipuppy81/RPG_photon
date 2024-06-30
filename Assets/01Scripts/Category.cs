@@ -21,7 +21,7 @@ public class Category : ScriptableObject, IEquatable<Category>
             return false;
         if(ReferenceEquals(other, this))
             return true;
-        if(GetType() != other.GetType()) 
+        if(this.GetType() != other.GetType()) 
             return false;
 
         return codeName == other.CodeName;
