@@ -46,7 +46,7 @@ public class DialogueManager : Singleton<DialogueManager>
             isAction = false;
             talkIndex = 0;
 
-            Debug.Log(questManager.CheckQuest(id));  // 현재 퀘스트명 반환
+            //Debug.Log(questManager.CheckQuest(id));  // 현재 퀘스트명 반환
             return;
         }
 

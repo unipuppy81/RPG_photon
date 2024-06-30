@@ -111,11 +111,11 @@ public class QuestManager : MonoBehaviour
                 if (questActionIndex == 1)
                 {
                     //ClearQuestPanelOn();
-                    Debug.Log("이장 냥이에게 말 걸기 클리어");
+                    //Debug.Log("이장 냥이에게 말 걸기 클리어");
                 }
                 else if (questActionIndex == 2)
                 {
-                    Debug.Log("왜 자꾸 뜨는거지?");
+                    //Debug.Log("왜 자꾸 뜨는거지?");
                     //questObject[0].SetActive(true);
                 }
                 break;
@@ -124,7 +124,7 @@ public class QuestManager : MonoBehaviour
             case 20:
                 if (questActionIndex == 1)
                 {
-                    Debug.Log("포션 구매하기 클리어");
+                   // Debug.Log("포션 구매하기 클리어");
                 }
                 else if (questActionIndex == 2)
                 {
@@ -142,7 +142,7 @@ public class QuestManager : MonoBehaviour
             case 40:
                 if (questActionIndex == 2)
                 {
-                    Debug.Log("던전 클리ㅣㅣ어");
+                   // Debug.Log("던전 클리ㅣㅣ어");
                 }
                 break;
         }

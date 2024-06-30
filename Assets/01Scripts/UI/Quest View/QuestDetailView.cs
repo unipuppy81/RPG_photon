@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class QuestDetailView : MonoBehaviour
 {
@@ -81,12 +82,21 @@ public class QuestDetailView : MonoBehaviour
                 var poolObject = taskDescriptorPool[taskIndex++];
                 poolObject.gameObject.SetActive(true);
 
-                if (taskGroup.IsComplete)
+                if(taskGroup.IsComplete)
+                {
+                    //Debug.Log("If Task Group name : " + task.CodeName + " State ?? " + taskGroup.State);
                     poolObject.UpdateTextUsingStrikeThrough(task);
+                }
                 else if (taskGroup == quest.CurrentTaskGroup)
+                {
+                    //Debug.Log("Elif Task Group name : " + task.CodeName + " State ?? " + taskGroup.State);
                     poolObject.UpdateText(task);
+                }
                 else
+                {
+                    //Debug.Log("Else Task Group name : " + task.CodeName + " task Group State ?? " + taskGroup.State + " Task State ?? " + task.State);
                     poolObject.UpdateText("¡Ü ??????????");
+                }
             }
         }
 

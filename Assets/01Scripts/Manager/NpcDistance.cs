@@ -1,14 +1,28 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using System.Collections;
 
 public class NpcDistance : MonoBehaviour
 {
     public List<GameObject> playerArr = new List<GameObject>();       // 플레이어 오브젝트
-    public TextMeshPro displayText;        // 표시할 텍스트 UI 요소
+
+    [SerializeField]
+    private TextMeshPro displayText;        // 표시할 텍스트 UI 요소
+    [SerializeField]
+    private TextMeshPro nameText;
+
     public float detectRadius = 2.0f; // 텍스트를 표시할 거리
 
     public LayerMask playerLayer;
+
+    private ObjData objData;
+
+    
+    private void Awake()
+    {
+        StartCoroutine(DelayedSetup());
+    }
 
     void Update()
     {
@@ -58,5 +72,19 @@ public class NpcDistance : MonoBehaviour
     {
         // 텍스트가 항상 카메라를 바라보게 설정
         //displayText.transform.LookAt(displayText.transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
+    }
+
+    private IEnumerator DelayedSetup()
+    {
+        yield return new WaitUntil(() => GameManager.isPlayGame);
+
+
+        objData = GetComponent<ObjData>();
+
+        if (objData != null)
+        {
+            nameText.text = objData.objName;
+        }
+
     }
 }

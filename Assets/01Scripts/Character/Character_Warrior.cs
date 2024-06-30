@@ -456,7 +456,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
         if (newGroup != currentGroup)
         {
-            Debug.Log($"Changing group from {currentGroup} to {newGroup}");
+            //Debug.Log($"Changing group from {currentGroup} to {newGroup}");
             // 현재 그룹만 구독하도록 설정
             if (currentGroup > 0)
             {

@@ -205,6 +205,7 @@ public class Quest : ScriptableObject
             else
             {
                 State = QuestState.WaitingForcompletion;
+
                 if (useAutoComplete)
                 {
                     Complete();

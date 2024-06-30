@@ -29,6 +29,11 @@ public class TaskGroup
     public TaskGroup(TaskGroup copyTarget)
     {
         tasks = copyTarget.Tasks.Select(x => Object.Instantiate(x)).ToArray();
+
+        foreach (var task in tasks)
+        {
+            task.onStateChanged += OnTaskStateChanged;  // Subscribe to task state change event
+        }
     }
 
     public void Setup(Quest owner)
@@ -68,6 +73,14 @@ public class TaskGroup
             {
                 task.ReceiveReport(successCount);
             }
+        }
+    }
+
+    private void OnTaskStateChanged(Task task, TaskState currentState, TaskState prevState)  // Event handler for task state change
+    {
+        if (currentState == TaskState.Complete && IsAllTaskComplete)
+        {
+            Complete();
         }
     }
 
