@@ -124,7 +124,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             // 초기 그룹 설정
-            UpdateInterestGroup();
+            //UpdateInterestGroup();
             nextUpdateTime = Time.time + updateInterval;
 
 
@@ -141,12 +141,12 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         if (photonView.IsMine && Time.time >= nextUpdateTime)
         {
             // 특정 간격마다 그룹 업데이트
-            UpdateInterestGroup();
+            //UpdateInterestGroup();
             nextUpdateTime = Time.time + updateInterval;
         }
 
         // 움직임, 스킬
-        if(GameManager.isPlayGame && !GameManager.isChatting && !GameManager.isTradeChatting && !DialogueManager.Instance.isAction)
+        if (GameManager.isPlayGame && !GameManager.isChatting && !GameManager.isTradeChatting && !DialogueManager.Instance.isAction)
         {
             Move();
             InputAttackBtn();
@@ -154,6 +154,12 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
             if (Input.GetKeyDown(KeyCode.T))
             {
                 Debug.Log($"HP : {MaxHp}, Atk : {Atk}, Def : {Def}, WalkSpeed : {WalkSpeed}, RunSpeed : {RunSpeed}");
+            }
+
+
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                NetworkManager.instance.PV.RPC("RequestSceneChange", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, _photonView);
             }
         }
 
@@ -226,6 +232,21 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         // 디버그 용도로 스캔 영역을 그립니다.
         Debug.DrawRay(scanPosition, Vector3.up * scanRadius, Color.green);
     }
+
+
+
+
+    [PunRPC]
+    void ChangeSceneForLocalPlayer()
+    {
+        PhotonNetwork.LoadLevel("TownScene");
+    }
+
+
+
+
+
+
 
 
 

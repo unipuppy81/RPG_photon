@@ -72,7 +72,6 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
         for (int i = 0; i < count; i++)
         {
-            Debug.Log("spawnPositions Length : " + spawnPositons.Length);
             int idx = Random.Range(0, spawnPositons.Length);
 
             PhotonNetwork.InstantiateRoomObject("Ghost", spawnPositons[idx].position, Quaternion.identity);

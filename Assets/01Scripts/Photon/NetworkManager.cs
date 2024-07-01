@@ -9,6 +9,8 @@ using TMPro;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
+    public static NetworkManager instance;
+
     [Header("Chat")]
     public TMP_InputField ChatInput;
     public GameObject chatPanel, chatView;
@@ -19,6 +21,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public Transform[] spawnPositions;
 
     public PhotonView PV;
+
+    private void Awake()
+    {
+        // 싱글턴 패턴 적용
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -45,11 +60,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         foreach (TextMeshProUGUI chat in chatList)
             chat.text = "";
 
-        Debug.Log("Warrior");
+
+        Debug.Log("Spawn Warrior");
         PhotonNetwork.Instantiate("Warrior", playerSpawnPosObj.transform.position, Quaternion.identity);
 
-        StartCoroutine(DelayedSetup());
 
+        StartCoroutine(DelayedSetup());
     }
 
 
@@ -59,7 +75,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("isMasterClient");
             SpawnManager.instance.pv.RPC("CreateComputerPlayer", RpcTarget.All);
             PV.RPC("ChatRPC", RpcTarget.All, "<color=yellow>[방장] " + PhotonNetwork.NickName + "님이 참가하셨습니다</color>");
         }
@@ -101,6 +116,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             chatList[chatList.Length - 1].text = msg;
         }
     }
+
+    [PunRPC]
+    public void RequestSceneChange(int playerID, PhotonView pv)
+    {
+        // 요청된 플레이어 ID에게 씬 전환 명령을 전달
+        Player targetPlayer = PhotonNetwork.CurrentRoom.GetPlayer(playerID);
+        if (targetPlayer != null)
+        {
+            pv.RPC("ChangeSceneForLocalPlayer", targetPlayer);
+        }
+    }
+
 }
 
 /*
