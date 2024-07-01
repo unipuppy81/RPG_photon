@@ -5,7 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
-
+using UnityEngine.SceneManagement;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -118,13 +118,31 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void RequestSceneChange(int playerID, PhotonView pv)
+    public void RequestSceneChange(int playerID, PhotonView pv, string sceneName)
     {
+
         // 요청된 플레이어 ID에게 씬 전환 명령을 전달
         Player targetPlayer = PhotonNetwork.CurrentRoom.GetPlayer(playerID);
         if (targetPlayer != null)
         {
-            pv.RPC("ChangeSceneForLocalPlayer", targetPlayer);
+            pv.RPC("ChangeSceneForLocalPlayer", targetPlayer, sceneName);
+        }
+        
+    }
+
+    public override void OnLeftRoom()
+    {
+        Debug.Log("On Left Room");
+
+        if(SceneManager.GetActiveScene().name == "GameScene")
+        {
+            Destroy(gameObject);
+            SceneManager.LoadScene("TownScene");
+        }
+        else if (SceneManager.GetActiveScene().name == "TownScene")
+        {
+            Destroy(gameObject);
+            SceneManager.LoadScene("GameScene");
         }
     }
 

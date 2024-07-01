@@ -2051,69 +2051,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
---- !u!1 &898934122
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 898934124}
-  - component: {fileID: 898934123}
-  - component: {fileID: 898934125}
-  m_Layer: 0
-  m_Name: QuestSystemTest
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &898934123
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 898934122}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd34eb82e1362194ab2bf6273b6b6ba2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  quest: {fileID: 11400000, guid: 480d4e339f5ba954e8dfce90d8e3f6f2, type: 2}
-  category: {fileID: 11400000, guid: 331826a05f5ede341b2972df3f27e0ef, type: 2}
-  target: {fileID: 11400000, guid: b73f3103b4c28fa49b94d852e04ff20d, type: 2}
---- !u!4 &898934124
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 898934122}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.0748615, y: 9.518312, z: -15.749827}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &898934125
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 898934122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 496a625d52113b74e817ab2ac30c391f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  quest: {fileID: 11400000, guid: 480d4e339f5ba954e8dfce90d8e3f6f2, type: 2}
-  category: {fileID: 11400000, guid: 331826a05f5ede341b2972df3f27e0ef, type: 2}
-  target: {fileID: 11400000, guid: b73f3103b4c28fa49b94d852e04ff20d, type: 2}
 --- !u!1 &909884170
 GameObject:
   m_ObjectHideFlags: 0
@@ -7760,7 +7697,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 1608187620}
   - {fileID: 1260247183}
-  - {fileID: 898934124}
   - {fileID: 342049949}
   - {fileID: 2012230604}
   - {fileID: 1918727925}

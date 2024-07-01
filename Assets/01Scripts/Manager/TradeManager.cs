@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TradeManager : MonoBehaviourPunCallbacks
 {
@@ -111,5 +112,19 @@ public class TradeManager : MonoBehaviourPunCallbacks
         // 여기서 아이템을 실제로 전송합니다.
     }
 
+    public override void OnLeftRoom()
+    {
+        Debug.Log("On Left Room");
 
+        if (SceneManager.GetActiveScene().name == "GameScene")
+        {
+            Destroy(gameObject);
+            SceneManager.LoadScene("TownScene");
+        }
+        else if (SceneManager.GetActiveScene().name == "TownScene")
+        {
+            Destroy(gameObject);
+            SceneManager.LoadScene("GameScene");
+        }
+    }
 }

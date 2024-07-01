@@ -19,6 +19,8 @@ public class QuestGiver : MonoBehaviour
         {
             if (quest.IsAcceptable && !QuestSystem.Instance.ContainsInCompleteQuests(quest))
                 QuestSystem.Instance.Register(quest);
+
+            DelQuest();
         }
     }
 
@@ -31,5 +33,18 @@ public class QuestGiver : MonoBehaviour
         quests = questList.ToArray();
 
         QuestSetting();
+    }
+
+    private void DelQuest()
+    {
+        List<Quest> questList = new List<Quest>(quests);
+
+        // 리스트의 제일 앞에 있는 원소 제거
+        if (questList.Count > 0)
+        {
+            questList.RemoveAt(0);
+        }
+
+        quests = questList.ToArray();
     }
 }

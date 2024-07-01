@@ -159,7 +159,23 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
             if (Input.GetKeyDown(KeyCode.G))
             {
-                NetworkManager.instance.PV.RPC("RequestSceneChange", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, _photonView);
+                foreach (var obj in FindObjectsOfType<DontDestroyOnSceneChange>())
+                {
+                    Destroy(obj.gameObject);
+                }
+
+                NetworkManager.instance.PV.RPC("RequestSceneChange", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, _photonView, "TownScene");
+            }
+
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                foreach (var obj in FindObjectsOfType<DontDestroyOnSceneChange>())
+                {
+                    Destroy(obj.gameObject);
+                }
+
+                NetworkManager.instance.PV.RPC("RequestSceneChange", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, _photonView, "GameScene");
+            
             }
         }
 
@@ -237,9 +253,11 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
 
     [PunRPC]
-    void ChangeSceneForLocalPlayer()
+    void ChangeSceneForLocalPlayer(string sceneName)
     {
-        PhotonNetwork.LoadLevel("TownScene");
+        //PhotonNetwork.Disconnect();
+
+        PhotonNetwork.LoadLevel(sceneName);
     }
 
 
