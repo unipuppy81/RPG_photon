@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using System.Linq;
+using System.Collections;
 
 public class SpawnManager : MonoBehaviourPunCallbacks
 {
@@ -50,6 +51,14 @@ public class SpawnManager : MonoBehaviourPunCallbacks
         }
     }
 
+    private IEnumerator DelayedSetup()
+    {
+        yield return new WaitUntil(() => GameManager.isPlayGame);
+
+        isCreatingPlayer = false;
+
+    }
+
     [PunRPC]
     public void CreateComputerPlayer()
     {
@@ -63,6 +72,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
         for (int i = 0; i < count; i++)
         {
+            Debug.Log("spawnPositions Length : " + spawnPositons.Length);
             int idx = Random.Range(0, spawnPositons.Length);
 
             PhotonNetwork.InstantiateRoomObject("Ghost", spawnPositons[idx].position, Quaternion.identity);
