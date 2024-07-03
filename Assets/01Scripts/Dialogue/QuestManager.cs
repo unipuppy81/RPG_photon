@@ -47,19 +47,19 @@ public class QuestManager : MonoBehaviour
     // 대화 퀘스트 
     void GenerateData()
     {
-        questList.Add(10, new QuestData("마을 한바퀴 돌기",      // 퀘스트 이름
-                                new int[] { 1000, 1000 },  // 1000 : 1000번 npcid object
+        questList.Add(10, new QuestData("퀘스트 1",  
+                                new int[] { 1000, 1000 }, 
                                 "0"));
 
-        questList.Add(20, new QuestData("포션사기",
+        questList.Add(20, new QuestData("퀘스트 2",
                                  new int[] { 2000, 100, 2000 },
                                  "0"));
 
-        questList.Add(30, new QuestData("던전 들어가기",
+        questList.Add(30, new QuestData("퀘스트 3",
                                 new int[] { 3000 },
                                 "0"));
 
-        questList.Add(40, new QuestData("던전 클리어하기",
+        questList.Add(40, new QuestData("퀘스트 4",
                                new int[] { 3000, 3000 },
                                "0"));
     }

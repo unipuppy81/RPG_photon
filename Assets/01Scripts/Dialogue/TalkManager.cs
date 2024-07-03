@@ -100,8 +100,7 @@ public class TalkManager : MonoBehaviour
 
         talkData.Add(1000, new string[]
         { 
-            "안녕하세요",
-            "저는 수녀입니다."
+            "아이들이 무럭무럭 자랐으면 좋겠어요."
         });
 
         talkData.Add(2000, new string[]
@@ -126,19 +125,20 @@ public class TalkManager : MonoBehaviour
 
         talkData.Add(11 + 1000, new string[]{
             "감사합니다. 덕분에 아이들이 안심하고 귀가할수 있겠어요.",
-            "별 거 아니지만 보답으로 100 골드를 드릴게요"
+            "여기 별 거 아니지만 답례에요."
         });
 
         talkData.Add(20 + 2000, new string[]
         {
-            "공사장 인부입니다.",
-            "헬멧좀 주소"
+            "공사를 시작해야하는데 안전모가 없어서 공사를 할수가 없어.",
+            "너가 찾아주겠다고?",
+            "다른 마을로 넘어가는 다리쪽에서 잃어버린거 같아."
         });
 
         talkData.Add(22 + 2000, new string[]
         {
-            "헬멧을 찾았어?",
-            "땡큐 ^_^"
+            "헬멧을 찾았다고? 내가 찾을때는 못 봤는데",
+            "어찌됐든 고마워 얼른 일하러 가야겠어"
         });
     }
 
@@ -161,15 +161,15 @@ public class TalkManager : MonoBehaviour
             }
         }
 
+
+        // 대사가 끝남
         if (talkIndex == talkData[id].Length)
         {
-            // 대사가 끝난 경우 Report() 함수 호출
             if (questReporters.ContainsKey(id))
             {
                 questReporters[id].Report();
             }
 
-            // 대사가 끝난 경우 매핑된 QuestSender() 메서드 호출
             if (questActions.ContainsKey(id))
             {
                 questActions[id].Invoke();
@@ -178,7 +178,7 @@ public class TalkManager : MonoBehaviour
             // QuestManager에서 해당 Quest가 완료되었는지 체크
             if (q.IsQuestComplete(id - 1000))
             {
-                Debug.Log("NExtQuest");
+                Debug.Log("NextQuest");
                 q.NextQuest();
             }
 
