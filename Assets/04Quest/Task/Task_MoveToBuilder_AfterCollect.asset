@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cd1b085f20e7ca45bc72bec07fbeede, type: 3}
+  m_Name: Task_MoveToBuilder_AfterCollect
+  m_EditorClassIdentifier: 
+  category: {fileID: 11400000, guid: 88b6d2e3881dcaa4890c659c1e6ed844, type: 2}
+  codeName: MOVE_TO_BUILDER_AFTER_COLLECT
+  description: "\uC778\uBD80\uC5D0\uAC8C \uB3CC\uC544\uAC00\uC790"
+  action: {fileID: 11400000, guid: 5ce8cca9200a4354bb2cf9bd49dcb744, type: 2}
+  targets:
+  - {fileID: 11400000, guid: 7e27eb09aa599b54cb0f0d7f2c71af99, type: 2}
+  initialSuccessValue: {fileID: 0}
+  needSuccessToComplete: 1
+  canReceiveReportDuringCompletion: 0

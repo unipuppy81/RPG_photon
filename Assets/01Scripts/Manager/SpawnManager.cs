@@ -32,6 +32,8 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        StartCoroutine(DelayedSetup());
+
         GameObject spawnParent = GameObject.Find("EnemySpawnPos");
 
         if (spawnParent != null)

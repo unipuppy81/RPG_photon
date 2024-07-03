@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cd1b085f20e7ca45bc72bec07fbeede, type: 3}
+  m_Name: Task_CollectHelmet
+  m_EditorClassIdentifier: 
+  category: {fileID: 11400000, guid: 88b6d2e3881dcaa4890c659c1e6ed844, type: 2}
+  codeName: COLLECT_HELMET
+  description: "\uC548\uC804\uBAA8\uB97C \uCC3E\uC790"
+  action: {fileID: 11400000, guid: 5ce8cca9200a4354bb2cf9bd49dcb744, type: 2}
+  targets:
+  - {fileID: 11400000, guid: b89789e225c38c342a3e5ec84ecff677, type: 2}
+  initialSuccessValue: {fileID: 0}
+  needSuccessToComplete: 1
+  canReceiveReportDuringCompletion: 0

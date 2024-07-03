@@ -102,5 +102,5 @@ MonoBehaviour:
     markerMaterial: {fileID: 2100000, guid: 39999bac1ceb9c74e852f050388efed4, type: 2}
   - category: {fileID: 11400000, guid: 1008d7e3b5b6ddd4caf489be59cc8f5d, type: 2}
     markerMaterial: {fileID: 2100000, guid: db3f312b76f4a604287eb75022953ab7, type: 2}
-  - category: {fileID: 11400000, guid: 79b16651ae6ac8944a9076e45572f5c9, type: 2}
+  - category: {fileID: 11400000, guid: 88b6d2e3881dcaa4890c659c1e6ed844, type: 2}
     markerMaterial: {fileID: 2100000, guid: 4c61ec5e9dea0c743a868d9cbc729c8a, type: 2}

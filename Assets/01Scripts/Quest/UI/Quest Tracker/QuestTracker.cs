@@ -39,33 +39,44 @@ public class QuestTracker : MonoBehaviour
     /// <param name="titleColor"></param>
     public void Setup(Quest targetQuest, Color titleColor)
     {
-        this.targetQuest = targetQuest;
-
-        questTitleText.text = targetQuest.Category == null ?
-            targetQuest.DisplayName :
-            $"[{targetQuest.Category.DisplayName}] {targetQuest.DisplayName}";
-
-        questTitleText.color = titleColor;
-        questTitleText.alpha = 1.0f;
-
-        targetQuest.onNewTaskGroup += UpdateTaskDescriptos;
-        targetQuest.onCompleted += DestroySelf;
-
-        var taskGroups = targetQuest.TaskGroups;
-        UpdateTaskDescriptos(targetQuest, taskGroups[0]); 
-
-        // ±úÁø Task Á¤º¸µéµµ º¸¿©ÁÜ
-        if (taskGroups[0] != targetQuest.CurrentTaskGroup)
+        if(targetQuest != null)
         {
-            for (int i = 1; i < taskGroups.Count; i++)
-            {
-                var taskGroup = taskGroups[i];
-                UpdateTaskDescriptos(targetQuest, taskGroup, taskGroups[i - 1]);
+            this.targetQuest = targetQuest;
 
-                if (taskGroup == targetQuest.CurrentTaskGroup)
-                    break;
+            questTitleText.text = targetQuest.Category == null ?
+                targetQuest.DisplayName :
+                $"[{targetQuest.Category.DisplayName}] {targetQuest.DisplayName}";
+
+            questTitleText.color = titleColor;
+            questTitleText.alpha = 1.0f;
+
+            targetQuest.onNewTaskGroup += UpdateTaskDescriptos;
+            targetQuest.onCompleted += DestroySelf;
+
+            var taskGroups = targetQuest.TaskGroups;
+
+
+            UpdateTaskDescriptos(targetQuest, taskGroups[0]);
+
+            // ±úÁø Task Á¤º¸µéµµ º¸¿©ÁÜ
+            if (taskGroups[0] != targetQuest.CurrentTaskGroup)
+            {
+                for (int i = 1; i < taskGroups.Count; i++)
+                {
+                    var taskGroup = taskGroups[i];
+                    UpdateTaskDescriptos(targetQuest, taskGroup, taskGroups[i - 1]);
+
+                    if (taskGroup == targetQuest.CurrentTaskGroup)
+                        break;
+                }
             }
         }
+        else
+        {
+            return;
+        }
+
+
     }
 
     /// <summary>

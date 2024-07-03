@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
+/*
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     public static NetworkManager instance;
@@ -46,7 +47,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        OnJoinedRoom();
+        //OnJoinedRoom();
     }
 
     public override void OnJoinedRoom()
@@ -132,23 +133,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-        Debug.Log("On Left Room");
 
-        if(SceneManager.GetActiveScene().name == "GameScene")
-        {
-            Destroy(gameObject);
-            SceneManager.LoadScene("TownScene");
-        }
-        else if (SceneManager.GetActiveScene().name == "TownScene")
-        {
-            Destroy(gameObject);
-            SceneManager.LoadScene("GameScene");
-        }
     }
 
 }
+*/
 
-/*
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
     [Header("NickName")]
@@ -190,8 +180,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         chatList = chatView.GetComponentsInChildren<TextMeshProUGUI>();
 
-        startButton.onClick.AddListener(JoinRoom);
-        OnLogin();
+        //startButton.onClick.AddListener(JoinRoom);
+        //OnLogin();
 
         PhotonNetwork.GameVersion = this.gameVersion;
         PhotonNetwork.ConnectUsingSettings();
@@ -221,11 +211,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        //PhotonNetwork.JoinRandomRoom();
-        //Debug.Log("01. 포톤 서버에 접속");
+        PhotonNetwork.JoinRandomRoom();
+        Debug.Log("01. 포톤 서버에 접속");
 
-        StatusText.text = "Online: 마스터 서버와 연결 됨";
-        startButton.interactable = true;
+        //StatusText.text = "Online: 마스터 서버와 연결 됨";
+        //startButton.interactable = true;
 
         //PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 4 }, null);
     }
@@ -257,7 +247,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 
         // 닉네임 패널 off
-        startPanel.SetActive(false);
+        //startPanel.SetActive(false);
 
 
         // 채팅 패널 on
@@ -339,4 +329,3 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
     }
 }
-*/

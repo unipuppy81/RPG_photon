@@ -159,23 +159,12 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
             if (Input.GetKeyDown(KeyCode.G))
             {
-                foreach (var obj in FindObjectsOfType<DontDestroyOnSceneChange>())
-                {
-                    Destroy(obj.gameObject);
-                }
-
-                NetworkManager.instance.PV.RPC("RequestSceneChange", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, _photonView, "TownScene");
+               // NetworkManager.instance.PV.RPC("RequestSceneChange", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, _photonView, "TownScene");
             }
 
             if (Input.GetKeyDown(KeyCode.H))
             {
-                foreach (var obj in FindObjectsOfType<DontDestroyOnSceneChange>())
-                {
-                    Destroy(obj.gameObject);
-                }
-
-                NetworkManager.instance.PV.RPC("RequestSceneChange", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, _photonView, "GameScene");
-            
+               // NetworkManager.instance.PV.RPC("RequestSceneChange", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, _photonView, "GameScene");
             }
         }
 

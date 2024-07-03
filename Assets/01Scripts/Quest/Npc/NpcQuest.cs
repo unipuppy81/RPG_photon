@@ -5,22 +5,23 @@ using UnityEngine;
 public class NpcQuest : MonoBehaviour
 {
     [SerializeField]
-    private Quest npcQuest;
-
+    private List<Quest> npcQuest;
     public void QuestSender()
     {
         GameObject obj = GameObject.Find("Quest Giver");
         if (obj != null)
         {
             QuestGiver questGiver = obj.GetComponent<QuestGiver>();
-            if (questGiver != null)
+
+            Quest quest = popFirstQuest();
+            if (quest != null)
             {
-                questGiver.AddQuest(npcQuest);
+                questGiver.AddQuest(quest);
                 Debug.Log("퀘스트가 성공적으로 추가되었습니다.");
             }
             else
             {
-                Debug.LogWarning("QuestGiver 컴포넌트를 찾을 수 없습니다.");
+                Debug.LogWarning("추가할 퀘스트가 없습니다.");
             }
         }
         else
@@ -29,25 +30,14 @@ public class NpcQuest : MonoBehaviour
         }
     }
 
-    public void QuestSender(Quest sender)
+    public Quest popFirstQuest()
     {
-        GameObject obj = GameObject.Find("Quest Giver");
-        if (obj != null)
+        if (npcQuest != null && npcQuest.Count > 0)
         {
-            QuestGiver questGiver = obj.GetComponent<QuestGiver>();
-            if (questGiver != null)
-            {
-                questGiver.AddQuest(sender);
-                Debug.Log("퀘스트가 성공적으로 추가되었습니다.");
-            }
-            else
-            {
-                Debug.LogWarning("QuestGiver 컴포넌트를 찾을 수 없습니다.");
-            }
+            Quest firstQuest = npcQuest[0];
+            npcQuest.RemoveAt(0);
+            return firstQuest;
         }
-        else
-        {
-            Debug.LogWarning("Quest Giver 오브젝트를 찾지 못했습니다.");
-        }
+        return null; // 리스트가 비어있거나 null인 경우
     }
 }

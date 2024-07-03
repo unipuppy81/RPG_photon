@@ -341,7 +341,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7738b62e35051a489494bc08afb9278, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  npcQuest: {fileID: 11400000, guid: c204be8a023bffc4fa943d883dfe0567, type: 2}
+  npcQuest:
+  - {fileID: 11400000, guid: 7b0a589da5d09e6428f8ad41825c6a7b, type: 2}
+  - {fileID: 11400000, guid: 59cfbc89f2dede246a27bdba12717f34, type: 2}
 --- !u!114 &-3599826498684009660
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -48,17 +48,16 @@ public class QuestManager : MonoBehaviour
     void GenerateData()
     {
         questList.Add(10, new QuestData("마을 한바퀴 돌기",      // 퀘스트 이름
-                                new int[] { 1000, 3000 },  // 1000 : 1000번 npcid object
+                                new int[] { 1000, 1000 },  // 1000 : 1000번 npcid object
                                 "0"));
 
         questList.Add(20, new QuestData("포션사기",
-                                 new int[] { 2000, 1000 },
+                                 new int[] { 2000, 100, 2000 },
                                  "0"));
 
         questList.Add(30, new QuestData("던전 들어가기",
                                 new int[] { 3000 },
                                 "0"));
-
 
         questList.Add(40, new QuestData("던전 클리어하기",
                                new int[] { 3000, 3000 },
@@ -66,10 +65,18 @@ public class QuestManager : MonoBehaviour
     }
 
 
+    // Quest 완료 여부 확인
+    public bool IsQuestComplete(int questIdToCheck)
+    {
+        if (questList.ContainsKey(questIdToCheck))
+        {
+            return questActionIndex >= questList[questIdToCheck].npcId.Length;
+        }
+        return false;
+    }
 
 
-
-    public int GetQuestTalkIndex(int id)
+    public int GetQuestTalkIndex()
     {
         return questId + questActionIndex;
     }
@@ -85,8 +92,6 @@ public class QuestManager : MonoBehaviour
         // Control Quest Object
         ControlObject();
 
-
-        //Debug.Log(questList[questId].npcId.Length);
         // Talk Complete & Next Quest
         if (questActionIndex == questList[questId].npcId.Length)
         {
@@ -97,7 +102,7 @@ public class QuestManager : MonoBehaviour
         return questList[questId].questName;
     }
 
-    void NextQuest()
+    public void NextQuest()
     {
         questId += 10;
         questActionIndex = 0;
@@ -110,13 +115,11 @@ public class QuestManager : MonoBehaviour
             case 10:
                 if (questActionIndex == 1)
                 {
-                    //ClearQuestPanelOn();
-                    //Debug.Log("이장 냥이에게 말 걸기 클리어");
+                    Debug.Log("quest ID : " + questId + "  questActionIndex : " + questActionIndex);
                 }
                 else if (questActionIndex == 2)
                 {
-                    //Debug.Log("왜 자꾸 뜨는거지?");
-                    //questObject[0].SetActive(true);
+                    Debug.Log("quest ID : " + questId + "  questActionIndex : " + questActionIndex);
                 }
                 break;
 
@@ -124,25 +127,25 @@ public class QuestManager : MonoBehaviour
             case 20:
                 if (questActionIndex == 1)
                 {
-                   // Debug.Log("포션 구매하기 클리어");
+                    Debug.Log("quest ID : " + questId + "  questActionIndex : " + questActionIndex);
                 }
                 else if (questActionIndex == 2)
                 {
-
+                    Debug.Log("quest ID : " + questId + "  questActionIndex : " + questActionIndex);
                 }
                 break;
 
             case 30:
                 if (questActionIndex == 1)
                 {
-                    //questObject[1].SetActive(true);
+                    Debug.Log("quest ID : " + questId + "  questActionIndex : " + questActionIndex);
                 }
                 break;
 
             case 40:
                 if (questActionIndex == 2)
                 {
-                   // Debug.Log("던전 클리ㅣㅣ어");
+                    Debug.Log("quest ID : " + questId + "  questActionIndex : " + questActionIndex);
                 }
                 break;
         }

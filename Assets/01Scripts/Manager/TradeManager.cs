@@ -114,17 +114,6 @@ public class TradeManager : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-        Debug.Log("On Left Room");
 
-        if (SceneManager.GetActiveScene().name == "GameScene")
-        {
-            Destroy(gameObject);
-            SceneManager.LoadScene("TownScene");
-        }
-        else if (SceneManager.GetActiveScene().name == "TownScene")
-        {
-            Destroy(gameObject);
-            SceneManager.LoadScene("GameScene");
-        }
     }
 }

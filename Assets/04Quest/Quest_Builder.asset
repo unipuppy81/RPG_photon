@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ab3852cc295a50429b37037563850e9, type: 3}
+  m_Name: Quest_Builder
+  m_EditorClassIdentifier: 
+  category: {fileID: 11400000, guid: 88b6d2e3881dcaa4890c659c1e6ed844, type: 2}
+  icon: {fileID: 0}
+  codeName: BUILDER
+  displayName: "\uC778\uBD80\uC758 \uBD80\uD0C1"
+  description: "\uC778\uBD80\uC758 \uBD80\uD0C1\uC744 \uB4E4\uC5B4\uC8FC\uACE0 \uC815\uBCF4\uB97C
+    \uC5BB\uC790"
+  taskGroups:
+  - tasks:
+    - {fileID: 11400000, guid: 0b505f24a5c002a419c7a39197011ccb, type: 2}
+  - tasks:
+    - {fileID: 11400000, guid: 751c28b4464dbd445a932669dbdec84b, type: 2}
+  - tasks:
+    - {fileID: 11400000, guid: 555ac4a29c366954a8dc6556842bc955, type: 2}
+  rewards:
+  - {fileID: 11400000, guid: c30ba4d018b0c434b88ebfd1cac4ade5, type: 2}
+  useAutoComplete: 1
+  isCancelable: 0
+  isSavable: 0
+  acceptionConditions: []
+  cancelConditons: []

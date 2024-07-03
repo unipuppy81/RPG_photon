@@ -11,7 +11,7 @@ public class DialogueManager : Singleton<DialogueManager>
 
     public TextMeshProUGUI objectName;
     public TextMeshProUGUI talkText;
-    public Image portraitImg;
+
     public GameObject talkPanel;
     public GameObject scanObject;
     public bool isAction;
@@ -37,7 +37,7 @@ public class DialogueManager : Singleton<DialogueManager>
     void Talk(int id, bool isNpc, string name)
     {
         // Set Talk Data
-        int questTalkIndex = questManager.GetQuestTalkIndex(id);
+        int questTalkIndex = questManager.GetQuestTalkIndex();
         string talkData = talkManager.GetTalk(id + questTalkIndex, talkIndex);
 
         // End Talk
@@ -45,8 +45,8 @@ public class DialogueManager : Singleton<DialogueManager>
         {
             isAction = false;
             talkIndex = 0;
+            questManager.CheckQuest(id);  // 퀘스트 상태 갱신
 
-            //Debug.Log(questManager.CheckQuest(id));  // 현재 퀘스트명 반환
             return;
         }
 

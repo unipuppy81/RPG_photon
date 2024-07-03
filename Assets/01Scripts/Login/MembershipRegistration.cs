@@ -72,7 +72,9 @@ public class MembershipManager : MonoBehaviourPunCallbacks
 
                 // PhotonNetwork에 닉네임 설정 및 연결
                 PhotonNetwork.NickName = nickname;
-                PhotonNetwork.ConnectUsingSettings();
+
+                PhotonNetwork.LoadLevel("GameScene"); // 게임 씬으로 전환
+                //PhotonNetwork.ConnectUsingSettings();
 
                 loginButton.interactable = false;
             }
@@ -135,7 +137,7 @@ public class MembershipManager : MonoBehaviourPunCallbacks
         nicknameInput.text = "";
     }
 
-
+    /*
     public override void OnConnectedToMaster()
     {
         StatusText.text = "서버와 연결 됨";
@@ -182,5 +184,5 @@ public class MembershipManager : MonoBehaviourPunCallbacks
         //LoadingSceneController.LoadScene("GameScene");
         PhotonNetwork.LoadLevel("GameScene"); // 게임 씬으로 전환
     }
-
+    */
 }

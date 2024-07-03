@@ -15,7 +15,7 @@ public class LoginManager : MonoBehaviourPunCallbacks
     {
         startButton.onClick.AddListener(OnLoginButtonClicked);
         PhotonNetwork.AutomaticallySyncScene = true;
-        PhotonNetwork.GameVersion = "v1.0";
+        //PhotonNetwork.GameVersion = "v1.0";
     }
 
     void OnLoginButtonClicked()
@@ -28,7 +28,8 @@ public class LoginManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.NickName = NickNameInput.text;
         StatusText.text = "마스터 서버에 접속중...";
-        PhotonNetwork.ConnectUsingSettings();
+        PhotonNetwork.LoadLevel("GameScene"); // 게임 씬으로 전환
+        //PhotonNetwork.ConnectUsingSettings();
         startButton.interactable = false;
     }
 
@@ -72,12 +73,15 @@ public class LoginManager : MonoBehaviourPunCallbacks
     public override void OnCreatedRoom()
     {
         Debug.Log("Room created successfully");
+        PhotonNetwork.LoadLevel("GameScene"); // 게임 씬으로 전환
     }
 
+    /*
     public override void OnJoinedRoom()
     {
         Debug.Log("Joined Room successfully");
         StatusText.text = "방에 접속 완료. 게임을 시작합니다...";
-        PhotonNetwork.LoadLevel("GameScene"); // 게임 씬으로 전환
+        //PhotonNetwork.LoadLevel("GameScene"); // 게임 씬으로 전환
     }
+    */
 }
