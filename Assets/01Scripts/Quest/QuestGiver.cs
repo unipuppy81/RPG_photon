@@ -8,16 +8,31 @@ public class QuestGiver : MonoBehaviour
     [SerializeField]
     private Quest[] quests;
 
+    [SerializeField]
+    private Achievement[] achievements;
+
     private void Start()
     {
+        StartCoroutine(DelayedSetup());
+    }
+
+    private IEnumerator DelayedSetup()
+    {
+        yield return new WaitUntil(() => GameManager.isPlayGame);
+
+        yield return new WaitForSeconds(1.0f);
+
         QuestSetting();
+        AchievementSetting();
+
     }
 
     private void QuestSetting()
     {
         foreach (var quest in quests)
         {
-            if (quest.IsAcceptable && !QuestSystem.Instance.ContainsInCompleteQuests(quest))
+            if (quest.IsAcceptable && !QuestSystem.Instance.ContainsInCompleteQuests(quest) 
+                && !QuestSystem.Instance.ContainsInActiveQuests(quest))
                 QuestSystem.Instance.Register(quest);
 
             DelQuest();
@@ -46,5 +61,20 @@ public class QuestGiver : MonoBehaviour
         }
 
         quests = questList.ToArray();
+    }
+
+    private void AchievementSetting()
+    {
+        foreach (var achievement in achievements)
+        {
+            if (!achievement.IsRegistered && !QuestSystem.Instance.ContainsInCompleteAchievement(achievement)
+                && !QuestSystem.Instance.ContainsInActiveAchievement(achievement))
+            {
+                QuestSystem.Instance.Register(achievement);
+            }
+
+
+            DelQuest();
+        }
     }
 }

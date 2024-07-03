@@ -80,6 +80,9 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     [Header("Attack var")]
     public bool isNormalAttack = false;
     public bool isUsingSkill = false;
+    private bool isAttacking = false;
+    public float skillDuration = 3f;
+    public float attackInterval = 0.5f;
 
     public float attackRadius = 2f;
     public LayerMask enemyLayer;
@@ -338,20 +341,37 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
     public void Skill()
     {
-        // 주변의 적 탐지
-        Collider[] hitEnemies = Physics.OverlapSphere(transform.position, attackRadius, enemyLayer);
+        if(!isAttacking)
+            StartCoroutine(AttackRoutine());
+    }
 
-        // 탐지된 적들에게 데미지 주기
-        foreach (Collider enemy in hitEnemies)
+    IEnumerator AttackRoutine()
+    {
+        isAttacking = true;
+        float elapsed = 0f;
+
+        while (elapsed < skillDuration)
         {
-            Enemy enemyScript = enemy.GetComponent<Enemy>();
-            PhotonView photonView = enemy.GetComponent<PhotonView>();
+            // 주변의 적 탐지
+            Collider[] hitEnemies = Physics.OverlapSphere(transform.position, attackRadius, enemyLayer);
 
-            if (enemyScript != null)
+            // 탐지된 적들에게 데미지 주기
+            foreach (Collider enemy in hitEnemies)
             {
-                photonView.RPC("TakeDamage", RpcTarget.All, Atk);
+                Enemy enemyScript = enemy.GetComponent<Enemy>();
+                PhotonView photonView = enemy.GetComponent<PhotonView>();
+
+                if (enemyScript != null)
+                {
+                    photonView.RPC("TakeDamage", RpcTarget.All, Atk);
+                }
             }
+
+            elapsed += attackInterval;
+            yield return new WaitForSeconds(attackInterval);
         }
+
+        isAttacking = false;
     }
 
     public void FinishSkill()

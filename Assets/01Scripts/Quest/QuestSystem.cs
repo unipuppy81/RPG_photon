@@ -41,10 +41,14 @@ public class QuestSystem : MonoBehaviour
         }
     }
 
+    [SerializeField]
     private List<Quest> activeQuests = new List<Quest>();
+    [SerializeField]
     private List<Quest> completedQuests = new List<Quest>();
 
+    [SerializeField]
     private List<Quest> activeAchievements = new List<Quest>();
+    [SerializeField]
     private List<Quest> completedAchievements = new List<Quest>();
 
     [SerializeField]
@@ -74,7 +78,17 @@ public class QuestSystem : MonoBehaviour
         achievementDatabase = Resources.Load<QuestDatabase>("AchievementDatabase");
 
 
+        if (questDatabase == null)
+        {
+            Debug.LogError("QuestDatabase not found!");
+        }
+
         if (achievementDatabase == null)
+        {
+            Debug.LogError("AchievementDatabase not found!");
+        }
+
+        if (achievementDatabase == null || questDatabase == null)
             return;
     }
 
@@ -106,10 +120,18 @@ public class QuestSystem : MonoBehaviour
     /// <returns></returns>
     public Quest Register(Quest quest)
     {
+        if (quest == null)
+        {
+            Debug.LogError("Quest is null.");
+            return null;
+        }
+
         var newQuest = quest.Clone();
 
         if(newQuest is Achievement)
         {
+            Debug.Log("Achievement Register : " + newQuest.DisplayName);
+
             newQuest.onCanceled += OnAchievementcompleted;
 
             activeAchievements.Add(newQuest);
@@ -119,6 +141,7 @@ public class QuestSystem : MonoBehaviour
         }
         else
         {
+            Debug.Log("Quest Register : " + newQuest.DisplayName);
             newQuest.onCompleted += OnQuestCompleted;
             newQuest.onCanceled += OnQuestCanceled;
 
@@ -198,8 +221,8 @@ public class QuestSystem : MonoBehaviour
             LoadSaveDatas(root[kActiveQuestsSavePath], questDatabase, LoadActiveQuest);
             LoadSaveDatas(root[kCompletedQuestsSavePath], questDatabase, LoadCompletedQuest);
 
-            LoadSaveDatas(root[kActiveAchievementsSavePath], questDatabase, LoadActiveQuest);
-            LoadSaveDatas(root[kCompletedAchievementsSavePath], questDatabase, LoadCompletedQuest);
+            LoadSaveDatas(root[kActiveAchievementsSavePath], achievementDatabase, LoadActiveQuest);
+            LoadSaveDatas(root[kCompletedAchievementsSavePath], achievementDatabase, LoadCompletedQuest);
 
             return true;
         }
@@ -225,10 +248,22 @@ public class QuestSystem : MonoBehaviour
     private void LoadSaveDatas(JToken datasToken, QuestDatabase database, System.Action<QuestSaveData, Quest> onSuccess)
     {
         var datas = datasToken as JArray;
-        foreach(var data in datas)
+        if (datas == null)
+        {
+            Debug.LogError("DatasToken is not a JArray.");
+            return;
+        }
+
+        foreach (var data in datas)
         {
             var saveDatas = data.ToObject<QuestSaveData>();
             var quest = database.FindQuestBy(saveDatas.codeName);
+            if (quest == null)
+            {
+                Debug.LogError($"Quest not found in database: {saveDatas.codeName}");
+                continue;
+            }
+
             onSuccess.Invoke(saveDatas, quest);
         }
     }

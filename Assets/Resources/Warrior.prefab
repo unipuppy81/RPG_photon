@@ -2048,6 +2048,8 @@ MonoBehaviour:
   curHealth: 0
   isNormalAttack: 0
   isUsingSkill: 0
+  skillDuration: 3
+  attackInterval: 0.5
   attackRadius: 2
   enemyLayer:
     serializedVersion: 2

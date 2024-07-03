@@ -19,7 +19,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     bool activeShop = false;
     bool activeRealShop = false; 
     bool activeQuest = false;
-    bool activeAchievement = false;
+    bool activeAchievement = true;
 
 
     private void Start()
