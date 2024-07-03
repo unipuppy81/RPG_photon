@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using EnemyState;
-
-
+using TMPro;
 
 public class Enemy : Monster
 {
@@ -28,6 +27,10 @@ public class Enemy : Monster
     [Header("Photon")]
     public PhotonView enemyPhotonview;
     public int photonviewID;
+
+    [SerializeField]
+    private GameObject damageText;
+    private TextMeshPro dText;
 
     [Header("Enemy Stats")]
     public float curhealth; // 현재 체력
@@ -54,13 +57,14 @@ public class Enemy : Monster
     [Header("Quest")]
     public UnityEngine.Events.UnityEvent onDead;
 
+
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _curState = EnemyState.Idle;
         _fsmEnemy = new FSMEnemy(new IdleState(this));
 
-
+        dText = damageText.GetComponent<TextMeshPro>();
 
         isReturn = false;
 
@@ -264,11 +268,49 @@ public class Enemy : Monster
     public void TakeDamage(float attack)
     {
         float damage = CombatCalculator.CalculateDamage(attack, Def);
-        curhealth -= damage;
+        float ceilDamage = Mathf.Ceil(damage);
+        curhealth -= ceilDamage;
+
+        damageText.SetActive(true);
+
+        dText.text = ceilDamage.ToString();
+        
+        StartCoroutine(FadeOutText());
+
+
         if (isDie())
         {
             ChangeState(EnemyState.Die);
         }
+    }
+
+    private IEnumerator FadeOutText()
+    {
+        float duration = .8f;
+        float elapsedTime = 0f;
+
+        Vector3 originalPosition = dText.transform.position;
+        Color originalColor = dText.color;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / duration);
+            float offsetY = Mathf.Lerp(0f, .1f, elapsedTime / duration);
+
+            dText.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+            dText.transform.position = originalPosition + new Vector3(0f, offsetY, 0f);
+
+            yield return null;
+        }
+
+        // After fading out, reset the text position and hide it
+        dText.transform.position = originalPosition;
+        dText.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
+
+        // Reset damageText position and deactivate it
+        damageText.transform.localPosition = Vector3.zero;
+        damageText.SetActive(false);
     }
 
     public void Die()
