@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
+using UnityEngine.UI;
 
 public enum Character_Type { Warrior = 0, Mage, Boxer }
 public enum State { Idle = 0, Walk, Run, Warrior_Skill, Die }
@@ -16,7 +18,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     public Rigidbody _rigidbody;
     public Transform _transform;
     public Animator _animator;
-    public GameObject _textMeshProUGUI;
+
 
 
 
@@ -117,6 +119,14 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     public bool isCommunicate = false;
     public bool isPressBtnE = false;
 
+
+    [Header("UI")]
+    public GameObject _textMeshProUGUI;
+    [SerializeField]
+    private Slider healthSlider;
+    [SerializeField]
+    private GameObject damageTextPrefab;
+
     void Start()
     {
         _photonView = GetComponent<PhotonView>();
@@ -214,6 +224,8 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
         curHealth = MaxHp;
 
+        UpdateHealthSlider();
+        
         GameManager.isPlayGame = true;
     }
 
@@ -473,8 +485,22 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
         curHealth -= ceilDamage;
 
-        // 데미지 텍스트
 
+        // 데미지 텍스트
+        Canvas canva = GetComponentInChildren<Canvas>();
+
+        GameObject damageUI = Instantiate(damageTextPrefab) as GameObject;
+        //GameObject damageUI = PhotonNetwork.Instantiate("DamageText", 
+        //    new Vector3(transform.position.x, transform.position.y + 1.2f, transform.position.z), Quaternion.identity);
+
+        damageUI.transform.SetParent(canva.transform, false);
+
+        DamageText dText = damageUI.GetComponent<DamageText>();
+        dText.SetDamage(ceilDamage);
+        
+
+        // 체력바
+        StartCoroutine(SmoothHealthChange(ceilDamage));
 
         if (isDie())
         {
@@ -482,6 +508,22 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         }
     }
 
+    private IEnumerator SmoothHealthChange(float damage)
+    {
+        float targetValue = curHealth / maxHp;
+        float startValue = healthSlider.value;
+        float duration = 0.5f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            healthSlider.value = Mathf.Lerp(startValue, targetValue, elapsed / duration);
+            yield return null;
+        }
+
+        healthSlider.value = targetValue;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -498,6 +540,15 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
             isSafe = false;
         }
     }
+
+    /// <summary>
+    /// UI
+    /// </summary>
+    private void UpdateHealthSlider()
+    {
+        healthSlider.value = curHealth / maxHp;
+    }
+
     /// <summary>
     /// 멀리 떨어진 객체는 패킷을 받지 않습니다. -> 네트워크 트래픽 최적화
     /// </summary>

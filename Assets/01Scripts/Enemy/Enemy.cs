@@ -282,9 +282,6 @@ public class Enemy : Monster
         {
             if (hit.CompareTag("Player"))
             {
-                // 공격 애니메이션 트리거
-                //_animator.SetTrigger("Attack");
-
                 // 플레이어의 체력 감소
                 Character_Warrior playerHealth = hit.GetComponent<Character_Warrior>();
 
