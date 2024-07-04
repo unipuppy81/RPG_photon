@@ -44,7 +44,9 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     private float walkSpeed;    // 걸을 때 속도
     private float runSpeed;     // 뛸 때 속도
 
-    float currentSpeed;
+    [SerializeField]
+    private float currentSpeed;
+    
     public float MaxHp
     {
         set => maxHp = value;
@@ -193,6 +195,8 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     {
         StartCoroutine(DelayedSetup());
 
+
+
         TextMeshPro tmp = _textMeshProUGUI.GetComponent<TextMeshPro>();
 
         if (_photonView.IsMine)
@@ -208,6 +212,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         _photonView.RPC("SetStats", RpcTarget.All);
         _photonView.RPC("Setup", RpcTarget.All);
 
+        curHealth = MaxHp;
 
         GameManager.isPlayGame = true;
     }
@@ -442,13 +447,6 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         Invoke("FinishSkill", 2.5f);
     }
 
-
-    public void Die()
-    {
-        ChangeState(State.Die);
-        Debug.Log("Player Die");
-    }
-
     public bool isDie()
     {
         return curHealth <= 0;
@@ -471,10 +469,16 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     public void TakeDamage(float attack)
     {
         float damage = CombatCalculator.CalculateDamage(attack, Def);
-        curHealth -= damage;
+        float ceilDamage = Mathf.Ceil(damage);
+
+        curHealth -= ceilDamage;
+
+        // 데미지 텍스트
+
+
         if (isDie())
         {
-            Die();
+            ChangeState(State.Die);
         }
     }
 

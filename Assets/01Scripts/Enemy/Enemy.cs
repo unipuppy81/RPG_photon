@@ -58,6 +58,7 @@ public class Enemy : Monster
     public float chaseRange = 7f;
     public LayerMask targetLayer;
     public Transform target;
+    private bool isAttacking = false;
 
     private Vector3 spawnPosition; // 초기 스폰 위치
     private bool isReturn;
@@ -258,7 +259,7 @@ public class Enemy : Monster
         if (target == null) return false;
 
         // 플레이어를 공격할 수 있는 조건 (예: 사정거리 안에 있는지)
-        float attackRange = 2f; // 예시로 공격 사정거리를 2로 설정
+        float attackRange = 1f;
         float distanceToTarget = Vector3.Distance(transform.position, target.position);
         return distanceToTarget <= attackRange;
     }
@@ -267,7 +268,36 @@ public class Enemy : Monster
     {
         if (target == null) return;
 
-        // 플레이어를 공격하는 로직
+        if (!isAttacking)
+        {
+            StartCoroutine(AttackRoutine());
+        }
+    }
+    private IEnumerator AttackRoutine()
+    {
+        isAttacking = true;
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, 1.25f);
+        foreach (Collider hit in hits)
+        {
+            if (hit.CompareTag("Player"))
+            {
+                // 공격 애니메이션 트리거
+                //_animator.SetTrigger("Attack");
+
+                // 플레이어의 체력 감소
+                Character_Warrior playerHealth = hit.GetComponent<Character_Warrior>();
+
+                if (playerHealth != null)
+                {
+                    playerHealth._photonView.RPC("TakeDamage", RpcTarget.All, Atk);
+                }
+            }
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        isAttacking = false;
     }
 
     /// <summary>
