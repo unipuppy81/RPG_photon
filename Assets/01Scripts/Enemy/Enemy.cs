@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using EnemyState;
+using UnityEngine.UI;
 using TMPro;
 
 public class Enemy : Monster
@@ -28,12 +29,20 @@ public class Enemy : Monster
     public PhotonView enemyPhotonview;
     public int photonviewID;
 
+    [Header("UI")]
     [SerializeField]
     private GameObject damageText;
     private TextMeshPro dText;
+    private bool isFadingOut = false;
+    private Camera cam;
+    private Transform hp;
+
+    [SerializeField]
+    private Slider healthSlider;
+
 
     [Header("Enemy Stats")]
-    public float curhealth; // 현재 체력
+    public float curHealth; // 현재 체력
     public float maxHealth; // 최대 체력
 
     private float healthRegenInterval = 1f; // 체력 회복 간격 (1초)
@@ -66,7 +75,12 @@ public class Enemy : Monster
 
         dText = damageText.GetComponent<TextMeshPro>();
 
+        cam = Camera.main;
+        hp = healthSlider.gameObject.transform;
+
         isReturn = false;
+        curHealth = maxHealth;
+        UpdateHealthSlider();
 
         spawnPosition = transform.position; // 스폰 위치 저장
     }
@@ -136,6 +150,12 @@ public class Enemy : Monster
     {
         enemyPhotonview = GetComponent<PhotonView>();
         photonviewID = enemyPhotonview.ViewID;
+    }
+
+
+    private void UpdateHealthSlider()
+    {
+        healthSlider.value = curHealth / maxHealth;
     }
 
 
@@ -257,8 +277,8 @@ public class Enemy : Monster
     {
         if (Time.time >= lastHealthRegenTime + healthRegenInterval)
         {
-            curhealth += healMount; // 체력 50 회복
-            curhealth = Mathf.Clamp(curhealth, 0, maxHealth); // 최대 체력을 넘지 않도록 제한
+            curHealth += healMount; // 체력 50 회복
+            curHealth = Mathf.Clamp(curHealth, 0, maxHealth); // 최대 체력을 넘지 않도록 제한
             lastHealthRegenTime = Time.time; // 마지막 체력 회복 시간 갱신
         }
     }
@@ -269,14 +289,19 @@ public class Enemy : Monster
     {
         float damage = CombatCalculator.CalculateDamage(attack, Def);
         float ceilDamage = Mathf.Ceil(damage);
-        curhealth -= ceilDamage;
+        curHealth -= ceilDamage;
 
         damageText.SetActive(true);
 
-        dText.text = ceilDamage.ToString();
-        
-        StartCoroutine(FadeOutText());
 
+        dText.text = ceilDamage.ToString();
+
+        if (!isFadingOut)
+        {
+            StartCoroutine(FadeOutText());
+        }
+
+        StartCoroutine(SmoothHealthChange(ceilDamage));
 
         if (isDie())
         {
@@ -286,6 +311,8 @@ public class Enemy : Monster
 
     private IEnumerator FadeOutText()
     {
+        isFadingOut = true;
+
         float duration = .8f;
         float elapsedTime = 0f;
 
@@ -305,17 +332,37 @@ public class Enemy : Monster
         }
 
         // After fading out, reset the text position and hide it
-        dText.transform.position = originalPosition;
+        dText.transform.position = new Vector3(transform.position.x, 1f, transform.position.z);
         dText.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
 
         // Reset damageText position and deactivate it
-        damageText.transform.localPosition = Vector3.zero;
+        damageText.transform.localPosition = new Vector3(0, 1.2f, 0);
         damageText.SetActive(false);
+
+        isFadingOut = false;
     }
 
+    private IEnumerator SmoothHealthChange(float damage)
+    {
+        float targetValue = curHealth / maxHealth;
+        float startValue = healthSlider.value;
+        float duration = 0.5f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            healthSlider.value = Mathf.Lerp(startValue, targetValue, elapsed / duration);
+            yield return null;
+        }
+
+        healthSlider.value = targetValue;
+    }
     public void Die()
     {
         _animator.SetTrigger("isDie");
+
+        Destroy(healthSlider);
 
         Vector3 hitPoint = transform.position;
         hitPoint.y += 0.5f;
@@ -343,7 +390,7 @@ public class Enemy : Monster
 
     public bool isDie()
     {
-        return curhealth <= 0;
+        return curHealth <= 0;
     }
 
     public void ReturnToSpawn()
