@@ -1,6 +1,8 @@
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
+using UnityEngine.UI;
 
 public class CharacterClickHandler : MonoBehaviourPun
 {
@@ -9,6 +11,41 @@ public class CharacterClickHandler : MonoBehaviourPun
     public PhotonView myPV;
 
     private PhotonView clickedPhotonView; // 클릭한 플레이어의 PhotonView
+
+    [Header("Information")]
+    [SerializeField]
+    private GameObject informationPanel;
+
+    [SerializeField]
+    private Button informationBtn;
+    [SerializeField]
+    private Button exitInformationBtn;
+
+    [SerializeField]
+    private TextMeshProUGUI _nameText;
+    [SerializeField]
+    private TextMeshProUGUI _hpText;
+    [SerializeField]
+    private TextMeshProUGUI _atkText;
+    [SerializeField]
+    private TextMeshProUGUI _defText;
+    [SerializeField]
+    private TextMeshProUGUI _speedText;
+    
+
+
+    private string informationName;
+    private float informationMaxHp;
+    private float informationAtk;
+    private float informationDef;
+    private float informationSpeed;
+
+
+    private void Start()
+    {
+        informationBtn.onClick.AddListener(InformationButton);
+        exitInformationBtn.onClick.AddListener(ExitInformationPanel);
+    }
 
     private void Update()
     {
@@ -35,9 +72,37 @@ public class CharacterClickHandler : MonoBehaviourPun
                     // UI 패널 위치 설정
                     uiPanel.GetComponent<RectTransform>().localPosition = localPoint;
                     uiPanel.SetActive(true);
+
+
+                    Character_Warrior cw = hit.collider.gameObject.GetComponent<Character_Warrior>();
+                    informationMaxHp = cw.MaxHp;
+                    informationAtk= cw.Atk; 
+                    informationDef= cw.Def;
+                    informationName = clickedPhotonView.Owner.NickName;
+
+                    InformationSet(informationName, informationMaxHp, informationDef, informationAtk, informationSpeed);
                 }
             }
         }
+    }
+
+    private void InformationButton()
+    {
+        informationPanel.SetActive(true);
+    }
+
+    private void ExitInformationPanel()
+    {
+        informationPanel.SetActive(false);
+    }
+
+    private void InformationSet(string _name, float _maxHp, float _atk, float _def, float _speed)
+    {
+        _nameText.text = "닉네임 : " + _name.ToString();
+        _hpText.text = "HP : " + _maxHp.ToString();
+        _atkText.text = "Atk : " + _atk.ToString();
+        _defText.text = "Def : " + _def.ToString();
+        _speedText.text = "Speed : " + _speed.ToString();
     }
 
     // 거래 제안 버튼 클릭 시 호출될 메서드

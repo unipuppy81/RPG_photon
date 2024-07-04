@@ -11,8 +11,24 @@ public class TradeManager : MonoBehaviourPunCallbacks
     public GameObject yesornoPanel;
     public GameObject tradePanel;
     public TextMeshProUGUI nameText;
-    public Button acceptButton;
-    public Button rejectButton;
+
+    [Header("PlayerSelect")]
+    [SerializeField]
+    private GameObject totalPlayerSelectPanel;
+    [SerializeField]
+    private Button informationButton;
+    [SerializeField]
+    private Button tradeButton;
+    [SerializeField]
+    private Button exitButton;
+
+    [Header("Request")]
+    [SerializeField]
+    private Button acceptButton;
+    [SerializeField]
+    private Button rejectButton;
+
+
 
     private Player tradeInitiator; // 거래를 시작한 플레이어
     private Player clickedPlayer; // 거래를 제안 받은 플레이어
@@ -36,6 +52,15 @@ public class TradeManager : MonoBehaviourPunCallbacks
         pv = GetComponent<PhotonView>();
         acceptButton.onClick.AddListener(OnAcceptTrade);
         rejectButton.onClick.AddListener(OnRejectTrade);
+
+
+        exitButton.onClick.AddListener(ExitButton);
+    }
+
+    // 나가기
+    private void ExitButton()
+    {
+        totalPlayerSelectPanel.SetActive(false);
     }
 
     // 거래 요청 받기
