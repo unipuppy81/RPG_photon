@@ -4,10 +4,10 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UIElements;
 
-public class UIManager : MonoBehaviourPunCallbacks
+public class UIManager : SingletonPhoton<UIManager>
 {
     [SerializeField] private GameObject _InventoryPanel;
-    [SerializeField] private GameObject _EqipmentPanel;
+    [SerializeField] private GameObject _EquipmentPanel;
     [SerializeField] private GameObject _ShopPanel;
     [SerializeField] private GameObject _RealShopPanel;
     [SerializeField] private GameObject characterListUI;
@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject _AchievementPanel;
 
     bool activeInventory = false;
-    bool activeEquipment = false;
+    bool activeEquipment = true;
     bool activeShop = false;
     bool activeRealShop = false; 
     bool activeQuest = false;
@@ -25,7 +25,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         _InventoryPanel.SetActive(activeInventory);
-        _EqipmentPanel.SetActive(activeEquipment);
+        _EquipmentPanel.SetActive(activeEquipment);
         _ShopPanel.SetActive(activeShop);
         _QuestPanel.SetActive(activeQuest);
         _AchievementPanel.SetActive(activeAchievement);
@@ -43,7 +43,7 @@ public class UIManager : MonoBehaviourPunCallbacks
             else if (Input.GetKeyDown(KeyCode.O))
             {
                 activeEquipment = !activeEquipment;
-                _EqipmentPanel.SetActive(activeEquipment);
+                _EquipmentPanel.SetActive(activeEquipment);
             }
             else if (Input.GetKeyDown(KeyCode.N))
             {
@@ -66,6 +66,12 @@ public class UIManager : MonoBehaviourPunCallbacks
                 _AchievementPanel.SetActive(activeAchievement);
             }
         }
+    }
+
+    public void CloseEquip()
+    {
+        activeEquipment = false;
+        _EquipmentPanel.SetActive(activeEquipment);
     }
 
     public void CloseUIPanel()

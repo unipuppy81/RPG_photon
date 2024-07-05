@@ -225,7 +225,10 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         curHealth = MaxHp;
 
         UpdateHealthSlider();
-        
+
+        EquipmentSetValue.Instance.setValue(PhotonNetwork.NickName, MaxHp, Atk, Def, walkSpeed);
+        UIManager.Instance.CloseEquip();
+
         GameManager.isPlayGame = true;
     }
 

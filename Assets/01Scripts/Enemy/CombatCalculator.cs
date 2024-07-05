@@ -10,8 +10,6 @@ public static class CombatCalculator
     {
         float damage = attack * (1 - (defense / (defense + defenseAdjustment)));
 
-        Debug.Log(damage);
-
         return Mathf.Max(0, damage);
     }
 }

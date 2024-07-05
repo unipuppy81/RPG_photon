@@ -78,6 +78,9 @@ public class DroppableUI : MonoBehaviour, IPointerEnterHandler, IDropHandler, IP
             slot.enabled = false;
             tmp.text = "";
             canvasGroup.alpha = 1.0f;
+
+            // CheckEquipItem »£√‚
+            EquipmentSetValue.Instance.CheckEquipItem(slot.itemName);
         }
 
     }
