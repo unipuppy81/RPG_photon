@@ -50,8 +50,6 @@ public class EquipmentSetValue : Singleton<EquipmentSetValue>
         atk = _atk;
         def = _def;
         speed = _speed;
-
-        //UpdateStats();
     }
 
     public void CheckEquipItem(string _itemName)

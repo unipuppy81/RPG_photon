@@ -78,6 +78,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     public float MovementSpeed;
     public float curHealth;
 
+
     /// <summary>
     /// 공격 변수
     /// </summary>
@@ -227,8 +228,12 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         UpdateHealthSlider();
 
         EquipmentSetValue.Instance.setValue(PhotonNetwork.NickName, MaxHp, Atk, Def, walkSpeed);
-        UIManager.Instance.CloseEquip();
 
+        GameManager.Instance.playerName = PhotonNetwork.NickName;
+        GameManager.Instance.LoadGold(PhotonNetwork.NickName);
+
+
+        UIManager.Instance.CloseEquip();
         GameManager.isPlayGame = true;
     }
 
@@ -383,7 +388,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
                 if (enemyScript != null)
                 {
-                    photonView.RPC("TakeDamage", RpcTarget.All, Atk);
+                    photonView.RPC("TakeDamage", RpcTarget.All, Atk, _photonView.ViewID);
                 }
             }
 
@@ -425,6 +430,13 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
                 return;
             }
         }
+    }
+
+
+    [PunRPC]
+    public void AddGold(int amount)
+    {
+        GameManager.Instance.ChangeGold(PhotonNetwork.NickName, amount);
     }
 
     /// <summary>

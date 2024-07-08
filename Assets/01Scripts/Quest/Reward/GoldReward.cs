@@ -7,8 +7,6 @@ public class GoldReward : Reward
 {
     public override void Give(Quest quest)
     {
-        GameManager.Instance.AddGold(Quantity);
-        PlayerPrefs.SetInt("bonusGold", Quantity);
-        PlayerPrefs.Save();
+        GameManager.Instance.ChangeGold(Quantity);
     }
 }

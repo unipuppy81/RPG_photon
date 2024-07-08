@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class UIManager : SingletonPhoton<UIManager>
 {
@@ -13,8 +13,10 @@ public class UIManager : SingletonPhoton<UIManager>
     [SerializeField] private GameObject characterListUI;
     [SerializeField] private GameObject _QuestPanel;
     [SerializeField] private GameObject _AchievementPanel;
+    [SerializeField] private Image _chatPanel;
 
-    bool activeInventory = false;
+
+    bool activeInventory = true;
     bool activeEquipment = true;
     bool activeShop = false;
     bool activeRealShop = false; 
@@ -71,7 +73,9 @@ public class UIManager : SingletonPhoton<UIManager>
     public void CloseEquip()
     {
         activeEquipment = false;
+        activeInventory = false;
         _EquipmentPanel.SetActive(activeEquipment);
+        _InventoryPanel.SetActive(activeInventory);
     }
 
     public void CloseUIPanel()

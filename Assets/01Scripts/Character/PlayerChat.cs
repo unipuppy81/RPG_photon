@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 using TMPro;
 
@@ -12,6 +13,7 @@ public class PlayerChat : MonoBehaviourPunCallbacks
     public GameObject ChatInput;
     private TMP_InputField inputField;
 
+    private Image chatImage;
 
     [Header("TradeChat")]
     public GameObject tradeChatManager;
@@ -24,9 +26,11 @@ public class PlayerChat : MonoBehaviourPunCallbacks
     {
         networkManager = GameObject.Find("NetworkManager");
         tradeChatManager = GameObject.Find("Canvas").transform.Find("TradePanel").transform.Find("TradeChatPanel").gameObject;
-        
+
         ChatInput = GameObject.Find("Canvas").transform.Find("ChatPanel").transform.Find("ChatInputView").gameObject;
         tradeChatInput = GameObject.Find("Canvas").transform.Find("TradePanel").transform.Find("TradeChatPanel").transform.Find("TradeChatInput").gameObject;
+
+        chatImage = GameObject.Find("Canvas").transform.Find("ChatPanel").gameObject.GetComponent<Image>();
 
         view = this.GetComponent<PhotonView>();
  
@@ -45,8 +49,9 @@ public class PlayerChat : MonoBehaviourPunCallbacks
                 if (ChatInput.activeSelf == false)
                 {
                     ChatInput.SetActive(true);
+                    chatImage.color = new Color(chatImage.color.r, chatImage.color.g, chatImage.color.b, 0.75f);
                     inputField.Select();
-                    inputField.ActivateInputField();
+                    inputField.ActivateInputField();         
                     GameManager.isChatting = true;
                 }
                 else
@@ -54,6 +59,7 @@ public class PlayerChat : MonoBehaviourPunCallbacks
                     networkManager.GetComponent<NetworkManager>().Send();
                     inputField.DeactivateInputField();
                     ChatInput.SetActive(false);
+                    chatImage.color = new Color(chatImage.color.r, chatImage.color.g, chatImage.color.b, 1.0f);
                     GameManager.isChatting = false;
                 }
             }

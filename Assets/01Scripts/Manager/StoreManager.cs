@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+
 public class StoreManager : MonoBehaviour
 {
     public List<GameObject> ExplainPanel;
@@ -24,6 +25,96 @@ public class StoreManager : MonoBehaviour
         EquipPanel.SetActive(true);
     }
 
+    private void ShowPanel(string panelName, int checkIndex)
+    {
+        foreach (GameObject t in ExplainPanel)
+        {
+            t.SetActive(t.name == panelName);
+        }
+
+        for (int i = 0; i < check.Count; i++)
+        {
+            check[i].SetActive(i == checkIndex);
+        }
+    }
+
+    // Consume
+    public void Potion()
+    {
+        ShowPanel("PotionPanel", 0);
+    }
+
+    public void Meat()
+    {
+        ShowPanel("MeatPanel", 1);
+    }
+
+    // Equipment
+    public void NormalSword()
+    {
+        ShowPanel("NormalSwordPanel", 2);
+    }
+
+    public void NormalPant()
+    {
+        ShowPanel("NormalPantsPanel", 3);
+    }
+
+    public void NormalHelmet()
+    {
+        ShowPanel("NormalHelmetPanel", 4);
+    }
+
+    public void NormalGloves()
+    {
+        ShowPanel("NormalGlovesPanel", 5);
+    }
+
+    public void NormalChest()
+    {
+        ShowPanel("NormalChestPanel", 6);
+    }
+
+    public void NormalShoes()
+    {
+        ShowPanel("NormalBootsPanel", 7);
+    }
+
+    // Knight
+    public void KnightSword()
+    {
+        ShowPanel("KnightSwordPanel", 8);
+    }
+
+    public void KnightPant()
+    {
+        ShowPanel("KnightPantsPanel", 9);
+    }
+
+    public void KnightHelmet()
+    {
+        ShowPanel("KnightHelmetPanel", 10);
+    }
+
+    public void KnightGloves()
+    {
+        ShowPanel("KnightGlovesPanel", 11);
+    }
+
+    public void KnightChest()
+    {
+        ShowPanel("KnightChestPanel", 12);
+    }
+
+    public void KnightShoes()
+    {
+        ShowPanel("KnightBootsPanel", 13);
+    }
+
+
+
+
+    /*
     /// <summary>
     /// Consume
     /// </summary>
@@ -256,7 +347,7 @@ public class StoreManager : MonoBehaviour
     {
         foreach (GameObject t in ExplainPanel)
         {
-            if (t.name == "KnightSowrdPanel")
+            if (t.name == "KnightSwordPanel")
             {
                 t.SetActive(true);
             }
@@ -411,4 +502,5 @@ public class StoreManager : MonoBehaviour
             }
         }
     }
+    */
 }

@@ -28,6 +28,7 @@ public class Enemy : Monster
     [Header("Photon")]
     public PhotonView enemyPhotonview;
     public int photonviewID;
+    private PhotonView _lastAttacker;
 
     [Header("UI")]
     [SerializeField]
@@ -66,6 +67,7 @@ public class Enemy : Monster
 
     [Header("Quest")]
     public UnityEngine.Events.UnityEvent onDead;
+    private bool goldRewardGiven = false; // 골드를 지급했는지 여부를 나타내는 변수
 
 
     private void Start()
@@ -145,8 +147,8 @@ public class Enemy : Monster
     private void OnEnable()
     {
         SetStatsEnemy();
-        //photonView.RPC("SetStatsEnemy", RpcTarget.All);
     }
+
     void OnEnabled()
     {
         enemyPhotonview = GetComponent<PhotonView>();
@@ -312,7 +314,7 @@ public class Enemy : Monster
 
 
     [PunRPC]
-    public void TakeDamage(float attack)
+    public void TakeDamage(float attack, int attackerID)
     {
         float damage = CombatCalculator.CalculateDamage(attack, Def);
         float ceilDamage = Mathf.Ceil(damage);
@@ -322,6 +324,8 @@ public class Enemy : Monster
 
 
         dText.text = ceilDamage.ToString();
+
+        _lastAttacker = PhotonView.Find(attackerID);
 
         if (!isFadingOut)
         {
@@ -385,6 +389,7 @@ public class Enemy : Monster
 
         healthSlider.value = targetValue;
     }
+
     public void Die()
     {
         _animator.SetTrigger("isDie");
@@ -396,6 +401,23 @@ public class Enemy : Monster
 
         Destroy(Instantiate(deathEffect.gameObject, hitPoint, Quaternion.FromToRotation(Vector3.up, hitPoint)), deathEffect.main.startLifetimeMultiplier);
 
+        // 나를 죽인 플레이어에게 골드 지급
+        if (_lastAttacker != null && !goldRewardGiven)
+        {
+            int goldReward = Random.Range(50, 200); // minGoldReward와 maxGoldReward 사이의 랜덤 값 생성
+            Debug.Log(_lastAttacker.ViewID);
+            photonView.RPC("RewardGold", _lastAttacker.Owner, goldReward);
+
+            goldRewardGiven = true; // 골드를 지급했음을 표시
+        }
+    }
+
+    [PunRPC]
+    void RewardGold(int gold)
+    {
+        // 플레이어에게 골드를 지급하는 로직 (PlayerController 예시)
+        Character_Warrior playerController = PhotonView.Find(_lastAttacker.ViewID).GetComponent<Character_Warrior>();
+        playerController.AddGold(gold);
     }
 
     // 애니메이션 이벤트로 호출될 메서드

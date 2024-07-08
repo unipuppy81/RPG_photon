@@ -61,8 +61,11 @@ public class SettingPanelManager : MonoBehaviour
         // 슬라이더 값 변경 시 OnBrightnessChange 메서드 호출
         brightnessSlider.onValueChanged.AddListener(OnBrightnessChange);
 
-        brightnessSlider.value = 0f;
+        brightnessSlider.minValue = 30f;
         brightnessSlider.maxValue = 180f;
+        brightnessSlider.value = 130f;
+
+        OnBrightnessChange(brightnessSlider.value);
     }
 
     private void ExitPanelActive()
@@ -92,7 +95,7 @@ public class SettingPanelManager : MonoBehaviour
     {
         // 패널의 투명도 조절
         Color color = brightnessPanel.color;
-        color.a = value / 255f; // 알파 값을 0에서 180 사이로 조절
+        color.a = 1f - (value / 180f);
         brightnessPanel.color = color;
     }
 }
