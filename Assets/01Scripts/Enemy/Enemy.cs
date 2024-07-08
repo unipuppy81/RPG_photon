@@ -20,6 +20,8 @@ public class Enemy : Monster
     [Header("Animator")]
     public Animator _animator;
     public ParticleSystem deathEffect;
+    [SerializeField]
+    private ParticleSystem attackedEffect;
 
     [Header("FSM")]
     public EnemyState _curState;
@@ -326,6 +328,10 @@ public class Enemy : Monster
         dText.text = ceilDamage.ToString();
 
         _lastAttacker = PhotonView.Find(attackerID);
+
+        Destroy(Instantiate(attackedEffect.gameObject, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z),
+    Quaternion.FromToRotation(Vector3.up, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z))),
+    attackedEffect.main.startLifetimeMultiplier);
 
         if (!isFadingOut)
         {

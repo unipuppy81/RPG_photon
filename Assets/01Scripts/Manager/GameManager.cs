@@ -14,6 +14,8 @@ public class GameManager : Singleton<GameManager>
 
     private int gold;
 
+    public GameObject player;
+
     public int Gold
     {
         set => gold = value;
@@ -91,5 +93,35 @@ public class GameManager : Singleton<GameManager>
         SaveGold(playerName, Gold); // 변경된 골드를 저장합니다.
 
         Debug.Log("Gold for " + playerName + ": " + Gold);
+    }
+
+    public void GameSave()
+    {
+        // 플레이어 위치
+        PlayerPrefs.SetFloat("playerX", player.transform.position.x);
+        PlayerPrefs.SetFloat("playerY", player.transform.position.y);
+        PlayerPrefs.SetFloat("playerZ", player.transform.position.z);
+
+        // 퀘스트
+        PlayerPrefs.SetInt("QuestId", QuestManager.Instance.questId);
+        PlayerPrefs.SetInt("QuestActionIndex", QuestManager.Instance.questActionIndex);
+
+        PlayerPrefs.Save();
+    }
+
+    public void GameLoad()
+    {
+        if (!PlayerPrefs.HasKey("playerX"))
+            return;
+
+        float x = PlayerPrefs.GetFloat("playerX");
+        float y = PlayerPrefs.GetFloat("playerY");
+        float z = PlayerPrefs.GetFloat("plaeyrZ");
+        int questId = PlayerPrefs.GetInt("QuestId");
+        int questActionIndex = PlayerPrefs.GetInt("QuestActionIndex");
+
+        player.transform.position = new Vector3(x, y, z);
+        QuestManager.Instance.questId = questId;
+        QuestManager.Instance.questActionIndex = questActionIndex;
     }
 }

@@ -91,6 +91,8 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     public float attackRadius = 2f;
     public LayerMask enemyLayer;
 
+    [SerializeField]
+    private ParticleSystem attackedEffect;
     /// <summary>
     /// FSM 변수
     /// </summary>
@@ -219,10 +221,13 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
         GameManager.Instance.playerName = PhotonNetwork.NickName;
         GameManager.Instance.LoadGold(PhotonNetwork.NickName);
-
+        GameManager.Instance.player = this.gameObject;
+        GameManager.Instance.GameLoad();
 
         UIManager.Instance.CloseEquip();
+
         GameManager.isPlayGame = true;
+
     }
 
     private void FixedUpdate()
@@ -509,7 +514,11 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
         DamageText dText = damageUI.GetComponent<DamageText>();
         dText.SetDamage(ceilDamage);
-        
+
+
+        Destroy(Instantiate(attackedEffect.gameObject, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), 
+            Quaternion.FromToRotation(Vector3.up, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z))),
+            attackedEffect.main.startLifetimeMultiplier);
 
         // 체력바
         StartCoroutine(SmoothHealthChange(ceilDamage));

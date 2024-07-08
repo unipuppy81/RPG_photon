@@ -2241,6 +2241,7 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
+  attackedEffect: {fileID: 3377922575462204864, guid: f89805b2f04b1814fb22540edbce11ca, type: 3}
   dirVec: {x: 0, y: 0, z: 0}
   scanRadius: 2
   scanObject: {fileID: 0}
