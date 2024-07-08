@@ -211,8 +211,6 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     {
         StartCoroutine(DelayedSetup());
 
-
-
         TextMeshPro tmp = _textMeshProUGUI.GetComponent<TextMeshPro>();
 
         if (_photonView.IsMine)

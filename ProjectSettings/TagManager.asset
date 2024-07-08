@@ -7,6 +7,7 @@ TagManager:
   - SafeZone
   - IdlePoint
   - BattleZone
+  - shopNpc
   layers:
   - Default
   - TransparentFX
