@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIManager : SingletonPhoton<UIManager>
 {
@@ -23,26 +24,46 @@ public class UIManager : SingletonPhoton<UIManager>
     bool activeQuest = false;
     bool activeAchievement = true;
 
+    [SerializeField]
+    private TextMeshProUGUI[] text;
 
     private void Start()
     {
-        _InventoryPanel.SetActive(activeInventory);
-        _EquipmentPanel.SetActive(activeEquipment);
-        _ShopPanel.SetActive(activeShop);
-        _QuestPanel.SetActive(activeQuest);
-        _AchievementPanel.SetActive(activeAchievement);
+        InitializeUIPanels();
+
+        TextUpdate();
     }
+    
+    public void TextUpdate()
+    {
+        for (int i = 0; i < text.Length; i++)
+        {
+            text[i].text = KeySetting.keys[(KeyAction)i].ToString();
+        }
+    }
+    
 
     void Update()
     {
-        if(GameManager.isPlayGame && !GameManager.isChatting)
+        if (GameManager.isPlayGame && !GameManager.isChatting)
         {
-            if (Input.GetKeyDown(KeyCode.I))
+            TextUpdate();
+
+            TogglePanel(KeySetting.keys[KeyAction.Inventory], ref activeInventory, _InventoryPanel);
+            TogglePanel(KeySetting.keys[KeyAction.Equip], ref activeEquipment, _EquipmentPanel);
+            TogglePanel(KeySetting.keys[KeyAction.Quest], ref activeQuest, _QuestPanel);
+            TogglePanel(KeySetting.keys[KeyAction.Achievement], ref activeAchievement, _AchievementPanel);
+        }
+
+        /*
+        if (GameManager.isPlayGame && !GameManager.isChatting)
+        {
+            if (Input.GetKeyDown(toggleInventoryKey))
             {
                 activeInventory = !activeInventory;
                 _InventoryPanel.SetActive(activeInventory);
             }
-            else if (Input.GetKeyDown(KeyCode.O))
+            else if (Input.GetKeyDown(toggleEquipmentKey))
             {
                 activeEquipment = !activeEquipment;
                 _EquipmentPanel.SetActive(activeEquipment);
@@ -57,16 +78,35 @@ public class UIManager : SingletonPhoton<UIManager>
                 activeRealShop = !activeRealShop;
                 _RealShopPanel.SetActive(activeRealShop);
             }
-            else if (Input.GetKeyDown(KeyCode.L))
+            else if (Input.GetKeyDown(toggleQuestKey))
             {
                 activeQuest = !activeQuest;
                 _QuestPanel.SetActive(activeQuest);
             }
-            else if (Input.GetKeyDown(KeyCode.K))
+            else if (Input.GetKeyDown(toggleAchievementKey))
             {
                 activeAchievement = !activeAchievement;
                 _AchievementPanel.SetActive(activeAchievement);
             }
+        }
+        */
+    }
+
+    private void InitializeUIPanels()
+    {
+        _InventoryPanel.SetActive(activeInventory);
+        _EquipmentPanel.SetActive(activeEquipment);
+        _ShopPanel.SetActive(activeShop);
+        _QuestPanel.SetActive(activeQuest);
+        _AchievementPanel.SetActive(activeAchievement);
+    }
+
+    private void TogglePanel(KeyCode key, ref bool isActive, GameObject panel)
+    {
+        if (Input.GetKeyDown(key))
+        {
+            isActive = !isActive;
+            panel.SetActive(isActive);
         }
     }
 
@@ -82,4 +122,7 @@ public class UIManager : SingletonPhoton<UIManager>
     {
         characterListUI.SetActive(false);
     }
+
+
+   
 }

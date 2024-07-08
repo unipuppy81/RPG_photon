@@ -86,7 +86,7 @@ public class SettingPanelManager : MonoBehaviour
     {
         SettingPanel.SetActive(true);
     }
-    private void SettingPanelExit()
+    public void SettingPanelExit()
     {
         SettingPanel.SetActive(false);
     }
