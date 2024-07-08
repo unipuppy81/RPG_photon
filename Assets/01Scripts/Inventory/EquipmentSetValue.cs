@@ -1,9 +1,10 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class EquipmentSetValue : Singleton<EquipmentSetValue>
+public class EquipmentSetValue : SingletonPhoton<EquipmentSetValue>
 {
     [Header("EquipmentSlot")]
     [SerializeField]
@@ -31,31 +32,57 @@ public class EquipmentSetValue : Singleton<EquipmentSetValue>
     [SerializeField]
     private TextMeshProUGUI speedText;
 
-
     private string name;
     private float hp;
     private float atk;
     private float def;
     private float speed;
+    private float runSpeed;
+
+
+    //base 값
+    float tmpAtk;
+    float tmpDef;
+    float tmpSpeed;
+    float tmpRunSpeed;
+
+    [Header("Player")]
+    PhotonView playerPhotonView;
+    Character_Warrior cw;
 
     private void OnEnable()
     {
         UpdateStats();
     }
 
-    public void setValue(string _name, float _hp, float _atk, float _def, float _speed)
+    public void setValue(int pv, string _name, float _hp, float _atk, float _def, float _speed, float _runSpeed)
     {
+        playerPhotonView = PhotonView.Find(pv);
+        if(playerPhotonView != null)
+        {
+            GameObject player = playerPhotonView.gameObject;
+            cw = player.GetComponent<Character_Warrior>();
+
+            Debug.Log("cw 찾았습니다.");
+        }
+
         name = _name;
         hp = _hp;
         atk = _atk;
         def = _def;
         speed = _speed;
+        runSpeed = _runSpeed;
+
+        //base 값
+        tmpAtk = atk;
+        tmpDef = def;
+        tmpSpeed = speed;
+        tmpRunSpeed = runSpeed;
     }
 
     public void CheckEquipItem(string _itemName)
     {
         EquipItem(_itemName);
-
 
         UpdateStats();
     }
@@ -68,58 +95,62 @@ public class EquipmentSetValue : Singleton<EquipmentSetValue>
 
         switch (itemName)
         {
-            case "Sword_A":
-                Debug.Log("sword_A");
-                
-                //atk += 10; // 무기 공격력 추가 (예)
+            case "sword_A":
+                atk = tmpAtk + 20;
                 break;
-            case "Sword_B":
-                Debug.Log("sword_B");
 
+            case "sword_B":
+                atk = tmpAtk + 40;
                 break;
+
             case "chest_A":
-                Debug.Log("chest_A");
-
+                def = tmpDef + 20;
                 break;
+
             case "chest_B":
-                Debug.Log("chest_B");
-
+                def = tmpDef + 40;
                 break;
+
             case "helm_A":
-                Debug.Log("helm_A");
-
+                def = tmpDef + 10;
                 break;
+
             case "helm_B":
-                Debug.Log("helm_B");
-
+                def = tmpDef + 20;
                 break;
+
             case "gloves_A":
-                Debug.Log("gloves_A");
-
+                def = tmpDef + 6;
                 break;
+
             case "gloves_B":
-                Debug.Log("gloves_B");
-
+                def = tmpDef + 12;
                 break;
+
             case "pants_A":
-                Debug.Log("pants_A");
-
+                def = tmpDef + 10;
                 break;
+
             case "pants_B":
-                Debug.Log("pants_B");
-
+                def = tmpDef + 20;
                 break;
+
             case "boots_A":
-                Debug.Log("boots_A");
+                speed = tmpSpeed * 1.1f;
+                runSpeed = tmpRunSpeed * 1.1f;
 
                 break;
             case "boots_B":
-                Debug.Log("boots_B");
+                speed = tmpSpeed * 1.3f;
+                runSpeed = tmpRunSpeed * 1.3f;
 
                 break;
             default:
                 break;
         }
+        cw.StateUpdate(atk, tmpDef, tmpSpeed, tmpRunSpeed);
+        UpdateStats();
+
     }
 
     private void UpdateStats()

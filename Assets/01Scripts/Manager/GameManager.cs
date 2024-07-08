@@ -22,21 +22,6 @@ public class GameManager : Singleton<GameManager>
 
     private Dictionary<string, int> playerGold = new Dictionary<string, int>();
 
-    private void Awake()
-    {
-        /*
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject); // 씬 전환 시에도 인스턴스를 유지
-        }
-        else if (Instance != this)
-        {
-            Destroy(gameObject); // 중복된 인스턴스가 생기지 않도록 파괴
-        }
-        */
-    }
-
     /// <summary>
     /// 플레이어의 골드를 저장합니다.
     /// </summary>

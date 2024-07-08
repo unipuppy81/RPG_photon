@@ -139,8 +139,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 }
 */
 
-public class NetworkManager : MonoBehaviourPunCallbacks
+public class NetworkManager : SingletonPhoton<NetworkManager>
 {
+    [Header("Loading")]
+    [SerializeField]
+    private GameObject loadingScreen;
+    [SerializeField]
+    private TextMeshProUGUI loadingText;
+    [SerializeField]
+    private Slider loadingSlider;
+
     [Header("NickName")]
     public TextMeshProUGUI StatusText;
     public TMP_InputField NickNameInput;
@@ -176,6 +184,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        ShowLoadingScreen();
+
         Debug.Log("00. 포톤 매니저 시작");
 
         chatList = chatView.GetComponentsInChildren<TextMeshProUGUI>();
@@ -264,6 +274,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
 
         PhotonNetwork.Instantiate("Warrior", playerSpawnPosObj.transform.position, Quaternion.identity);
+
+        
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
@@ -293,6 +305,36 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Debug.Log(otherPlayer.NickName + " has left the room.");
         PV.RPC("ChatRPC", RpcTarget.All, "<color=yellow>" + otherPlayer.NickName + "님이 나갔습니다</color>");
 
+    }
+
+    private void ShowLoadingScreen()
+    {
+        // 로딩 화면을 보여주는 메서드
+        loadingScreen.SetActive(true);
+        StartCoroutine(IncreaseSliderValue());
+        loadingText.text = "게임 접속 중...";
+    }
+    IEnumerator IncreaseSliderValue()
+    {
+        float timer = 0f;
+        float startValue = loadingSlider.value;
+        float endValue = 1f;
+
+        while (timer < 4.0f)
+        {
+            timer += Time.deltaTime;
+            float progress = timer / 4.0f;
+            loadingSlider.value = Mathf.Lerp(startValue, endValue, progress);
+            yield return null;
+        }
+
+        // duration이 끝난 후 최대 값으로 설정
+        loadingSlider.value = 1f;
+    }
+    public void HideLoadingScreen()
+    {
+        // 로딩 화면을 숨기는 메서드
+        loadingScreen.SetActive(false);
     }
 
     // 플레이어 접속 시 채팅 창 출력

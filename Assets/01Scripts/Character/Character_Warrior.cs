@@ -170,17 +170,6 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
             {
                 Debug.Log($"HP : {MaxHp}, Atk : {Atk}, Def : {Def}, WalkSpeed : {WalkSpeed}, RunSpeed : {RunSpeed}");
             }
-
-
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-               // NetworkManager.instance.PV.RPC("RequestSceneChange", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, _photonView, "TownScene");
-            }
-
-            if (Input.GetKeyDown(KeyCode.H))
-            {
-               // NetworkManager.instance.PV.RPC("RequestSceneChange", RpcTarget.MasterClient, PhotonNetwork.LocalPlayer.ActorNumber, _photonView, "GameScene");
-            }
         }
 
         dirVec = this.gameObject.transform.forward; // Quest
@@ -226,7 +215,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
         UpdateHealthSlider();
 
-        EquipmentSetValue.Instance.setValue(PhotonNetwork.NickName, MaxHp, Atk, Def, walkSpeed);
+        EquipmentSetValue.Instance.setValue(_photonView.ViewID ,PhotonNetwork.NickName, MaxHp, Atk, Def, walkSpeed, runSpeed);
 
         GameManager.Instance.playerName = PhotonNetwork.NickName;
         GameManager.Instance.LoadGold(PhotonNetwork.NickName);
@@ -439,9 +428,8 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void StateUpdate(float maxHp, float atk, float def, float walkSpeed, float runSpeed)
+    public void StateUpdate(float atk, float def, float walkSpeed, float runSpeed)
     {
-        MaxHp = maxHp;
         Atk = atk;
         Def = def;
         WalkSpeed = walkSpeed;

@@ -50,5 +50,6 @@ public class AchievementView : MonoBehaviour
 
         gameObject.SetActive(false);
 
+        NetworkManager.Instance.HideLoadingScreen();
     }
 }
