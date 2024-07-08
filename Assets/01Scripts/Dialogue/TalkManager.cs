@@ -8,6 +8,7 @@ public class TalkManager : MonoBehaviour
     Dictionary<int, System.Action> questActions; // 호출할 메서드를 매핑하기 위한 사전
     Dictionary<int, QuestReporter> questReporters; // QuestReporter 매핑을 위한 사전 추가
     QuestManager q;
+
     private void Awake()
     {
         talkData = new Dictionary<int, string[]>();
@@ -178,7 +179,6 @@ public class TalkManager : MonoBehaviour
             // QuestManager에서 해당 Quest가 완료되었는지 체크
             if (q.IsQuestComplete(id - 1000))
             {
-                Debug.Log("NextQuest");
                 q.NextQuest();
             }
 
@@ -188,10 +188,5 @@ public class TalkManager : MonoBehaviour
         {
             return talkData[id][talkIndex];
         }
-    }
-
-    public string GetObjName(int id, string name)
-    {
-        return name;
     }
 }

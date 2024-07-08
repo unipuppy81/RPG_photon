@@ -49,7 +49,7 @@ public class PlayerChat : MonoBehaviourPunCallbacks
                 if (ChatInput.activeSelf == false)
                 {
                     ChatInput.SetActive(true);
-                    chatImage.color = new Color(chatImage.color.r, chatImage.color.g, chatImage.color.b, 0.75f);
+                    chatImage.color = new Color(chatImage.color.r, chatImage.color.g, chatImage.color.b, 1f);
                     inputField.Select();
                     inputField.ActivateInputField();         
                     GameManager.isChatting = true;
@@ -59,7 +59,7 @@ public class PlayerChat : MonoBehaviourPunCallbacks
                     networkManager.GetComponent<NetworkManager>().Send();
                     inputField.DeactivateInputField();
                     ChatInput.SetActive(false);
-                    chatImage.color = new Color(chatImage.color.r, chatImage.color.g, chatImage.color.b, 1.0f);
+                    chatImage.color = new Color(chatImage.color.r, chatImage.color.g, chatImage.color.b, 0.75f);
                     GameManager.isChatting = false;
                 }
             }

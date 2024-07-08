@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ab3852cc295a50429b37037563850e9, type: 3}
+  m_Name: Quest_NextTown
+  m_EditorClassIdentifier: 
+  category: {fileID: 11400000, guid: 88b6d2e3881dcaa4890c659c1e6ed844, type: 2}
+  icon: {fileID: 0}
+  codeName: NEXT_TOWN
+  displayName: "\uC0C8\uB85C\uC6B4 \uC5EC\uC815"
+  description: "\uB2E4\uC74C \uB9C8\uC744\uB85C \uAC00\uC790"
+  taskGroups:
+  - tasks:
+    - {fileID: 11400000, guid: 93a9d5a05d846b1428d17237f396d680, type: 2}
+  rewards: []
+  useAutoComplete: 0
+  isCancelable: 0
+  isSavable: 0
+  acceptionConditions: []
+  cancelConditons: []

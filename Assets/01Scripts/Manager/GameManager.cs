@@ -10,6 +10,9 @@ public class GameManager : Singleton<GameManager>
     public static bool isTradeChatting = false;
     public static bool isTradeChatInput = false;
 
+    public static bool isTown = true;
+    public static bool isBattle = false;
+
     public string playerName;
 
     private int gold;

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cd1b085f20e7ca45bc72bec07fbeede, type: 3}
+  m_Name: Task_NextTown
+  m_EditorClassIdentifier: 
+  category: {fileID: 11400000, guid: 88b6d2e3881dcaa4890c659c1e6ed844, type: 2}
+  codeName: "\uC0C8\uB85C\uC6B4 \uC5EC\uC815"
+  description: "\uB2E4\uC74C \uB9C8\uC744\uB85C \uC774\uB3D9\uD558"
+  action: {fileID: 11400000, guid: 5ce8cca9200a4354bb2cf9bd49dcb744, type: 2}
+  targets:
+  - {fileID: 11400000, guid: 1ab9a3f9d07c8ed4fa806e3859284aa9, type: 2}
+  initialSuccessValue: {fileID: 0}
+  needSuccessToComplete: 0
+  canReceiveReportDuringCompletion: 0

@@ -105,10 +105,14 @@ public class EquipmentSetValue : SingletonPhoton<EquipmentSetValue>
 
             case "chest_A":
                 def = tmpDef + 20;
+                cw.chest_a.SetActive(true);
+                cw.chest_b.SetActive(false);
                 break;
 
             case "chest_B":
                 def = tmpDef + 40;
+                cw.chest_a.SetActive(false);
+                cw.chest_b.SetActive(true);
                 break;
 
             case "helm_A":
@@ -138,17 +142,20 @@ public class EquipmentSetValue : SingletonPhoton<EquipmentSetValue>
             case "boots_A":
                 speed = tmpSpeed * 1.1f;
                 runSpeed = tmpRunSpeed * 1.1f;
+                cw.shoes_a.SetActive(true);
+                cw.shoes_b.SetActive(false);
 
                 break;
             case "boots_B":
                 speed = tmpSpeed * 1.3f;
                 runSpeed = tmpRunSpeed * 1.3f;
-
+                cw.shoes_a.SetActive(false);
+                cw.shoes_b.SetActive(true);
                 break;
             default:
                 break;
         }
-        cw.StateUpdate(atk, tmpDef, tmpSpeed, tmpRunSpeed);
+        cw.StateUpdate(atk, def, speed, runSpeed);
         UpdateStats();
 
     }

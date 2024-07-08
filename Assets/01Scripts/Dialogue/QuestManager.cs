@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class QuestManager : Singleton<QuestManager>
@@ -22,13 +24,27 @@ public class QuestManager : Singleton<QuestManager>
     public int hpGlobeCount;
     public int mpGlobeCount;
 
+    [Header("BuildereQuest")]
+    [SerializeField]
+    private GameObject helmetBuilder;
+    [SerializeField]
+    private GameObject helmet;
 
-    [SerializeField] GameObject questClearPanel;
+
+    [SerializeField]
+    private GameObject questClearPanel;
+    [SerializeField] 
+    private TextMeshProUGUI nextQuestText;
+    private Image panelImage;
+    private Color initialColor; // 초기 색상 저장용 변수
 
     void Awake()
     {
         questList = new Dictionary<int, QuestData>();
         GenerateData();
+
+        panelImage = questClearPanel.GetComponent<Image>();
+        initialColor = panelImage.color;
     }
 
     void Start()
@@ -115,11 +131,11 @@ public class QuestManager : Singleton<QuestManager>
             case 10:
                 if (questActionIndex == 1)
                 {
-                    Debug.Log("quest ID : " + questId + "  questActionIndex : " + questActionIndex);
+
                 }
                 else if (questActionIndex == 2)
                 {
-                    Debug.Log("quest ID : " + questId + "  questActionIndex : " + questActionIndex);
+                    ShowQuestClearPanel("새로운 퀘스트 : 인부의 부탁");
                 }
                 break;
 
@@ -127,11 +143,18 @@ public class QuestManager : Singleton<QuestManager>
             case 20:
                 if (questActionIndex == 1)
                 {
-                    Debug.Log("quest ID : " + questId + "  questActionIndex : " + questActionIndex);
+
                 }
                 else if (questActionIndex == 2)
                 {
-                    Debug.Log("quest ID : " + questId + "  questActionIndex : " + questActionIndex);
+
+                }
+                else if(questActionIndex == 3)
+                {
+                    ShowQuestClearPanel("새로운 퀘스트 : 다음 마을로 가자");
+
+                    helmet.SetActive(false);
+                    helmetBuilder.SetActive(true);
                 }
                 break;
 
@@ -151,13 +174,52 @@ public class QuestManager : Singleton<QuestManager>
         }
     }
 
-    // 게임 퀘스트
+    public void ShowQuestClearPanel(string questText)
+    {
+        // 새로운 퀘스트 텍스트 설정
+        nextQuestText.text = questText;
 
+        // 패널을 활성화
+        questClearPanel.SetActive(true);
+        
+        // 투명도 초기화
+        ResetAlpha();
 
+        // 2초 후에 페이드아웃 코루틴 실행
+        StartCoroutine(FadeOutPanel(2.0f));
+    }
 
+    private IEnumerator FadeOutPanel(float fadeOutTime)
+    {
+        // 대기
+        yield return new WaitForSeconds(fadeOutTime);
 
+        // 시작 투명도
+        float startAlpha = panelImage.color.a;
+        float rate = 1.0f / fadeOutTime;
+        float progress = 0.0f;
 
-    // 마을
+        while (progress < 1.0f)
+        {
+            Color color = panelImage.color;
+            color.a = Mathf.Lerp(startAlpha, 0, progress);
+            panelImage.color = color;
 
+            progress += rate * Time.deltaTime;
+            yield return null;
+        }
 
+        // 완전히 투명하게 만들고 비활성화
+        Color finalColor = panelImage.color;
+        finalColor.a = 0.0f;
+        panelImage.color = finalColor;
+
+        questClearPanel.SetActive(false);
+    }
+
+    private void ResetAlpha()
+    {
+        // 초기 색상으로 설정하여 투명도 초기화
+        panelImage.color = initialColor;
+    }
 }

@@ -42,7 +42,7 @@ namespace CharacterOwnedStates
                     sender.ChangeState(State.Run);
                 }
             }
-            else if (sender.MovementSpeed < 0f)
+            else if (sender.MovementSpeed <= 0.1f)
             {
                 if (sender.curStates != State.Idle && !sender.isUsingSkill && !sender.isNormalAttack)
                 {

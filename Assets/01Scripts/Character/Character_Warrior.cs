@@ -93,6 +93,13 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
     [SerializeField]
     private ParticleSystem attackedEffect;
+
+    [Header("Item")]
+    public GameObject chest_a;
+    public GameObject chest_b;
+    public GameObject shoes_a;
+    public GameObject shoes_b;
+
     /// <summary>
     /// FSM 변수
     /// </summary>
@@ -129,6 +136,16 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     [SerializeField]
     private GameObject damageTextPrefab;
 
+    [Header("Sound")]
+    [SerializeField]
+    private AudioSource audioSource;
+    [SerializeField]
+    private AudioClip walkClip;
+    [SerializeField]
+    private AudioClip runClip;
+
+    private AudioClip currentClip;
+
     void Start()
     {
         _photonView = GetComponent<PhotonView>();
@@ -143,8 +160,6 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
             // 초기 그룹 설정
             //UpdateInterestGroup();
             nextUpdateTime = Time.time + updateInterval;
-
-
         }
     }
 
@@ -447,16 +462,26 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
     public void Idle()
     {
-
+        audioSource.Stop();
+        currentClip = null;
     }
 
     public void Walk()
     {
-
+        if(currentClip != walkClip)
+        {
+            currentClip = walkClip;
+            PlaySound(currentClip);
+        }
     }
 
     public void Run()
     {
+        if(currentClip != runClip)
+        {
+            currentClip = runClip;
+            PlaySound(currentClip);
+        }
 
     }
 
@@ -551,14 +576,18 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         if (other.CompareTag("SafeZone"))
         {
             isSafe = true;
+            GameManager.isTown = true;
+            GameManager.isBattle = false;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("SafeZone"))
+        if (other.CompareTag("BattleZone"))
         {
             isSafe = false;
+            GameManager.isTown = false;
+            GameManager.isBattle = true;
         }
     }
 
@@ -592,6 +621,15 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         }
     }
 
+    /// <summary>
+    /// Sound
+    /// </summary>
+    private void PlaySound(AudioClip clip)
+    {
+        audioSource.clip = clip;
+        audioSource.loop = true;
+        audioSource.Play();
+    }
 
     /// <summary>
     /// 캐릭터가 서버에 할당된 후에 카메라 위치 잡아줌

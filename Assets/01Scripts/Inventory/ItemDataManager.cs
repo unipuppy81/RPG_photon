@@ -249,7 +249,7 @@ public class ItemDataManager : Singleton<ItemDataManager>
             // 슬롯과 텍스트 보이기
             bool isExist = i < curItemList.Count;
             slots[i].SetActive(isExist);
-            slots[i].GetComponentInChildren<TextMeshProUGUI>().text = isExist ? curItemList[i].Name + "/" + curItemList[i].isUsing : "";
+            slots[i].GetComponentInChildren<TextMeshProUGUI>().text = isExist ? curItemList[i].Name : "";
 
             if (isExist)
             {

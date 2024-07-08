@@ -11,14 +11,14 @@ public class SettingPanelManager : MonoBehaviour
     [SerializeField]
     private Button SettingBtn;
     [SerializeField]
-    private Button QuestBtn;
+    private Button QuestionBtn;
 
     [SerializeField]
     private GameObject ExitPanel;
     [SerializeField]
     private GameObject SettingPanel;
     [SerializeField]
-    private GameObject QuestPanel;
+    private GameObject QuestionPanel;
 
 
     [Header("Exit")]
@@ -37,13 +37,10 @@ public class SettingPanelManager : MonoBehaviour
     [SerializeField]
     private Slider brightnessSlider; // 밝기 조절 슬라이더
 
-    [Header("Graphic")]
+
+    [Header("Question")]
     [SerializeField]
-    private Button lowSetBtn;
-    [SerializeField]
-    private Button middleSetBtn;
-    [SerializeField]
-    private Button highSetBtn;
+    private Button questionPanelExitBtn;
 
     private void Start()
     {
@@ -54,8 +51,8 @@ public class SettingPanelManager : MonoBehaviour
         SettingBtn.onClick.AddListener(SettingPanelActive);
         SettingExitButton.onClick.AddListener(SettingPanelExit);
 
-
-
+        QuestionBtn.onClick.AddListener(QuestionPanelActive);
+        questionPanelExitBtn.onClick.AddListener(QuestionPanelExit);
 
 
         // 슬라이더 값 변경 시 OnBrightnessChange 메서드 호출
@@ -80,7 +77,9 @@ public class SettingPanelManager : MonoBehaviour
 
     private void GameExit()
     {
-        Debug.Log("Game Finish");
+        GameManager.Instance.GameSave();
+
+        Application.Quit();
     }
 
     private void SettingPanelActive()
@@ -97,5 +96,15 @@ public class SettingPanelManager : MonoBehaviour
         Color color = brightnessPanel.color;
         color.a = 1f - (value / 180f);
         brightnessPanel.color = color;
+    }
+
+    private void QuestionPanelActive()
+    {
+        QuestionPanel.SetActive(true);
+    }
+
+    private void QuestionPanelExit()
+    {
+        QuestionPanel.SetActive(false);
     }
 }
