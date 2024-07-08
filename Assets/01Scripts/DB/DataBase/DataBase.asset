@@ -27,7 +27,7 @@ MonoBehaviour:
     Rspeed: 6
   Enemy:
   - Name: Ghost
-    Maxhp: 3000
+    Maxhp: 100
     Speed: 3
     Atk: 10
     Def: 100

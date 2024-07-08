@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using Photon.Pun;
-using Photon.Realtime;
 using TMPro;
 using UnityEngine.UI;
 
@@ -437,6 +436,16 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     public void AddGold(int amount)
     {
         GameManager.Instance.ChangeGold(PhotonNetwork.NickName, amount);
+    }
+
+    [PunRPC]
+    public void StateUpdate(float maxHp, float atk, float def, float walkSpeed, float runSpeed)
+    {
+        MaxHp = maxHp;
+        Atk = atk;
+        Def = def;
+        WalkSpeed = walkSpeed;
+        RunSpeed= runSpeed;
     }
 
     /// <summary>

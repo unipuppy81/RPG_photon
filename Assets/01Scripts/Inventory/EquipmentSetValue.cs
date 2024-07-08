@@ -54,7 +54,6 @@ public class EquipmentSetValue : Singleton<EquipmentSetValue>
 
     public void CheckEquipItem(string _itemName)
     {
-
         EquipItem(_itemName);
 
 

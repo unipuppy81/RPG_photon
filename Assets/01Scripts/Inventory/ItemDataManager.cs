@@ -59,6 +59,63 @@ public class ItemDataManager : Singleton<ItemDataManager>
 
     public void GetItem(string itemName)
     {
+        int itemCost = 0;
+
+        switch (itemName)
+        {
+            // Consume
+            case "meat":
+                itemCost = 200;
+                return;
+            case "potion":
+            // Equip_Type_A
+                itemCost = 100;
+                return;
+            case "sword_A":
+                itemCost = 1000;
+                return;
+            case "pants_A":
+                itemCost = 800;
+                return;
+            case "helm_A":
+                itemCost = 800;
+                return;
+            case "gloves_A":
+                itemCost = 800;
+                return;
+            case "chest_A":
+                itemCost = 1000;
+                return;
+            case "boots_A":
+                itemCost = 800;
+                return;
+            // Equip_Type_B
+            case "sword_B":
+                itemCost = 2000;
+                return;
+            case "pants_B":
+                itemCost = 1600;
+                return;
+            case "helm_B":
+                itemCost = 1600;
+                return;
+            case "gloves_B":
+                itemCost = 1600;
+                return;
+            case "chest_B":
+                itemCost = 2000;
+                return;
+            case "boots_B":
+                itemCost = 1600;
+                return;
+        }
+
+        if(GameManager.Instance.Gold <= itemCost)
+        {
+            Debug.Log("µ· ºÎÁ·");
+            return;
+        }
+
         Item curItem = MyItemList.Find(x => x.Name == itemName);
 
         if (curItem != null)
@@ -78,6 +135,8 @@ public class ItemDataManager : Singleton<ItemDataManager>
                 MyItemList.Add(curAllItem);
             }
         }
+
+        GameManager.Instance.ChangeGold(-itemCost);
     }
 
 
