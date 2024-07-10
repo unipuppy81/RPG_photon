@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class SoundManager : Singleton<SoundManager>
 {
+    public AudioSource playerSource;
+
     [SerializeField]
     private AudioSource audioSource;
 
@@ -20,14 +21,12 @@ public class SoundManager : Singleton<SoundManager>
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        //StartCoroutine(DelayedSetup());
     }
 
     private void Update()
     {
         if (GameManager.isPlayGame)
         {
-            // 초기 상태에 맞는 오디오 클립 설정
             UpdateAudioClip();
         }
     }
@@ -49,17 +48,19 @@ public class SoundManager : Singleton<SoundManager>
         {
             currentClip = newClip;
             audioSource.clip = currentClip;
+            audioSource.loop = true;
             audioSource.Play();
         }
     }
 
-    private IEnumerator DelayedSetup()
+    public void changeSound(float volume)
     {
-        yield return new WaitUntil(() => GameManager.isPlayGame);
+        audioSource.volume = volume;
 
-        audioSource = GetComponent<AudioSource>();
-
-        // 초기 상태에 맞는 오디오 클립 설정
-        UpdateAudioClip();
+        if(playerSource != null)
+        {
+            playerSource.volume = volume;
+        }
     }
+
 }

@@ -356,6 +356,8 @@ public class TradePanelController : MonoBehaviourPunCallbacks
                 tradePanelPhotonView.RPC("CompleteTrade", clickedPlayer, itemName, itemCount);
             }
         }
+
+        TradeSuccess();
     }
 
     // 거래 완료 처리
@@ -372,10 +374,6 @@ public class TradePanelController : MonoBehaviourPunCallbacks
         {
             Destroy(obj);
         }
-
-        gameObject.SetActive(false); // 패널 숨기기
-
-
     }
 
     [PunRPC]
@@ -393,6 +391,8 @@ public class TradePanelController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void TradeSuccess()
     {
+        gameObject.SetActive(false);
+
         TradeResultSuccessPanel.SetActive(true);
     }
 }

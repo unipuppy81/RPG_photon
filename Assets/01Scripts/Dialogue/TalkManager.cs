@@ -24,13 +24,7 @@ public class TalkManager : MonoBehaviour
     {
         q = GameObject.Find("QuestManager").GetComponent<QuestManager>();
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            q.NextQuest();
-        }
-    }
+
     void GenerateQuestReporters()
     {
         // 각 대화 ID에 대응하는 QuestReporter를 설정합니다.

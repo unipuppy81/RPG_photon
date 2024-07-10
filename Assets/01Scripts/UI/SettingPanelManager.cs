@@ -29,7 +29,10 @@ public class SettingPanelManager : MonoBehaviour
 
     [Header("Setting")]
     [SerializeField]
+    private Slider soundSlider;
+    [SerializeField]
     private Button SettingExitButton;
+
 
     [Header("Brightness")]
     [SerializeField] 
@@ -68,10 +71,6 @@ public class SettingPanelManager : MonoBehaviour
 
         questionPanelExitBtn.onClick.AddListener(QuestionPanelExit);
 
-
-
-
-
         // 슬라이더 값 변경 시 OnBrightnessChange 메서드 호출
         brightnessSlider.onValueChanged.AddListener(OnBrightnessChange);
 
@@ -107,6 +106,7 @@ public class SettingPanelManager : MonoBehaviour
     {
         SettingPanel.SetActive(false);
     }
+
     public void OnBrightnessChange(float value)
     {
         // 패널의 투명도 조절

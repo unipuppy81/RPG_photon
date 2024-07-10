@@ -225,7 +225,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         {
             tmp.text = PhotonNetwork.NickName;
             curHealth = MaxHp;
-            UpdateHealthSlider();
+            photonView.RPC("UpdateHealthSlider", RpcTarget.All, curHealth);
 
             EquipmentSetValue.Instance.setValue(_photonView.ViewID, PhotonNetwork.NickName, MaxHp, Atk, Def, walkSpeed, runSpeed);
 
@@ -432,6 +432,10 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
             {
                 curHealth = maxHp;
             }
+
+            // 모든 클라이언트에게 체력 업데이트 RPC 호출
+            photonView.RPC("UpdateHealthSlider", RpcTarget.All, curHealth);
+            //UpdateHealthSlider();
         }
     }
 
@@ -625,8 +629,11 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     /// <summary>
     /// UI
     /// </summary>
-    private void UpdateHealthSlider()
+
+    [PunRPC]
+    public void UpdateHealthSlider(float newHealth)
     {
+        curHealth = newHealth;
         healthSlider.value = curHealth / maxHp;
     }
 
@@ -660,6 +667,8 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         audioSource.clip = clip;
         audioSource.loop = true;
         audioSource.Play();
+
+        SoundManager.Instance.playerSource = audioSource;
     }
 
     /// <summary>

@@ -270,7 +270,7 @@ public class NetworkManager : SingletonPhoton<NetworkManager>
         if (PhotonNetwork.IsMasterClient)
         {
             SpawnManager.instance.pv.RPC("CreateComputerPlayer", RpcTarget.All);
-            PV.RPC("ChatRPC", RpcTarget.All, "<color=yellow>[방장] " + PhotonNetwork.NickName + "님이 참가하셨습니다</color>");
+            PV.RPC("ChatRPC", RpcTarget.All, "<color=yellow> " + PhotonNetwork.NickName + "님이 참가하셨습니다</color>");
         }
 
         PhotonNetwork.Instantiate("Warrior", playerSpawnPosObj.transform.position, Quaternion.identity);
