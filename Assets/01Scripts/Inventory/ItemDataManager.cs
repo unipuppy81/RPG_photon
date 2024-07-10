@@ -366,58 +366,6 @@ public class ItemDataManager : Singleton<ItemDataManager>
 
 
     // 아이템 획득
-    public void TradeAddItem(List<string> _name, List<int> _count)
-    {
-        // 두 리스트의 길이가 다를 경우 예외를 던집니다.
-        if (_name.Count != _count.Count)
-        {
-            Debug.LogError("The length of _name and _count lists must be the same.");
-            return;
-        }
-
-
-        for (int i = 0; i < _name.Count; i++)
-        {
-            string itemName = _name[i];
-            int itemCount = _count[i];
-
-            Item curItem = MyItemList.Find(x => x.Name == itemName);
-
-            if (curItem != null)
-            {
-                curItem.Number = (int.Parse(curItem.Number) + itemCount).ToString();
-            }
-            else
-            {
-                // 전체에서 얻을 아이템을 찾아 내 아이템에 추가
-                Item curAllItem = AllItemList.Find(x => x.Name == itemName);
-                if (curAllItem != null)
-                {
-                    curAllItem.Number = itemCount.ToString();
-                    MyItemList.Add(curAllItem);
-                }
-            }
-        }
-
-        // 아이템 리스트를 인덱스 기준으로 정렬합니다.
-        MyItemList.Sort((p1, p2) =>
-        {
-            try
-            {
-                int index1 = int.Parse(p1.Index);
-                int index2 = int.Parse(p2.Index);
-                return index1.CompareTo(index2);
-            }
-            catch (FormatException)
-            {
-                // 변환할 수 없는 경우 문자열 자체를 비교합니다.
-                return p1.Index.CompareTo(p2.Index);
-            }
-        });
-
-        Save();
-    }
-
     public void TradeAddItem(string _name, int _count)
     {
 
@@ -504,55 +452,7 @@ public class ItemDataManager : Singleton<ItemDataManager>
     }
 
 
-    public void TradeRemoveItem(List<string> _name, List<int> _count)
-    {
-        // 두 리스트의 길이가 다를 경우 예외를 던집니다.
-        if (_name.Count != _count.Count)
-        {
-            Debug.LogError("The length of _name and _count lists must be the same.");
-            return;
-        }
-
-
-        for (int i = 0; i < _name.Count; i++)
-        {
-            string itemName = _name[i];
-            int itemCount = _count[i];
-
-            Item curItem = MyItemList.Find(x => x.Name == itemName);
-
-            if (curItem != null)
-            {
-                int curNumber = int.Parse(curItem.Number) - itemCount;
-
-                if (curNumber <= 0)
-                {
-                    MyItemList.Remove(curItem);
-                }
-                else
-                {
-                    curItem.Number = curNumber.ToString();
-                }
-            }
-        }
-
-        // 아이템 리스트를 인덱스 기준으로 정렬합니다.
-        MyItemList.Sort((p1, p2) =>
-        {
-            try
-            {
-                int index1 = int.Parse(p1.Index);
-                int index2 = int.Parse(p2.Index);
-                return index1.CompareTo(index2);
-            }
-            catch (FormatException)
-            {
-                // 변환할 수 없는 경우 문자열 자체를 비교합니다.
-                return p1.Index.CompareTo(p2.Index);
-            }
-        });
-        Save();
-    }
+   
 
 
 

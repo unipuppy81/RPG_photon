@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -48,6 +49,7 @@ public class EquipmentSetValue : SingletonPhoton<EquipmentSetValue>
 
     [Header("Player")]
     PhotonView playerPhotonView;
+    Player player;
     Character_Warrior cw;
 
     private void OnEnable()
@@ -63,7 +65,7 @@ public class EquipmentSetValue : SingletonPhoton<EquipmentSetValue>
             GameObject player = playerPhotonView.gameObject;
             cw = player.GetComponent<Character_Warrior>();
 
-            Debug.Log("cw 찾았습니다.");
+            Debug.Log(_name + "  cw 찾았습니다.");
         }
 
         name = _name;
@@ -78,6 +80,8 @@ public class EquipmentSetValue : SingletonPhoton<EquipmentSetValue>
         tmpDef = def;
         tmpSpeed = speed;
         tmpRunSpeed = runSpeed;
+
+        Debug.Log("speed : " + tmpSpeed);
     }
 
     public void CheckEquipItem(string _itemName)
@@ -155,7 +159,10 @@ public class EquipmentSetValue : SingletonPhoton<EquipmentSetValue>
             default:
                 break;
         }
-        cw.StateUpdate(atk, def, speed, runSpeed);
+        //cw.StateUpdate(atk, def, speed, runSpeed);
+        Debug.Log("PhotonNetwork LocalPlayer : " + PhotonNetwork.LocalPlayer);
+        cw.UpdateLocalStats(atk, def, speed, runSpeed);
+        //playerPhotonView.RPC("StateUpdate", PhotonNetwork.LocalPlayer, atk, def, speed, runSpeed);
         UpdateStats();
 
     }

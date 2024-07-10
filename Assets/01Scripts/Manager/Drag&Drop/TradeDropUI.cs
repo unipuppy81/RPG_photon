@@ -101,6 +101,8 @@ public class TradeDropUI : MonoBehaviour, IPointerEnterHandler, IDropHandler, IP
                 }
             }
 
+            TradeManager.Instance.resetGameObject.Add(draggedObject);
+
             // 아이템 수량 선택 패널 활성화 및 초기화
             CountPanel.SetActive(true);
             TradeItemCountManager ticm = CountPanel.GetComponent<TradeItemCountManager>();

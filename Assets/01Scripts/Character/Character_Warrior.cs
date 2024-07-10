@@ -40,6 +40,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     [Header("Character_Status")]
 
     private float maxHp;           //체력
+    [SerializeField]
     private float atk;          // 공격력
     private float def;           // 방어력
     private float walkSpeed;    // 걸을 때 속도
@@ -185,6 +186,8 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
             UsePotion();
 
+            Debug.Log("Atk : " + Atk);
+
             if (Input.GetKeyDown(KeyCode.T))
             {
                 Debug.Log($"HP : {MaxHp}, Atk : {Atk}, Def : {Def}, WalkSpeed : {WalkSpeed}, RunSpeed : {RunSpeed}");
@@ -215,31 +218,29 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
         TextMeshPro tmp = _textMeshProUGUI.GetComponent<TextMeshPro>();
 
+        _photonView.RPC("SetStats", PhotonNetwork.LocalPlayer);
+        _photonView.RPC("Setup", PhotonNetwork.LocalPlayer);
+
         if (_photonView.IsMine)
         {
             tmp.text = PhotonNetwork.NickName;
+            curHealth = MaxHp;
+            UpdateHealthSlider();
+
+            EquipmentSetValue.Instance.setValue(_photonView.ViewID, PhotonNetwork.NickName, MaxHp, Atk, Def, walkSpeed, runSpeed);
+
+            GameManager.Instance.playerName = PhotonNetwork.NickName;
+            GameManager.Instance.LoadGold(PhotonNetwork.NickName);
+            GameManager.Instance.player = this.gameObject;
+            GameManager.Instance.GameLoad();
+
+            UIManager.Instance.CloseEquip();
         }
         else
         {
             // 다른 클라이언트의 화면에서는 소유자의 닉네임을 설정
             tmp.text = _photonView.Owner.NickName;
         }
-
-        _photonView.RPC("SetStats", RpcTarget.All);
-        _photonView.RPC("Setup", RpcTarget.All);
-
-        curHealth = MaxHp;
-
-        UpdateHealthSlider();
-
-        EquipmentSetValue.Instance.setValue(_photonView.ViewID ,PhotonNetwork.NickName, MaxHp, Atk, Def, walkSpeed, runSpeed);
-
-        GameManager.Instance.playerName = PhotonNetwork.NickName;
-        GameManager.Instance.LoadGold(PhotonNetwork.NickName);
-        GameManager.Instance.player = this.gameObject;
-        GameManager.Instance.GameLoad();
-
-        UIManager.Instance.CloseEquip();
 
         GameManager.isPlayGame = true;
 
@@ -470,8 +471,22 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         Def = def;
         WalkSpeed = walkSpeed;
         RunSpeed= runSpeed;
+
+        Debug.Log("Atk : " + Atk);
     }
 
+    public void UpdateLocalStats(float atk, float def, float walkSpeed, float runSpeed)
+    {
+        if (!_photonView.IsMine) return;
+
+        Atk = atk;
+        Def = def;
+        WalkSpeed = walkSpeed;
+        RunSpeed = runSpeed;
+
+        // 다른 플레이어에게 업데이트 알림
+        _photonView.RPC("StateUpdate", RpcTarget.Others, atk, def, walkSpeed, runSpeed);
+    }
     /// <summary>
     /// 상태 구현
     /// </summary>

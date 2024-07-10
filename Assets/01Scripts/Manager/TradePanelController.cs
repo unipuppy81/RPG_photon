@@ -117,6 +117,8 @@ public class TradePanelController : MonoBehaviourPunCallbacks
         GameObject newSlot = Instantiate(slotPrefab, transform);
         newSlot.transform.localPosition = _position;
 
+        TradeManager.Instance.resetGameObject.Add(newSlot);
+
         // DraggableUI 컴포넌트 제거
         DraggableUI draggableUI = newSlot.GetComponent<DraggableUI>();
         if (draggableUI != null)
@@ -184,7 +186,7 @@ public class TradePanelController : MonoBehaviourPunCallbacks
             Hashtable props = new Hashtable { { CLICKED_OFFERED, true } };
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
 
-            initReadyText.text = "준비됨";
+            clickedReadyText.text = "준비됨";
         }
 
 
@@ -213,7 +215,7 @@ public class TradePanelController : MonoBehaviourPunCallbacks
             Hashtable props = new Hashtable { { CLICKED_OFFERED, false } };
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
 
-            initReadyText.text = "준비중";
+            clickedReadyText.text = "준비중";
         }
 
         tradePanelPhotonView.RPC("CheckTradeStatus", initPlayer);
@@ -234,6 +236,11 @@ public class TradePanelController : MonoBehaviourPunCallbacks
         else if (PhotonNetwork.LocalPlayer == clickedPlayer)
         {
             tradePanelPhotonView.RPC("TradeFail", initPlayer);
+        }
+
+        foreach (GameObject obj in TradeManager.Instance.resetGameObject)
+        {
+            Destroy(obj);
         }
 
         gameObject.SetActive(false); // 패널 숨기기
@@ -270,6 +277,7 @@ public class TradePanelController : MonoBehaviourPunCallbacks
             Hashtable props = new Hashtable { { INIT_OFFERED, false } };
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         }
+
     }
 
     // 거래 상태 확인 및 처리
@@ -337,8 +345,6 @@ public class TradePanelController : MonoBehaviourPunCallbacks
 
                 tradePanelPhotonView.RPC("CompleteTrade", clickedPlayer, itemName, itemCount);
             }
-
-            //tradePanelPhotonView.RPC("CompleteTrade", clickedPlayer, itemNameList, itemCountList);
         }
         else if (PhotonNetwork.LocalPlayer == clickedPlayer)
         {
@@ -349,7 +355,6 @@ public class TradePanelController : MonoBehaviourPunCallbacks
 
                 tradePanelPhotonView.RPC("CompleteTrade", clickedPlayer, itemName, itemCount);
             }
-            //tradePanelPhotonView.RPC("CompleteTrade", initPlayer, itemNameList, itemCountList);
         }
     }
 
@@ -362,23 +367,25 @@ public class TradePanelController : MonoBehaviourPunCallbacks
 
         TradeSuccess();
 
-        gameObject.SetActive(false); // 패널 숨기기
-    }
 
-    [PunRPC]
-    public void CompleteTrade2(List<string> s, List<int> i)
-    {
-        // 여기서 아이템을 실제로 전송합니다.
-        ItemDataManager.Instance.TradeAddItem(s, i);
-
-        TradeSuccess(); 
+        foreach(GameObject obj in TradeManager.Instance.resetGameObject)
+        {
+            Destroy(obj);
+        }
 
         gameObject.SetActive(false); // 패널 숨기기
+
+
     }
 
     [PunRPC]
     public void TradeFail()
     {
+        foreach (GameObject obj in TradeManager.Instance.resetGameObject)
+        {
+            Destroy(obj);
+        }
+
         this.gameObject.SetActive(false);
         TradeResultFailPanel.SetActive(true);
     }

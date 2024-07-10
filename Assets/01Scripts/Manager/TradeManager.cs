@@ -4,6 +4,7 @@ using Photon.Realtime;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class TradeManager : MonoBehaviourPunCallbacks
 {
@@ -34,6 +35,11 @@ public class TradeManager : MonoBehaviourPunCallbacks
     private Player clickedPlayer; // 거래를 제안 받은 플레이어
 
     public PhotonView pv;
+
+
+    [Header("Reset")]
+    public List<GameObject> resetGameObject = new List<GameObject>();
+
 
     void Awake()
     {
@@ -129,16 +135,11 @@ public class TradeManager : MonoBehaviourPunCallbacks
         Debug.Log("Trade request rejected");
     }
 
-    // 거래 완료 처리
+    // 거래 완료 리셋 처리
     [PunRPC]
-    public void CompleteTrade()
-    {
-        Debug.Log("Trade completed");
-        // 여기서 아이템을 실제로 전송합니다.
-    }
-
-    public override void OnLeftRoom()
+    public void ResetTradePanel()
     {
 
     }
+
 }

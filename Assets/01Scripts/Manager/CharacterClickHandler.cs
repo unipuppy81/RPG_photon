@@ -14,6 +14,8 @@ public class CharacterClickHandler : MonoBehaviourPun
 
     [Header("Information")]
     [SerializeField]
+    private GameObject clickHandlerPanel;
+    [SerializeField]
     private GameObject informationPanel;
 
     [SerializeField]
@@ -78,9 +80,10 @@ public class CharacterClickHandler : MonoBehaviourPun
                     informationMaxHp = cw.MaxHp;
                     informationAtk= cw.Atk; 
                     informationDef= cw.Def;
+                    informationSpeed = cw.WalkSpeed;
                     informationName = clickedPhotonView.Owner.NickName;
 
-                    InformationSet(informationName, informationMaxHp, informationDef, informationAtk, informationSpeed);
+                    InformationSet(informationName, informationMaxHp, informationAtk, informationDef, informationSpeed);
                 }
             }
         }
@@ -89,6 +92,7 @@ public class CharacterClickHandler : MonoBehaviourPun
     private void InformationButton()
     {
         informationPanel.SetActive(true);
+        clickHandlerPanel.SetActive(false);
     }
 
     private void ExitInformationPanel()

@@ -69,6 +69,8 @@ MonoBehaviour:
   - AddGold
   - RewardGold
   - StateUpdate
+  - CompleteTrade2
+  - ResetTradePanel
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

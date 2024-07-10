@@ -2327,6 +2327,7 @@ MonoBehaviour:
   m_turnSpeed: 200
   isRunning: 0
   isSafe: 0
+  atk: 0
   currentSpeed: 0
   MovementSpeed: 10
   curHealth: 0
