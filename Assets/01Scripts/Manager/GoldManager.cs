@@ -12,4 +12,8 @@ public class GoldManager : Singleton<GoldManager>
     {
         goldText.text = "Gold : " + gold.ToString();
     }
+    public void SetGoldText()
+    {
+        goldText.text = "Gold : " + GameManager.Instance.Gold;
+    }
 }

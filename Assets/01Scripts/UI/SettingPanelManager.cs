@@ -40,7 +40,18 @@ public class SettingPanelManager : MonoBehaviour
 
     [Header("Question")]
     [SerializeField]
+    private Button showExplainBtn;
+    [SerializeField]
+    private Button showKeySetBtn;
+    [SerializeField]
     private Button questionPanelExitBtn;
+
+
+    [SerializeField]
+    private GameObject explainPanel;
+    [SerializeField]
+    private GameObject keySetPanel;
+
 
     private void Start()
     {
@@ -52,7 +63,13 @@ public class SettingPanelManager : MonoBehaviour
         SettingExitButton.onClick.AddListener(SettingPanelExit);
 
         QuestionBtn.onClick.AddListener(QuestionPanelActive);
+        showExplainBtn.onClick.AddListener(ShowExplainPanel);
+        showKeySetBtn.onClick.AddListener(ShowKeySetPanel);
+
         questionPanelExitBtn.onClick.AddListener(QuestionPanelExit);
+
+
+
 
 
         // 슬라이더 값 변경 시 OnBrightnessChange 메서드 호출
@@ -103,8 +120,26 @@ public class SettingPanelManager : MonoBehaviour
         QuestionPanel.SetActive(true);
     }
 
+    private void ShowKeySetPanel()
+    {
+        keySetPanel.SetActive(true);
+        explainPanel.SetActive(false);
+    }
+
+    private void ShowExplainPanel()
+    {
+        keySetPanel.SetActive(false);
+        explainPanel.SetActive(true);
+    }
+
+
+
+
     private void QuestionPanelExit()
     {
         QuestionPanel.SetActive(false);
     }
+
+
+
 }

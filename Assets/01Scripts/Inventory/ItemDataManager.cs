@@ -59,6 +59,8 @@ public class ItemDataManager : Singleton<ItemDataManager>
 
     public void GetItem(string itemName)
     {
+        Debug.Log("GetItem");
+
         int itemCost = 0;
 
         switch (itemName)
@@ -66,49 +68,51 @@ public class ItemDataManager : Singleton<ItemDataManager>
             // Consume
             case "meat":
                 itemCost = 200;
-                return;
+                break;
             case "potion":
             // Equip_Type_A
                 itemCost = 100;
-                return;
+                break;
             case "sword_A":
                 itemCost = 1000;
-                return;
+                break;
             case "pants_A":
                 itemCost = 800;
-                return;
+                break;
             case "helm_A":
                 itemCost = 800;
-                return;
+                break;
             case "gloves_A":
                 itemCost = 800;
-                return;
+                break;
             case "chest_A":
                 itemCost = 1000;
-                return;
+                break;
             case "boots_A":
                 itemCost = 800;
-                return;
+                break;
             // Equip_Type_B
             case "sword_B":
                 itemCost = 2000;
-                return;
+                break;
             case "pants_B":
                 itemCost = 1600;
-                return;
+                break;
             case "helm_B":
                 itemCost = 1600;
-                return;
+                break;
             case "gloves_B":
                 itemCost = 1600;
-                return;
+                break;
             case "chest_B":
                 itemCost = 2000;
-                return;
+                break;
             case "boots_B":
                 itemCost = 1600;
-                return;
+                break;
         }
+
+        Debug.Log("GetItem After item Cost");
 
         if(GameManager.Instance.Gold <= itemCost)
         {
@@ -120,10 +124,15 @@ public class ItemDataManager : Singleton<ItemDataManager>
 
         if (curItem != null)
         {
+            Debug.Log("Before " + curItem.Number);
+
             // 구매하면 수량 증가
             curItem.Number = (int.Parse(curItem.Number) + 1).ToString();
+            
+            Debug.Log("After " + curItem.Number);
 
             // 구매하면 골드 감소
+            GameManager.Instance.ChangeGold(-itemCost);
         }
         else
         {
@@ -131,14 +140,34 @@ public class ItemDataManager : Singleton<ItemDataManager>
             Item curAllItem = AllItemList.Find(x => x.Name == itemName);
             if (curAllItem != null)
             {
-                curAllItem.Number = int.Parse("1").ToString();
+                curAllItem.Number = "1";
                 MyItemList.Add(curAllItem);
+
+                GameManager.Instance.ChangeGold(-itemCost);
+
+                Debug.Log(itemName + " Item 구매 else");
             }
         }
 
-        GameManager.Instance.ChangeGold(-itemCost);
-    }
+        MyItemList.Sort((p1, p2) =>
+        {
+            try
+            {
+                int index1 = int.Parse(p1.Index);
+                int index2 = int.Parse(p2.Index);
+                return index1.CompareTo(index2);
+            }
+            catch (FormatException)
+            {
+                // 변환할 수 없는 경우 문자열 자체를 비교합니다.
+                return p1.Index.CompareTo(p2.Index);
+            }
+        });
 
+        GoldManager.Instance.SetGoldText();
+
+        Save();
+    }
 
     // 아이템 획득
     public void GetItemClick()
@@ -187,6 +216,36 @@ public class ItemDataManager : Singleton<ItemDataManager>
         if (curItem != null)
         {
             int curNumber = int.Parse(curItem.Number) - int.Parse(ItemNumberInput.text);
+
+            if (curNumber <= 0) MyItemList.Remove(curItem);
+            else curItem.Number = curNumber.ToString();
+        }
+
+        MyItemList.Sort((p1, p2) =>
+        {
+            try
+            {
+                int index1 = int.Parse(p1.Index);
+                int index2 = int.Parse(p2.Index);
+                return index1.CompareTo(index2);
+            }
+            catch (FormatException)
+            {
+                // 변환할 수 없는 경우 문자열 자체를 비교합니다.
+                return p1.Index.CompareTo(p2.Index);
+            }
+        });
+        Save();
+    }
+
+   // 소모템 사용
+   public void UseConsumeItem(string itemName)
+    {
+        Item curItem = MyItemList.Find(x => x.Name == itemName);
+
+        if (curItem != null)
+        {
+            int curNumber = int.Parse(curItem.Number) - 1;
 
             if (curNumber <= 0) MyItemList.Remove(curItem);
             else curItem.Number = curNumber.ToString();
@@ -322,19 +381,19 @@ public class ItemDataManager : Singleton<ItemDataManager>
             string itemName = _name[i];
             int itemCount = _count[i];
 
-            Item curItem = MyItemList.Find(x => x.Name == ItemNameInput.text);
+            Item curItem = MyItemList.Find(x => x.Name == itemName);
 
             if (curItem != null)
             {
-                curItem.Number = (int.Parse(curItem.Number) + int.Parse(ItemNumberInput.text)).ToString();
+                curItem.Number = (int.Parse(curItem.Number) + itemCount).ToString();
             }
             else
             {
                 // 전체에서 얻을 아이템을 찾아 내 아이템에 추가
-                Item curAllItem = AllItemList.Find(x => x.Name == ItemNameInput.text);
+                Item curAllItem = AllItemList.Find(x => x.Name == itemName);
                 if (curAllItem != null)
                 {
-                    curAllItem.Number = ItemNumberInput.text;
+                    curAllItem.Number = itemCount.ToString();
                     MyItemList.Add(curAllItem);
                 }
             }
@@ -359,8 +418,92 @@ public class ItemDataManager : Singleton<ItemDataManager>
         Save();
     }
 
+    public void TradeAddItem(string _name, int _count)
+    {
+
+        string itemName = _name;
+        int itemCount = _count;
+
+        Item curItem = MyItemList.Find(x => x.Name == itemName);
+
+        if (curItem != null)
+        {
+            curItem.Number = (int.Parse(curItem.Number) + itemCount).ToString();
+        }
+        else
+        {
+            // 전체에서 얻을 아이템을 찾아 내 아이템에 추가
+            Item curAllItem = AllItemList.Find(x => x.Name == itemName);
+            if (curAllItem != null)
+            {
+                curAllItem.Number = itemCount.ToString();
+                MyItemList.Add(curAllItem);
+            }
+        }
+
+
+        // 아이템 리스트를 인덱스 기준으로 정렬합니다.
+        MyItemList.Sort((p1, p2) =>
+        {
+            try
+            {
+                int index1 = int.Parse(p1.Index);
+                int index2 = int.Parse(p2.Index);
+                return index1.CompareTo(index2);
+            }
+            catch (FormatException)
+            {
+                // 변환할 수 없는 경우 문자열 자체를 비교합니다.
+                return p1.Index.CompareTo(p2.Index);
+            }
+        });
+
+        Save();
+    }
 
     // 아이템 제거
+    public void TradeRemoveItem(string _name, int _count)
+    {
+
+        string itemName = _name;
+        int itemCount = _count;
+
+        Item curItem = MyItemList.Find(x => x.Name == itemName);
+
+        if (curItem != null)
+        {
+            int curNumber = int.Parse(curItem.Number) - itemCount;
+
+            if (curNumber <= 0)
+            {
+                MyItemList.Remove(curItem);
+            }
+            else
+            {
+                curItem.Number = curNumber.ToString();
+            }
+        }
+
+
+        // 아이템 리스트를 인덱스 기준으로 정렬합니다.
+        MyItemList.Sort((p1, p2) =>
+        {
+            try
+            {
+                int index1 = int.Parse(p1.Index);
+                int index2 = int.Parse(p2.Index);
+                return index1.CompareTo(index2);
+            }
+            catch (FormatException)
+            {
+                // 변환할 수 없는 경우 문자열 자체를 비교합니다.
+                return p1.Index.CompareTo(p2.Index);
+            }
+        });
+        Save();
+    }
+
+
     public void TradeRemoveItem(List<string> _name, List<int> _count)
     {
         // 두 리스트의 길이가 다를 경우 예외를 던집니다.

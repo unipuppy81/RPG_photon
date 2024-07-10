@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    //public static GameManager Instance { get; private set; }
-
     public static bool isPlayGame = false;
     public static bool isChatting = false;
     public static bool isTradeChatting = false;
@@ -49,7 +47,7 @@ public class GameManager : Singleton<GameManager>
         Gold = currentGold + gold;
 
         SaveGold(name, Gold); // 변경된 골드를 저장합니다.
-        GoldManager.Instance.SetGoldText(Gold);
+        GoldManager.Instance.SetGoldText();
 
         Debug.Log("Gold for " + name + ": " + Gold);
     }
@@ -65,7 +63,7 @@ public class GameManager : Singleton<GameManager>
         Debug.Log("Gold for " + playerName + ": " + loadedGold);
         Gold = loadedGold; // 현재 골드 값 업데이트
 
-        GoldManager.Instance.SetGoldText(Gold);
+        GoldManager.Instance.SetGoldText();
 
         return Gold;
     }

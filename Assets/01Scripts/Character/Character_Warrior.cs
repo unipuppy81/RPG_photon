@@ -183,6 +183,8 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
             Move();
             InputAttackBtn();
 
+            UsePotion();
+
             if (Input.GetKeyDown(KeyCode.T))
             {
                 Debug.Log($"HP : {MaxHp}, Atk : {Atk}, Def : {Def}, WalkSpeed : {WalkSpeed}, RunSpeed : {RunSpeed}");
@@ -416,6 +418,22 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         // 스킬 사용 후 상태를 Idle로 변경
         ChangeState(State.Idle);
     }
+
+    // 포션
+    private void UsePotion()
+    {
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            ItemDataManager.Instance.UseConsumeItem("meat");
+
+            curHealth += 30;
+            if(curHealth > maxHp)
+            {
+                curHealth = maxHp;
+            }
+        }
+    }
+
 
     /// <summary>
     /// 캐릭터 스탯 설정

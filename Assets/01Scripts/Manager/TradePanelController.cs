@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using ExitGames.Client.Photon;
 using System.Collections.Generic;
+using Photon.Pun.Demo.Cockpit;
 
 public class TradePanelController : MonoBehaviourPunCallbacks
 {
@@ -175,18 +176,20 @@ public class TradePanelController : MonoBehaviourPunCallbacks
         {
             Hashtable props = new Hashtable { { INIT_OFFERED, true } };
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+
+            initReadyText.text = "준비됨";
         }
         else if (PhotonNetwork.LocalPlayer == clickedPlayer)
         {
             Hashtable props = new Hashtable { { CLICKED_OFFERED, true } };
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+
+            initReadyText.text = "준비됨";
         }
 
 
         tradePanelPhotonView.RPC("CheckTradeStatus", initPlayer);
         tradePanelPhotonView.RPC("CheckTradeStatus", clickedPlayer);
-
-        //tradePanelPhotonView.RPC("CheckTradeStatus", RpcTarget.All);
     }
 
     // 등록 취소 버튼 클릭 시
@@ -202,17 +205,19 @@ public class TradePanelController : MonoBehaviourPunCallbacks
         {
             Hashtable props = new Hashtable { { INIT_OFFERED, false } };
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+
+            initReadyText.text = "준비중";
         }
         else if (PhotonNetwork.LocalPlayer == clickedPlayer)
         {
             Hashtable props = new Hashtable { { CLICKED_OFFERED, false } };
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+
+            initReadyText.text = "준비중";
         }
 
         tradePanelPhotonView.RPC("CheckTradeStatus", initPlayer);
         tradePanelPhotonView.RPC("CheckTradeStatus", clickedPlayer);
-
-        //tradePanelPhotonView.RPC("CheckTradeStatus", RpcTarget.All);
     }
 
 
@@ -312,21 +317,56 @@ public class TradePanelController : MonoBehaviourPunCallbacks
     // 거래 성공 처리
     private void AcceptTrade()
     {
-        ItemDataManager.Instance.TradeRemoveItem(itemNameList, itemCountList);
+        //ItemDataManager.Instance.TradeRemoveItem(itemNameList, itemCountList);
+        for (int i = 0; i < itemNameList.Count; i++)
+        {
+            string itemName = itemNameList[i];
+            int itemCount = itemCountList[i];
+
+            ItemDataManager.Instance.TradeRemoveItem(itemName, itemCount);
+        }
+
+
 
         if (PhotonNetwork.LocalPlayer == initPlayer)
         {
-            tradePanelPhotonView.RPC("CompleteTrade", clickedPlayer, itemNameList, itemCountList);
+            for(int i =0; i < itemNameList.Count; i++)
+            {
+                string itemName = itemNameList[i];
+                int itemCount = itemCountList[i];
+
+                tradePanelPhotonView.RPC("CompleteTrade", clickedPlayer, itemName, itemCount);
+            }
+
+            //tradePanelPhotonView.RPC("CompleteTrade", clickedPlayer, itemNameList, itemCountList);
         }
         else if (PhotonNetwork.LocalPlayer == clickedPlayer)
         {
-            tradePanelPhotonView.RPC("CompleteTrade", initPlayer, itemNameList, itemCountList);
+            for (int i = 0; i < itemNameList.Count; i++)
+            {
+                string itemName = itemNameList[i];
+                int itemCount = itemCountList[i];
+
+                tradePanelPhotonView.RPC("CompleteTrade", clickedPlayer, itemName, itemCount);
+            }
+            //tradePanelPhotonView.RPC("CompleteTrade", initPlayer, itemNameList, itemCountList);
         }
     }
 
     // 거래 완료 처리
     [PunRPC]
-    public void CompleteTrade(List<string> s, List<int> i)
+    public void CompleteTrade(string s, int i)
+    {
+        // 여기서 아이템을 실제로 전송합니다.
+        ItemDataManager.Instance.TradeAddItem(s, i);
+
+        TradeSuccess();
+
+        gameObject.SetActive(false); // 패널 숨기기
+    }
+
+    [PunRPC]
+    public void CompleteTrade2(List<string> s, List<int> i)
     {
         // 여기서 아이템을 실제로 전송합니다.
         ItemDataManager.Instance.TradeAddItem(s, i);

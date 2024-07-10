@@ -24,9 +24,6 @@ public class TradeItemCountManager : MonoBehaviourPunCallbacks
     public int itemCount;
     public int itemMaxCount;
 
-    public List<string> itemNameArray;
-    public List<int> itemCountArray;
-
     private void Start()
     {
         _controller = TradePanel.GetComponent<TradePanelController>();
