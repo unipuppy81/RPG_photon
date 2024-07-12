@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
@@ -125,4 +126,23 @@ public class GameManager : Singleton<GameManager>
         QuestManager.Instance.questId = questId;
         QuestManager.Instance.questActionIndex = questActionIndex;
     }
+
+    public Vector3 GameLoad2()
+    {
+        if (!PlayerPrefs.HasKey("playerX"))
+            return new Vector3(0,0,0);
+
+        float x = PlayerPrefs.GetFloat("playerX");
+        float y = PlayerPrefs.GetFloat("playerY");
+        float z = PlayerPrefs.GetFloat("plaeyrZ");
+        int questId = PlayerPrefs.GetInt("QuestId");
+        int questActionIndex = PlayerPrefs.GetInt("QuestActionIndex");
+
+        Vector3 pos = new Vector3(x, y, z);
+        QuestManager.Instance.questId = questId;
+        QuestManager.Instance.questActionIndex = questActionIndex;
+
+        return pos;
+    }
+
 }

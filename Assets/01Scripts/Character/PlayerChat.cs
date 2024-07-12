@@ -31,6 +31,7 @@ public class PlayerChat : MonoBehaviourPunCallbacks
         tradeChatInput = GameObject.Find("Canvas").transform.Find("TradePanel").transform.Find("TradeChatPanel").transform.Find("TradeChatInput").gameObject;
 
         chatImage = GameObject.Find("Canvas").transform.Find("ChatPanel").gameObject.GetComponent<Image>();
+        chatImage.color = new Color(chatImage.color.r, chatImage.color.g, chatImage.color.b, 0.75f);
 
         view = this.GetComponent<PhotonView>();
  

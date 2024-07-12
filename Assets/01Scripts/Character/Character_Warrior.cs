@@ -230,7 +230,13 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
             GameManager.Instance.playerName = PhotonNetwork.NickName;
             GameManager.Instance.LoadGold(PhotonNetwork.NickName);
             GameManager.Instance.player = this.gameObject;
-            GameManager.Instance.GameLoad();
+            //GameManager.Instance.GameLoad();
+
+            Vector3 newPos = GameManager.Instance.GameLoad2();
+            if(newPos.x != 0)
+            {
+                gameObject.transform.position = newPos;
+            }
 
             UIManager.Instance.CloseEquip();
         }
