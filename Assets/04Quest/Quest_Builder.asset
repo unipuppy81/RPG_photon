@@ -29,6 +29,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c30ba4d018b0c434b88ebfd1cac4ade5, type: 2}
   useAutoComplete: 1
   isCancelable: 0
-  isSavable: 1
+  isSavable: 0
   acceptionConditions: []
   cancelConditons: []

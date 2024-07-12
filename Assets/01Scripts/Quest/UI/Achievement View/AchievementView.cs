@@ -12,19 +12,12 @@ public class AchievementView : MonoBehaviour
     private void Start()
     {
         StartCoroutine(DelayedSetup());
-        //var questSystem = QuestSystem.Instance;
-        //CreateDetailViews(questSystem.ActiveAchievements);
-        //CreateDetailViews(questSystem.CompletedAchievements);
-
-        //gameObject.SetActive(false);
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.K))
         {
-            Debug.Log("Input V");
-
             var questSystem = QuestSystem.Instance;
             CreateDetailViews(questSystem.ActiveAchievements);
             CreateDetailViews(questSystem.CompletedAchievements);

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Achievement_KillTheNormalGhost20
   m_EditorClassIdentifier: 
   category: {fileID: 11400000, guid: 331826a05f5ede341b2972df3f27e0ef, type: 2}
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 1225aae5cdb5cfb4196e11d97df783b3, type: 3}
   codeName: KILL_THE_NORMAL_GHOST_20
   displayName: "\uC77C\uBC18 \uADC0\uC2E0 20\uB9C8\uB9AC \uC7A1\uAE30"
   description: "20\uB9C8\uB9AC\uC758 \uC77C\uBC18 \uADC0\uC2E0\uC744 \uCC98\uCE58\uD558\uB77C"
@@ -25,5 +25,6 @@ MonoBehaviour:
   useAutoComplete: 1
   isCancelable: 0
   isSavable: 0
-  acceptionConditions: []
+  acceptionConditions:
+  - {fileID: 11400000, guid: 913c8204a49b4b24488c2d5c0db6c391, type: 2}
   cancelConditons: []

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45ab5eccf9cb01341ac53e2b89325c22, type: 3}
   m_Name: GoldReward_1000
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: d6c0f79c1a448354891c9bb9b4074be3, type: 3}
+  icon: {fileID: 21300000, guid: 9b6afb766887a9d45ad6a7b2c466974e, type: 3}
   description: Gold
   quantity: 1000

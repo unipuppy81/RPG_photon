@@ -30,7 +30,6 @@ public class TradeDropUI : MonoBehaviour, IPointerEnterHandler, IDropHandler, IP
     /// <param name="eventData"></param>
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Pointer Enter");
         image.color = Color.yellow;
     }
 
@@ -41,7 +40,6 @@ public class TradeDropUI : MonoBehaviour, IPointerEnterHandler, IDropHandler, IP
     /// <param name="eventData"></param>
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("Pointer Exit");
         image.color = Color.white;
     }
 

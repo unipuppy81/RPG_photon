@@ -186,8 +186,6 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
             UsePotion();
 
-            Debug.Log("Atk : " + Atk);
-
             if (Input.GetKeyDown(KeyCode.T))
             {
                 Debug.Log($"HP : {MaxHp}, Atk : {Atk}, Def : {Def}, WalkSpeed : {WalkSpeed}, RunSpeed : {RunSpeed}");
@@ -679,7 +677,6 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     {
         yield return new WaitUntil(() => _photonView.IsMine);
 
-        Debug.Log("Camera is Mine");
         Camera.main.GetComponent<SmoothFollow>().target = _transform.Find("CameraPos").transform;
     }
 }

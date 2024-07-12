@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ab3852cc295a50429b37037563850e9, type: 3}
   m_Name: Quest_KillTheNormalGhost20
   m_EditorClassIdentifier: 
-  category: {fileID: 0}
+  category: {fileID: 11400000, guid: 331826a05f5ede341b2972df3f27e0ef, type: 2}
   icon: {fileID: 0}
   codeName: KILL_THE_NORMAL_GHOST_20
   displayName: "\uC77C\uBC18 \uADC0\uC2E0 20\uB9C8\uB9AC \uCC98\uCE58"

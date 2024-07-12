@@ -5,7 +5,6 @@ using TMPro;
 using UnityEngine.UI;
 using ExitGames.Client.Photon;
 using System.Collections.Generic;
-using Photon.Pun.Demo.Cockpit;
 
 public class TradePanelController : MonoBehaviourPunCallbacks
 {
@@ -41,9 +40,6 @@ public class TradePanelController : MonoBehaviourPunCallbacks
     private bool initOffered = false; // 내가 등록 버튼을 눌렀는지 여부
     private bool clickedOffered = false; // 상대방이 등록 버튼을 눌렀는지 여부
 
-    private const string INIT_OFFERED = "InitOffered";
-    private const string CLICKED_OFFERED = "ClickedOffered";
-
     
     void Awake()
     {
@@ -75,15 +71,14 @@ public class TradePanelController : MonoBehaviourPunCallbacks
         initNameText.text = initPlayer.NickName;
         clickedNameText.text = clickedPlayer.NickName;
 
-        // 초기화 시 두 플레이어의 등록 상태를 초기화
-        Hashtable initProps = new Hashtable { { INIT_OFFERED, false } };
-        initPlayer.SetCustomProperties(initProps);
+        tradeButtonObj.SetActive(true);
+        nonTradeButtonObj.SetActive(false);
 
-        Hashtable clickedProps = new Hashtable { { CLICKED_OFFERED, false } };
-        clickedPlayer.SetCustomProperties(clickedProps);
+        initOffered = false;
+        clickedOffered = false;
 
-        tradePanelPhotonView.RPC("CheckTradeStatus", initPlayer);
-        tradePanelPhotonView.RPC("CheckTradeStatus", clickedPlayer);
+        initReadyText.text = "준비중";
+        clickedReadyText.text = "준비중";
     }
 
     private void OnEnable()
@@ -156,14 +151,12 @@ public class TradePanelController : MonoBehaviourPunCallbacks
         slotImage.sprite = sprite;
 
         TextMeshProUGUI tmp = newSlot.GetComponentInChildren<TextMeshProUGUI>();
-        //tmp.text = $"{_itemName}: {_itemCount}";
         tmp.text = _itemCount.ToString();
 
 
         CanvasGroup canvasGroup = newSlot.GetComponent<CanvasGroup>();
         canvasGroup.alpha = 1.0f;
     }
-
 
     // 등록 버튼 클릭 시, 서로의 bool => 서버에서 처리
     public void OnTradeButtonClicked()
@@ -176,22 +169,21 @@ public class TradePanelController : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.LocalPlayer == initPlayer)
         {
-            Hashtable props = new Hashtable { { INIT_OFFERED, true } };
-            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+            initOffered = true;
 
             initReadyText.text = "준비됨";
+
+            tradePanelPhotonView.RPC("CheckTradeStatus", clickedPlayer, initOffered);
         }
         else if (PhotonNetwork.LocalPlayer == clickedPlayer)
         {
-            Hashtable props = new Hashtable { { CLICKED_OFFERED, true } };
-            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+            clickedOffered = true;
 
-            clickedReadyText.text = "준비됨";
+            clickedReadyText.text = "준비됨"; 
+
+
+            tradePanelPhotonView.RPC("CheckTradeStatus", initPlayer, clickedOffered);
         }
-
-
-        tradePanelPhotonView.RPC("CheckTradeStatus", initPlayer);
-        tradePanelPhotonView.RPC("CheckTradeStatus", clickedPlayer);
     }
 
     // 등록 취소 버튼 클릭 시
@@ -205,30 +197,26 @@ public class TradePanelController : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.LocalPlayer == initPlayer)
         {
-            Hashtable props = new Hashtable { { INIT_OFFERED, false } };
-            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+            initOffered = false;
 
             initReadyText.text = "준비중";
+
+            tradePanelPhotonView.RPC("CheckTradeStatus", clickedPlayer, initOffered);
         }
         else if (PhotonNetwork.LocalPlayer == clickedPlayer)
         {
-            Hashtable props = new Hashtable { { CLICKED_OFFERED, false } };
-            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+            clickedOffered = false;
 
             clickedReadyText.text = "준비중";
-        }
 
-        tradePanelPhotonView.RPC("CheckTradeStatus", initPlayer);
-        tradePanelPhotonView.RPC("CheckTradeStatus", clickedPlayer);
+            tradePanelPhotonView.RPC("CheckTradeStatus", initPlayer, clickedOffered);
+        }
     }
 
 
     // 거래 그만하기 버튼 클릭 시
     public void OnTradeExitButtonClicked()
     {
-        ResetTradeState();
-
-
         if (PhotonNetwork.LocalPlayer == initPlayer)
         {
             tradePanelPhotonView.RPC("TradeFail", clickedPlayer);
@@ -246,63 +234,48 @@ public class TradePanelController : MonoBehaviourPunCallbacks
         gameObject.SetActive(false); // 패널 숨기기
     }
 
-    // 거래 상태 초기화 - 클라이언트
-    private void ResetTradeState()
-    {
-        if (PhotonNetwork.LocalPlayer == initPlayer)
-        {
-            Hashtable props = new Hashtable { { INIT_OFFERED, false } };
-            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
-        }
-        else if (PhotonNetwork.LocalPlayer == clickedPlayer)
-        {
-            Hashtable props = new Hashtable { { CLICKED_OFFERED, false } };
-            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
-        }
-
-        tradePanelPhotonView.RPC("ResetPartnerTradeState", RpcTarget.Others);
-    }
-
-    // 거래 상태 초기화 - 서버 및 동기화
-    [PunRPC]
-    public void ResetPartnerTradeState()
-    {
-        if (PhotonNetwork.LocalPlayer == initPlayer)
-        {
-            Hashtable props = new Hashtable { { CLICKED_OFFERED, false } };
-            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
-        }
-        else if (PhotonNetwork.LocalPlayer == clickedPlayer)
-        {
-            Hashtable props = new Hashtable { { INIT_OFFERED, false } };
-            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
-        }
-
-    }
-
     // 거래 상태 확인 및 처리
     [PunRPC]
-    public void CheckTradeStatus()
+    public void CheckTradeStatus(bool sendBool)
     {
-        if (initPlayer.CustomProperties.ContainsKey(INIT_OFFERED) &&
-            clickedPlayer.CustomProperties.ContainsKey(CLICKED_OFFERED))
+        if(PhotonNetwork.LocalPlayer == initPlayer)
         {
-            initOffered = (bool)initPlayer.CustomProperties[INIT_OFFERED];
-            clickedOffered = (bool)clickedPlayer.CustomProperties[CLICKED_OFFERED];
+            clickedOffered = sendBool;
 
             boolText();
+        }
 
-            if (initOffered && clickedOffered)
+        if(PhotonNetwork.LocalPlayer == clickedPlayer)
+        {
+            initOffered = sendBool;
+
+            boolText();
+        }
+
+        if (initOffered && clickedOffered)
+        {
+            AcceptTrade();
+
+            if (PhotonNetwork.LocalPlayer == initPlayer)
             {
-                AcceptTrade();
+                tradePanelPhotonView.RPC("AcceptTrade", clickedPlayer);
+                tradePanelPhotonView.RPC("TradeSuccess", clickedPlayer);
             }
+            else if (PhotonNetwork.LocalPlayer == clickedPlayer)
+            {
+                tradePanelPhotonView.RPC("AcceptTrade", initPlayer);
+                tradePanelPhotonView.RPC("TradeSuccess", initPlayer);
+            }
+
+            TradeResultSuccessPanel.SetActive(true);
+            gameObject.SetActive(false);
         }
     }
 
     // 텍스트 설정
     private void boolText()
     {
-        // 텍스트 설정
+
         if (initOffered)
         {
             initReadyText.text = "준비됨";
@@ -323,9 +296,9 @@ public class TradePanelController : MonoBehaviourPunCallbacks
     }
 
     // 거래 성공 처리
+    [PunRPC]
     private void AcceptTrade()
     {
-        //ItemDataManager.Instance.TradeRemoveItem(itemNameList, itemCountList);
         for (int i = 0; i < itemNameList.Count; i++)
         {
             string itemName = itemNameList[i];
@@ -334,16 +307,14 @@ public class TradePanelController : MonoBehaviourPunCallbacks
             ItemDataManager.Instance.TradeRemoveItem(itemName, itemCount);
         }
 
-
-
         if (PhotonNetwork.LocalPlayer == initPlayer)
         {
-            for(int i =0; i < itemNameList.Count; i++)
+            for(int i = 0; i < itemNameList.Count; i++)
             {
                 string itemName = itemNameList[i];
                 int itemCount = itemCountList[i];
 
-                tradePanelPhotonView.RPC("CompleteTrade", clickedPlayer, itemName, itemCount);
+                tradePanelPhotonView.RPC("SendItem", clickedPlayer, itemName, itemCount);
             }
         }
         else if (PhotonNetwork.LocalPlayer == clickedPlayer)
@@ -353,27 +324,22 @@ public class TradePanelController : MonoBehaviourPunCallbacks
                 string itemName = itemNameList[i];
                 int itemCount = itemCountList[i];
 
-                tradePanelPhotonView.RPC("CompleteTrade", clickedPlayer, itemName, itemCount);
+                tradePanelPhotonView.RPC("SendItem", initPlayer, itemName, itemCount);
             }
         }
 
-        TradeSuccess();
+        foreach (GameObject obj in TradeManager.Instance.resetGameObject)
+        {
+            Destroy(obj);
+        }
     }
 
     // 거래 완료 처리
     [PunRPC]
-    public void CompleteTrade(string s, int i)
+    public void SendItem(string s, int i)
     {
-        // 여기서 아이템을 실제로 전송합니다.
+        // 아이템을 실제로 전송합니다.
         ItemDataManager.Instance.TradeAddItem(s, i);
-
-        TradeSuccess();
-
-
-        foreach(GameObject obj in TradeManager.Instance.resetGameObject)
-        {
-            Destroy(obj);
-        }
     }
 
     [PunRPC]

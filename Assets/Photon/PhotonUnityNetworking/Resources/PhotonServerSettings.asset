@@ -72,6 +72,8 @@ MonoBehaviour:
   - CompleteTrade2
   - ResetTradePanel
   - UpdateHealthSlider
+  - AcceptTrade
+  - SendItem
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
