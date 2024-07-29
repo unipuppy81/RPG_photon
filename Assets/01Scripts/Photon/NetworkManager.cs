@@ -1,11 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 /*
 public class NetworkManager : MonoBehaviourPunCallbacks
@@ -157,6 +155,11 @@ public class NetworkManager : SingletonPhoton<NetworkManager>
 
 
     [Header("Chat")]
+    [SerializeField] private TextMeshProUGUI chatTextPrefab;
+    [SerializeField] private Transform chatContent;
+    private ObjectPool<TextMeshProUGUI> chatTextPool;
+
+
     public TMP_InputField ChatInput;
     public GameObject chatPanel, chatView;
 
@@ -189,6 +192,8 @@ public class NetworkManager : SingletonPhoton<NetworkManager>
         Debug.Log("00. 포톤 매니저 시작");
 
         chatList = chatView.GetComponentsInChildren<TextMeshProUGUI>();
+
+        chatTextPool = new ObjectPool<TextMeshProUGUI>(chatTextPrefab, 6, chatContent);
 
         //startButton.onClick.AddListener(JoinRoom);
         //OnLogin();
@@ -263,9 +268,12 @@ public class NetworkManager : SingletonPhoton<NetworkManager>
         // 채팅 패널 on
         chatPanel.SetActive(true);
 
+
         ChatInput.text = "";
-        foreach (TextMeshProUGUI chat in chatList)
-            chat.text = "";
+        ClearChat();
+
+        //foreach (TextMeshProUGUI chat in chatList)
+        //    chat.text = "";
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -346,8 +354,9 @@ public class NetworkManager : SingletonPhoton<NetworkManager>
     // 채팅 전송 함수
     public void Send()
     {
-        if (ChatInput.text.Equals(""))
+        if (string.IsNullOrEmpty(ChatInput.text))
             return;
+
         string msg = "[" + PhotonNetwork.NickName + "] " + ChatInput.text;
         PV.RPC("ChatRPC", RpcTarget.All, msg);
         ChatInput.text = "";
@@ -355,19 +364,44 @@ public class NetworkManager : SingletonPhoton<NetworkManager>
 
     [PunRPC]
     void ChatRPC(string msg)
-    {
-        bool isInput = false;
-        for (int i = 0; i < chatList.Length; i++)
-            if (chatList[i].text == "")
-            {
-                isInput = true;
-                chatList[i].text = msg;
-                break;
-            }
-        if (!isInput)
+    { 
+        TextMeshProUGUI chatText = chatTextPool.Get();
+        chatText.transform.SetParent(chatContent, false);
+        chatText.text = msg;
+
+        // 채팅 리스트의 자식이 6개를 초과할 경우 가장 오래된 메시지를 위로 이동합니다.
+        if (chatContent.childCount >= 6)
         {
-            for (int i = 1; i < chatList.Length; i++) chatList[i - 1].text = chatList[i].text;
-            chatList[chatList.Length - 1].text = msg;
+            TextMeshProUGUI oldestChatText = chatContent.GetChild(0).GetComponent<TextMeshProUGUI>();
+
+            // 가장 오래된 메시지를 위로 이동하여 가장 최근 메시지 자리를 비웁니다.
+            oldestChatText.transform.SetAsLastSibling();
+        }
+
+
+        chatText.transform.SetAsLastSibling(); // 새 메시지를 리스트의 가장 아래로 이동
+
+       
+        UpdateChatPositions();
+    }
+
+    void UpdateChatPositions()
+    {
+        // 각 채팅 메시지를 위로 이동시키기 위해 위치를 업데이트합니다.
+        float chatHeight = chatTextPrefab.preferredHeight;
+
+        for (int i = 0; i < chatContent.childCount; i++)
+        {
+            RectTransform chatTransform = chatContent.GetChild(i).GetComponent<RectTransform>();
+            chatTransform.anchoredPosition = new Vector2(0, -chatHeight * i);
+        }
+    }
+
+    void ClearChat()
+    {
+        foreach (Transform child in chatContent)
+        {
+            chatTextPool.ReturnToPool(child.GetComponent<TextMeshProUGUI>());
         }
     }
 }

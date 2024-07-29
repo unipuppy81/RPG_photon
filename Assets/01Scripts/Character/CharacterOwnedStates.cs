@@ -1,6 +1,3 @@
-// 수행할 내용 구현
-// 상태 변경은 Character_Warrior 에서만 해야한다
-
 namespace CharacterOwnedStates
 {
     public class WarriorIdle : CharacterState<Character_Warrior>
@@ -32,7 +29,6 @@ namespace CharacterOwnedStates
         {
             sender.Walk();
         }
-
         public override void Execute(Character_Warrior sender)
         {
             if (sender.MovementSpeed > 0.1f && sender.isRunning && !sender.isUsingSkill && !sender.isNormalAttack)
@@ -79,14 +75,9 @@ namespace CharacterOwnedStates
     }
     public class WarriorAttack : CharacterState<Character_Warrior>
     {
-        private float attackDuration = 4.0f;
-        private float attackTimer;
-
         public override void Enter(Character_Warrior sender)
         {
             sender.Attack();
-            //sender.UseSkill();
-            // 스킬 시작 시 실행할 로직 추가
         }
 
         public override void Execute(Character_Warrior sender)

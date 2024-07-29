@@ -76,11 +76,11 @@ public class NetworkManager2 : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void ChatRPC(string msg)
+    void ChatRPC2(string msg)
     {
         bool isInput = false;
         for (int i = 0; i < chatList.Length; i++)
-            if (chatList[i].text == "")
+            if (string.IsNullOrEmpty(chatList[i].text))
             {
                 isInput = true;
                 chatList[i].text = msg;

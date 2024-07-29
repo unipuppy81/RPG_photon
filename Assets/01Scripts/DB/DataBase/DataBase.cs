@@ -23,7 +23,6 @@ public class DataBase : ScriptableObject
                 Character[i].Wspeed = wspeed;
                 Character[i].Rspeed = rspeed;
 
-                // 업데이트를 완료했으므로 메서드를 종료합니다.
                 return;
             }
         }
@@ -32,7 +31,6 @@ public class DataBase : ScriptableObject
     // 특정 타입의 적 스탯을 업데이트하는 메서드
     public void UpdateEnemyStats(float maxHp, float spd, float atk, float def, float healAmount, float Radius)
     {
-        // 리스트를 순회하면서 타입에 맞는 캐릭터 스탯을 찾아 업데이트합니다.
         for (int i = 0; i < Enemy.Count; ++i)
         {
             Enemy[i].Maxhp = maxHp;
@@ -42,7 +40,6 @@ public class DataBase : ScriptableObject
             Enemy[i].Healamount = healAmount;
             Enemy[i].Radius = Radius;
 
-            // 업데이트를 완료했으므로 메서드를 종료합니다.
             return;
 
         }

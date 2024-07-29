@@ -71,12 +71,6 @@ public class Quest : ScriptableObject
     public string DisplayName => displayName;
     public string Description => description;
     public QuestState State {  get; private set; }
-    // 슬라임을 10마리 잡아라
-    // 
-    // 레드 슬라임을 10마리 잡아라
-    // 블루 슬라임을 10마리 잡아라 -> 슬라임을 10마리 잡아라 
-    // 즉 단순히 task 변수 하나 추가하는게 아니라 task들의 집합인 task group 만들고 
-    // 그 taskgroup을 배열로 추가
 
 
     public TaskGroup CurrentTaskGroup
@@ -148,40 +142,6 @@ public class Quest : ScriptableObject
     /// <param name="category"></param>
     /// <param name="target"></param>
     /// <param name="successCount"></param>
-
-    /*public void ReceiveReport(string category, object target, int successCount)
-    {
-        Debug.Assert(IsRegistered, "This quest has already been registerd.");
-        Debug.Assert(!IsCancel, "This quest has been canceled.");
-
-        if (IsComplete)
-            return;
-
-        CurrentTaskGroup.ReceiveReport(category, target, successCount);
-
-        if (CurrentTaskGroup.IsAllTaskComplete)
-        {
-            if (currentTaskGroupIndex + 1 == taskGroups.Length)
-            {
-                State = QuestState.WaitingForcompletion;
-                if (useAutoComplete)
-                {
-                    Complete();
-                }
-                else
-                {
-                    var prevTaskGroup = taskGroups[currentTaskGroupIndex++];
-                    prevTaskGroup.End();
-
-                    CurrentTaskGroup.Start();
-                    onNewTaskGroup?.Invoke(this, CurrentTaskGroup, prevTaskGroup);
-                }
-            }
-        }
-        else //Task option중에 완료 되어도 계속해서 보고 받는 옵션
-            State = QuestState.Running;
-    }
-    */
     public void ReceiveReport(string category, object target, int successCount)
     {
         Debug.Assert(IsRegistered, "This quest has not been registered.");
@@ -310,26 +270,7 @@ public class Quest : ScriptableObject
             throw new IndexOutOfRangeException("currentTaskGroupIndex is out of bounds during LoadFrom");
         }
     }
-    /*
-    public void LoadFrom(QuestSaveData saveData)
-    {
-        State = saveData.state;
-        currentTaskGroupIndex = saveData.taskGroupIndex;
 
-        for(int i =0; i < currentTaskGroupIndex; i++)
-        {
-            var taskGroup = taskGroups[i];
-            taskGroup.Start();
-            taskGroup.Complete();
-        }
-
-        for(int i =0;i < saveData.taskSuccessCounts.Length; i++)
-        {
-            CurrentTaskGroup.Start();
-            CurrentTaskGroup.Tasks[i].CurrentSuccess = saveData.taskSuccessCounts[i];
-        }
-    }
-    */
     private void OnSuccessChanged(Task task, int currentSuccess, int prevSuccess)
         => onTaskSuccessChanged?.Invoke(this, task, currentSuccess, prevSuccess);
 

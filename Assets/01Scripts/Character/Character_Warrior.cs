@@ -158,7 +158,6 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
         if (photonView.IsMine)
         {
-            // 초기 그룹 설정
             //UpdateInterestGroup();
             nextUpdateTime = Time.time + updateInterval;
         }
@@ -174,7 +173,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         if (photonView.IsMine && Time.time >= nextUpdateTime)
         {
             // 특정 간격마다 그룹 업데이트
-            //UpdateInterestGroup();
+            UpdateInterestGroup();
             nextUpdateTime = Time.time + updateInterval;
         }
 
@@ -439,7 +438,6 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
             // 모든 클라이언트에게 체력 업데이트 RPC 호출
             photonView.RPC("UpdateHealthSlider", RpcTarget.All, curHealth);
-            //UpdateHealthSlider();
         }
     }
 
@@ -495,6 +493,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         // 다른 플레이어에게 업데이트 알림
         _photonView.RPC("StateUpdate", RpcTarget.Others, atk, def, walkSpeed, runSpeed);
     }
+
     /// <summary>
     /// 상태 구현
     /// </summary>
@@ -536,7 +535,7 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
         // 스킬 애니메이션 재생
         _animator.SetBool("UseSkill", isUsingSkill);
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        // 예를 들어, 스킬이 1초 동안 지속된다고 가정
+
         Invoke("FinishSkill", 2.5f);
     }
 
@@ -642,17 +641,16 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     }
 
     /// <summary>
-    /// 멀리 떨어진 객체는 패킷을 받지 않습니다. -> 네트워크 트래픽 최적화
+    /// 멀리 떨어진 객체는 패킷을 받지 않음 -> 네트워크 트래픽 최적화
     /// </summary>
     void UpdateInterestGroup()
     {
-        // 예시: x 위치에 따라 그룹 설정 (1-255 범위의 byte 사용)
-        byte newGroup = (byte)Mathf.Clamp(Mathf.FloorToInt(transform.position.x / 10.0f) + 1, 1, 255);
+        byte newGroupX = (byte)Mathf.Clamp(Mathf.FloorToInt(transform.position.x / 10.0f) + 1, 1, 16);
+        byte newGroupZ = (byte)Mathf.Clamp(Mathf.FloorToInt(transform.position.z / 10.0f) + 1, 1, 16);
+        byte newGroup = (byte)((newGroupX - 1) * 16 + newGroupZ);
 
         if (newGroup != currentGroup)
         {
-            //Debug.Log($"Changing group from {currentGroup} to {newGroup}");
-            // 현재 그룹만 구독하도록 설정
             if (currentGroup > 0)
             {
                 PhotonNetwork.SetInterestGroups(currentGroup, false);

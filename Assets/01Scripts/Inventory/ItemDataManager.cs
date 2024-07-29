@@ -268,6 +268,7 @@ public class ItemDataManager : Singleton<ItemDataManager>
         Save();
     }
 
+
     public void ResetItemClick()
     {
         Item BasicItem = AllItemList.Find(x => x.Name == "sword_A");
@@ -342,10 +343,8 @@ public class ItemDataManager : Singleton<ItemDataManager>
         ExplainPanel.transform.GetChild(2).GetComponentInChildren<Image>().sprite = slots[slotNum].transform.GetComponent<Image>().sprite;
         ExplainPanel.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = curItemList[slotNum].Number + "개";
         ExplainPanel.transform.GetChild(4).GetComponent<TextMeshProUGUI>().text = curItemList[slotNum].Explain;
-        // 패널의 위치를 조정된 마우스 위치로 설정
-        //ExplainPanel.GetComponent<RectTransform>().anchoredPosition3D = Input.mousePosition;
-
     }
+
     IEnumerator PointerEnterDelay(int slotNum)
     {
         yield return new WaitForSeconds(0.5f);
@@ -361,7 +360,7 @@ public class ItemDataManager : Singleton<ItemDataManager>
 
 
     /// <summary>
-    /// 거래시 아이템 제거
+    /// 거래시 아이템 변경
     /// </summary>
 
 

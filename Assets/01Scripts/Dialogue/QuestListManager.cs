@@ -55,13 +55,6 @@ public class QuestListManager : MonoBehaviour
             childObjects[i] = parentObject.transform.GetChild(i).gameObject;
             Debug.Log(childObjects[i].name);
         }
-
-        // 배열에 저장된 하위 GameObject들에 대해 원하는 작업 수행
-        foreach (GameObject childObject in childObjects)
-        {
-            // 원하는 작업 수행
-            // 예: childObject.GetComponent<YourComponent>().YourMethod();
-        }
     }
 
     void btnSet()
