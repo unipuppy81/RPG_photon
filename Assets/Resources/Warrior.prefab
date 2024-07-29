@@ -2344,6 +2344,7 @@ MonoBehaviour:
   chest_b: {fileID: 558327018679036082}
   shoes_a: {fileID: 530533143639518836}
   shoes_b: {fileID: 2487089620646719901}
+  syncDistance: 50
   dirVec: {x: 0, y: 0, z: 0}
   scanRadius: 2
   scanObject: {fileID: 0}

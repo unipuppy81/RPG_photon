@@ -3,6 +3,7 @@ using System.Collections;
 using Photon.Pun;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public enum Character_Type { Warrior = 0, Mage, Boxer }
 public enum State { Idle = 0, Walk, Run, Warrior_Skill, Die }
@@ -117,6 +118,11 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
     private float updateInterval = 1.0f; // 그룹 업데이트 간격 (초)
     private float nextUpdateTime;
 
+    public float syncDistance = 50.0f; // 동기화를 위한 최대 거리
+    private byte maxGroup = 16; // 최대 그룹 수
+    private byte groupWidth = 10;
+
+
     /// <summary>
     /// 대화 시스템
     /// </summary>
@@ -158,7 +164,6 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
 
         if (photonView.IsMine)
         {
-            //UpdateInterestGroup();
             nextUpdateTime = Time.time + updateInterval;
         }
     }
@@ -655,10 +660,52 @@ public class Character_Warrior : MonoBehaviourPunCallbacks
             {
                 PhotonNetwork.SetInterestGroups(currentGroup, false);
             }
-            PhotonNetwork.SetInterestGroups(newGroup, true);
+            SetInterestGroupsForAdjacentZones(newGroup);
+            //PhotonNetwork.SetInterestGroups(newGroup, true);
             currentGroup = newGroup;
             photonView.Group = currentGroup;
         }
+    }
+
+    private void SetInterestGroupsForAdjacentZones(byte centerGroup)
+    {
+        // 현재 그룹과 맞닿은 구역의 관심 그룹을 설정합니다.
+        List<byte> adjacentGroups = GetAdjacentGroups(centerGroup);
+
+        // 중심 구역과 인접 구역 설정
+        PhotonNetwork.SetInterestGroups(centerGroup, true);
+        foreach (var group in adjacentGroups)
+        {
+            PhotonNetwork.SetInterestGroups(group, true);
+        }
+    }
+
+    private List<byte> GetAdjacentGroups(byte centerGroup)
+    {
+        List<byte> adjacentGroups = new List<byte>();
+
+        byte centerX = (byte)((centerGroup - 1) / maxGroup);
+        byte centerZ = (byte)((centerGroup - 1) % maxGroup);
+
+        for (byte dx = 0; dx <= 1; dx++)
+        {
+            for (byte dz = 0; dz <= 1; dz++)
+            {
+                byte adjacentX = (byte)(centerX + dx - 1);
+                byte adjacentZ = (byte)(centerZ + dz - 1);
+
+                if (adjacentX >= 0 && adjacentX < maxGroup && adjacentZ >= 0 && adjacentZ < maxGroup)
+                {
+                    byte adjacentGroup = (byte)((adjacentX * maxGroup) + adjacentZ + 1);
+                    if (adjacentGroup != centerGroup)
+                    {
+                        adjacentGroups.Add(adjacentGroup);
+                    }
+                }
+            }
+        }
+
+        return adjacentGroups;
     }
 
     /// <summary>
